@@ -1,14 +1,14 @@
 export const environment = {
-  production: false,
-  apiUrl: 'https://backendbina-1.onrender.com/api/usuarios',
+  production: true,
+  apiUrl: 'https://backendbina-1.onrender.com/api/usuarios',  // Backend en Render
 
   firebase: {
-    apiKey: "AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ",           // ← PEGA TU apiKey
-    authDomain: "auth-backend-tu-nombre.firebaseapp.com",        // ← PEGA TU authDomain
-    projectId: "auth-backend-tu-nombre",                         // ← PEGA TU projectId
-    storageBucket: "auth-backend-tu-nombre.firebasestorage.app", // ← PEGA TU storageBucket
-    messagingSenderId: "370925550099",                           // ← PEGA TU messagingSenderId
-    appId: "1:370925550099:web:ebfdea93f12c7b01435de6"          // ← PEGA TU appId
+    apiKey: "AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ",
+    authDomain: "auth-backend-tu-nombre.firebaseapp.com",        // ⚠️ ACTUALIZA CON TUS VALORES REALES
+    projectId: "auth-backend-tu-nombre",                         // ⚠️ ACTUALIZA CON TUS VALORES REALES
+    storageBucket: "auth-backend-tu-nombre.firebasestorage.app", // ⚠️ ACTUALIZA CON TUS VALORES REALES
+    messagingSenderId: "370925550099",
+    appId: "1:370925550099:web:ebfdea93f12c7b01435de6"
   }
 
 };
