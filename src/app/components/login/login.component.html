@@ -1,54 +1,79 @@
 <div class="login-container">
-  <mat-card class="login-card">
-    <mat-card-header>
-      <mat-card-title>Iniciar Sesión</mat-card-title>
-    </mat-card-header>
+  <div class="login-card">
+    <h1 class="card-title">Iniciar Sesión</h1>
 
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="juan@example.com">
-            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
-              El correo es obligatorio
-            </mat-error>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-              Ingresa un correo válido
-            </mat-error>
-          </mat-form-field>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Correo -->
+      <div class="form-row">
+        <label for="email" class="input-label">Correo Electrónico</label>
+        <div class="input-wrapper">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="juan@example.com"
+            class="input-field"
+            [class.input-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            [class.input-success]="loginForm.get('email')?.valid"
+          />
+          <div class="input-feedback" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+            El correo es obligatorio
+          </div>
+          <div class="input-feedback error" *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+            Ingresa un correo válido
+          </div>
         </div>
+      </div>
 
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Contraseña</mat-label>
-            <input matInput type="password" formControlName="password">
-            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-              La contraseña es obligatoria
-            </mat-error>
-          </mat-form-field>
+      <!-- Contraseña -->
+      <div class="form-row">
+        <label for="password" class="input-label">Contraseña</label>
+        <div class="input-wrapper">
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="input-field"
+            [class.input-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+            La contraseña es obligatoria
+          </div>
         </div>
+      </div>
 
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="submit-button">
-            <span *ngIf="!loading">Iniciar Sesión</span>
-            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
-          </button>
-        </div>
+      <!-- Botón de envío -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary submit-button"
+          [disabled]="loading || loginForm.invalid"
+        >
+          <span *ngIf="!loading">Iniciar Sesión</span>
+          <span *ngIf="loading" class="spinner"></span>
+        </button>
+      </div>
 
-        <mat-divider class="divider"></mat-divider>
+      <!-- Separador -->
+      <div class="divider"></div>
 
-        <div class="google-login">
-          <button mat-raised-button type="button" (click)="loginWithGoogle()" [disabled]="loadingGoogle" class="google-button">
-            <span *ngIf="!loadingGoogle">🔐 Iniciar con Google</span>
-            <mat-spinner *ngIf="loadingGoogle" diameter="20"></mat-spinner>
-          </button>
-        </div>
+      <!-- Google Login -->
+      <div class="google-login">
+        <button
+          type="button"
+          class="btn btn-google google-button"
+          (click)="loginWithGoogle()"
+          [disabled]="loadingGoogle"
+        >
+          <span *ngIf="!loadingGoogle">🔐 Iniciar con Google</span>
+          <span *ngIf="loadingGoogle" class="spinner"></span>
+        </button>
+      </div>
 
-        <div class="register-link">
-          <p>¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a></p>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      <!-- Enlace de registro -->
+      <div class="register-link">
+        <p>¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a></p>
+      </div>
+    </form>
+  </div>
 </div>
