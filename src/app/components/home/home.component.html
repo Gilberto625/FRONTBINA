@@ -1,46 +1,45 @@
 <div class="home-container">
-  <mat-toolbar color="primary" class="toolbar">
-    <span>Mi Aplicación</span>
-    <span class="spacer"></span>
-    <button mat-icon-button (click)="logout()">
-      <mat-icon>logout</mat-icon>
-    </button>
-  </mat-toolbar>
+  <!-- Toolbar -->
+  <header class="toolbar">
+    <div class="toolbar-content">
+      <h1 class="toolbar-title">Mi Aplicación</h1>
+      <button class="icon-button" (click)="logout()" aria-label="Cerrar sesión">
+        <span class="icon">🚪</span>
+      </button>
+    </div>
+  </header>
 
-  <div class="content">
-    <mat-card class="welcome-card">
-      <mat-card-header>
-        <mat-card-title>¡Bienvenido!</mat-card-title>
-      </mat-card-header>
+  <!-- Contenido principal -->
+  <main class="content">
+    <div class="welcome-card">
+      <h2 class="card-title">¡Bienvenido!</h2>
 
-      <mat-card-content>
-        <div class="user-info">
-          <h2>Hola, {{ currentUser?.username }}!</h2>
-          <p><strong>Email:</strong> {{ currentUser?.email }}</p>
-          <p><strong>ID de Usuario:</strong> {{ currentUser?.id }}</p>
-        </div>
+      <div class="user-info">
+        <h3>Hola, {{ currentUser?.username }}!</h3>
+        <p><strong>Email:</strong> {{ currentUser?.email }}</p>
+        <p><strong>ID de Usuario:</strong> {{ currentUser?.id }}</p>
+      </div>
 
-        <div class="success-message">
-          <mat-icon class="success-icon">check_circle</mat-icon>
-          <p>Has iniciado sesión exitosamente</p>
-        </div>
+      <div class="success-message">
+        <span class="icon success-icon">✓</span>
+        <p>Has iniciado sesión exitosamente</p>
+      </div>
 
-        <div class="features">
-          <h3>Características de tu cuenta:</h3>
-          <ul>
-            <li>✅ Autenticación 2FA activada</li>
-            <li>✅ Sesión segura</li>
-            <li>✅ Protección con CSRF tokens</li>
-          </ul>
-        </div>
-      </mat-card-content>
+      <div class="features">
+        <h4>Características de tu cuenta:</h4>
+        <ul class="features-list">
+          <li>✅ Autenticación 2FA activada</li>
+          <li>✅ Sesión segura</li>
+          <li>✅ Protección con CSRF tokens</li>
+        </ul>
+      </div>
 
-      <mat-card-actions>
-        <button mat-raised-button color="warn" (click)="logout()">
-          <mat-icon>logout</mat-icon>
+      <div class="card-actions">
+        <button class="btn btn-secondary logout-button" (click)="logout()">
+          <span class="icon">🚪</span>
           Cerrar Sesión
         </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+      </div>
+    </div>
+  </main>
 </div>
