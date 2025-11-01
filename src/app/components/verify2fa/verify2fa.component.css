@@ -1,173 +1,69 @@
-/* === Fuentes === */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-
-:root {
-  --color-primary: #1A1A1A;
-  --color-accent: #D4AF37;
-  --color-white: #FFFFFF;
-  --color-background: #F8F8F8;
-  --color-border: #E0E0E0;
-  --color-gray-dark: #757575;
-  --color-error: #DC3545;
-  --color-warning: #FFA500;
-}
-
 .verify-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--color-background);
-  padding: 16px;
-  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
 }
 
 .verify-card {
+  max-width: 450px;
   width: 100%;
-  max-width: 420px;
-  background: var(--color-white);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 32px;
-  box-sizing: border-box;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-.card-title {
+mat-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+mat-card-title {
   font-size: 28px;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin: 0 0 8px 0;
-  text-align: center;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
 }
 
-.card-subtitle {
+mat-card-subtitle {
   font-size: 16px;
-  font-weight: 500;
-  color: var(--color-gray-dark);
-  margin: 0 0 24px 0;
-  text-align: center;
-}
-
-.info-section {
-  margin-bottom: 24px;
-  text-align: center;
+  color: #666;
 }
 
 .info-text {
-  font-size: 16px;
-  color: var(--color-primary);
-  margin: 0 0 12px 0;
-}
-
-.info-text strong {
-  color: var(--color-accent);
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
 }
 
 .warning-text {
-  font-size: 14px;
-  color: var(--color-warning);
-  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: #f44336;
   font-weight: 500;
+  margin-bottom: 30px;
 }
 
 .form-row {
   margin-bottom: 20px;
 }
 
-.input-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-}
-
-.input-wrapper {
-  position: relative;
-}
-
-.input-field {
+.full-width {
   width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  font-family: 'Montserrat', sans-serif;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-white);
-  color: var(--color-primary);
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-}
-
-.input-field.input-error {
-  border-color: var(--color-error);
-}
-
-.input-feedback {
-  font-size: 14px;
-  margin-top: 6px;
-  color: var(--color-gray-dark);
-}
-
-.input-feedback.error {
-  color: var(--color-error);
 }
 
 .form-actions {
-  margin-top: 24px;
+  text-align: center;
 }
 
-.btn {
+.submit-button {
   width: 100%;
-  padding: 12px 24px;
+  height: 48px;
   font-size: 16px;
-  font-weight: 500;
-  font-family: 'Montserrat', sans-serif;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-}
-
-.btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #B8941F;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .back-link {
@@ -176,7 +72,7 @@
 }
 
 .back-link a {
-  color: var(--color-accent);
+  color: #667eea;
   text-decoration: none;
   font-weight: 500;
   font-size: 14px;
@@ -184,4 +80,12 @@
 
 .back-link a:hover {
   text-decoration: underline;
+}
+
+mat-spinner {
+  margin: 0 auto;
+}
+
+strong {
+  color: #667eea;
 }
