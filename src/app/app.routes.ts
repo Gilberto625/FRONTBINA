@@ -20,6 +20,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/verify2fa/verify2fa.component').then(m => m.Verify2faComponent)
   },
   {
+    path: 'forgot-password',
+    loadComponent: () => import('./components/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./components/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+  },
+  {
     path: 'home',
     loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent),
     canActivate: [authGuard]  // Ruta protegida
