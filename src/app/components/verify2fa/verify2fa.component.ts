@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -22,7 +24,9 @@ import { AuthService } from '../../services/auth.service';
     MatButtonModule,
     MatCardModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule,
+    MatIconModule
   ],
   templateUrl: './verify2fa.component.html',
   styleUrl: './verify2fa.component.css'
@@ -33,6 +37,8 @@ export class Verify2faComponent implements OnInit {
   tempToken: string = '';
   type: 'register' | 'login' = 'register';
   destination: string = '';
+  metodosDisponibles: string[] = ['email'];
+  metodoSeleccionado: string = 'email';
 
   constructor(
     private fb: FormBuilder,
@@ -48,6 +54,8 @@ export class Verify2faComponent implements OnInit {
       this.tempToken = state.tempToken;
       this.type = state.type;
       this.destination = state.destination;
+      this.metodosDisponibles = state.metodosDisponibles || ['email'];
+      this.metodoSeleccionado = this.metodosDisponibles[0] || 'email';
     }
   }
 
@@ -59,25 +67,83 @@ export class Verify2faComponent implements OnInit {
       return;
     }
 
-    // Crear formulario
+    // Crear formulario con validación dinámica
+    this.updateFormValidation();
+  }
+
+  updateFormValidation(): void {
+    const pattern = this.metodoSeleccionado === 'backup'
+      ? /^[0-9]{8}$/  // 8 dígitos para backup codes
+      : /^[0-9]{6}$/; // 6 dígitos para email/TOTP
+
     this.verifyForm = this.fb.group({
-      codigo: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]]
+      codigo: ['', [Validators.required, Validators.pattern(pattern)]]
     });
+  }
+
+  onMetodoChange(metodo: string): void {
+    this.metodoSeleccionado = metodo;
+    this.updateFormValidation();
+  }
+
+  solicitarCodigoPorEmail(): void {
+    this.loading = true;
+
+    this.authService.solicitarCodigoEmail(this.tempToken).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.showMessage('Nuevo código enviado a tu correo');
+        this.metodoSeleccionado = 'email';
+        this.updateFormValidation();
+      },
+      error: (error) => {
+        this.loading = false;
+        const errorMsg = error.error?.error || 'Error al solicitar código';
+        this.showMessage(errorMsg);
+      }
+    });
+  }
+
+  get codigoLength(): number {
+    return this.metodoSeleccionado === 'backup' ? 8 : 6;
+  }
+
+  get codigoPlaceholder(): string {
+    if (this.metodoSeleccionado === 'email') return '123456';
+    if (this.metodoSeleccionado === 'totp') return '123456';
+    return '12345678'; // backup
+  }
+
+  get metodoTexto(): string {
+    if (this.metodoSeleccionado === 'email') return 'de tu correo electrónico';
+    if (this.metodoSeleccionado === 'totp') return 'de tu autenticador (Google Authenticator)';
+    return 'de respaldo';
   }
 
   onSubmit(): void {
     if (this.verifyForm.invalid) {
-      this.showMessage('Ingresa un código válido de 6 dígitos');
+      const length = this.metodoSeleccionado === 'backup' ? '8' : '6';
+      this.showMessage(`Ingresa un código válido de ${length} dígitos`);
       return;
     }
 
     this.loading = true;
     const codigo = this.verifyForm.value.codigo;
 
-    // Decidir qué método llamar según el tipo
-    const verifyObservable = this.type === 'register'
-      ? this.authService.verifyRegister2FA(this.tempToken, codigo)
-      : this.authService.verifyLogin2FA(this.tempToken, codigo);
+    let verifyObservable;
+
+    // Decidir qué método llamar según el tipo y método seleccionado
+    if (this.type === 'register') {
+      verifyObservable = this.authService.verifyRegister2FA(this.tempToken, codigo);
+    } else {
+      // Para login, verificar si es TOTP o backup
+      if (this.metodoSeleccionado === 'totp' || this.metodoSeleccionado === 'backup') {
+        verifyObservable = this.authService.verificarTOTPLogin(this.tempToken, codigo, this.metodoSeleccionado as 'totp' | 'backup');
+      } else {
+        // Email
+        verifyObservable = this.authService.verifyLogin2FA(this.tempToken, codigo);
+      }
+    }
 
     verifyObservable.subscribe({
       next: (response) => {

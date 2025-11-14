@@ -72,7 +72,8 @@ export class LoginComponent implements OnInit {
             state: {
               tempToken: response.tempToken,
               type: 'login',
-              destination: response.destino
+              destination: response.destino,
+              metodosDisponibles: response.metodos_disponibles || ['email']
             }
           });
         } else if (response.ok) {
