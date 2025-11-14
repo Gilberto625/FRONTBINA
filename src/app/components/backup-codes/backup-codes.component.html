@@ -1,0 +1,93 @@
+<div class="backup-codes-container">
+  <mat-card class="backup-codes-card">
+    <mat-card-header>
+      <div class="header-content">
+        <mat-icon class="header-icon">password</mat-icon>
+        <mat-card-title>Códigos de Respaldo</mat-card-title>
+        <mat-card-subtitle>Guarda estos códigos en un lugar seguro</mat-card-subtitle>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Mensaje de advertencia -->
+      <div class="warning-box">
+        <mat-icon class="warning-icon">warning</mat-icon>
+        <div class="warning-content">
+          <h3>Importante:</h3>
+          <ul>
+            <li>Cada código solo puede usarse una vez</li>
+            <li>Guárdalos en un lugar seguro y accesible</li>
+            <li>Si generas nuevos códigos, los anteriores dejarán de funcionar</li>
+            <li>Úsalos cuando no tengas acceso a tu autenticador</li>
+          </ul>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Lista de códigos -->
+      <div class="codes-section">
+        <div class="codes-header">
+          <h3>Tus códigos de respaldo:</h3>
+          <span class="codes-count">{{ backupCodes.length }} códigos</span>
+        </div>
+
+        <div class="loading-container" *ngIf="loading">
+          <mat-spinner diameter="60"></mat-spinner>
+          <p>Generando códigos de respaldo...</p>
+        </div>
+
+        <mat-list class="codes-list" *ngIf="!loading && backupCodes.length > 0">
+          <mat-list-item *ngFor="let code of backupCodes; let i = index" class="code-item">
+            <mat-icon matListItemIcon>verified</mat-icon>
+            <div matListItemTitle class="code-number">{{ i + 1 }}.</div>
+            <div matListItemTitle class="code-value">{{ code }}</div>
+          </mat-list-item>
+        </mat-list>
+
+        <div class="no-codes" *ngIf="!loading && backupCodes.length === 0">
+          <mat-icon>info</mat-icon>
+          <p>No se han generado códigos de respaldo</p>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Acciones -->
+      <div class="actions-section">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="downloadCodes()"
+          [disabled]="loading || backupCodes.length === 0">
+          <mat-icon>download</mat-icon>
+          Descargar como .txt
+        </button>
+
+        <button
+          mat-raised-button
+          (click)="copyCodes()"
+          [disabled]="loading || backupCodes.length === 0">
+          <mat-icon>content_copy</mat-icon>
+          Copiar al portapapeles
+        </button>
+
+        <button
+          mat-raised-button
+          (click)="generateCodes()"
+          [disabled]="loading"
+          color="accent">
+          <mat-icon>refresh</mat-icon>
+          Generar nuevos códigos
+        </button>
+      </div>
+
+      <div class="back-section">
+        <button mat-button (click)="goToSecurity()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+          Volver a Seguridad
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

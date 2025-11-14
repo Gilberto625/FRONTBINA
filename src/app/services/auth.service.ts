@@ -27,6 +27,13 @@ export interface LoginData {
   password: string;
 }
 
+export interface EstadoSeguridad {
+  email_2fa: boolean;
+  totp_habilitado: boolean;
+  codigos_respaldo_disponibles: number;
+  tiene_preguntas_seguridad: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -225,6 +232,142 @@ export class AuthService {
     return this.http.post(
       `${this.apiUrl}/restablecer/`,
       { tempToken, nuevaContrasena },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Solicitar recuperación de contraseña por email
+   */
+  solicitarRecuperacionEmail(email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/recuperar/email/`,
+      { email },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Restablecer contraseña con token de email
+   */
+  restablecerConTokenEmail(token: string, nuevaContrasena: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/restablecer/email/`,
+      { token, nuevaContrasena },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Configurar TOTP - Obtener QR code
+   */
+  configurarTOTP(email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/totp/configurar/`,
+      { email },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Habilitar TOTP después de verificar código
+   */
+  habilitarTOTP(email: string, codigo: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/totp/habilitar/`,
+      { email, codigo },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Verificar código TOTP o backup en login
+   */
+  verificarTOTPLogin(tempToken: string, codigo: string, tipo: 'totp' | 'backup'): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/login/2fa/verificar/`,
+      { tempToken, codigo, tipo },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    ).pipe(
+      tap((response: any) => {
+        if (response.ok) {
+          this.setCurrentUser(response.usuario);
+        }
+      })
+    );
+  }
+
+  /**
+   * Generar códigos de respaldo
+   */
+  generarCodigosRespaldo(email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/backup-codes/generar/`,
+      { email },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Obtener estado de seguridad del usuario
+   */
+  obtenerEstadoSeguridad(email: string): Observable<EstadoSeguridad> {
+    return this.http.post<EstadoSeguridad>(
+      `${this.apiUrl}/seguridad/estado/`,
+      { email },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Solicitar código por email cuando está usando TOTP
+   */
+  solicitarCodigoEmail(tempToken: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/login/2fa/solicitar-codigo/`,
+      { tempToken },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Cambiar contraseña (usuario autenticado)
+   * NOTA: Este endpoint NO está implementado en el backend todavía
+   * Usar recuperación de contraseña por email como alternativa
+   */
+  cambiarContrasena(email: string, contrasenaActual: string, nuevaContrasena: string): Observable<any> {
+    // TODO: Implementar endpoint /cambiar-contrasena/ en el backend
+    // Por ahora, usar el flujo de recuperación por email
+    return this.http.post(
+      `${this.apiUrl}/restablecer/email/`,
+      { email, nuevaContrasena },
       {
         headers: this.getHeaders(),
         withCredentials: true

@@ -1,0 +1,208 @@
+.security-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.security-toolbar {
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.security-content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.loading-container p {
+  color: white;
+  font-size: 16px;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.security-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.security-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.security-card mat-card-header {
+  padding: 20px 20px 16px 20px;
+}
+
+.card-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #999;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.card-icon.active {
+  color: #4caf50;
+}
+
+.security-card mat-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.security-card mat-card-content {
+  padding: 0 20px 16px 20px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.status-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.status-badge.inactive {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.status-badge.warning {
+  background-color: #fff3cd;
+  color: #ff9800;
+}
+
+.status-badge mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.card-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.security-card mat-card-actions {
+  padding: 16px 20px 20px 20px;
+}
+
+.security-card mat-card-actions button {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.security-card mat-card-actions button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.tips-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.tips-card mat-card-header {
+  padding: 20px 20px 16px 20px;
+}
+
+.tips-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #ff9800;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.tips-card mat-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tips-card mat-list {
+  padding: 0;
+}
+
+.tips-card mat-list-item {
+  height: auto;
+  min-height: 48px;
+  padding: 12px 0;
+}
+
+.tips-card mat-list-item mat-icon {
+  color: #4caf50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .security-content {
+    padding: 16px;
+  }
+
+  .security-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .toolbar-title {
+    font-size: 16px;
+  }
+}
