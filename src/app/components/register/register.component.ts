@@ -71,27 +71,40 @@ export class RegisterComponent implements OnInit {
 
     this.loading = true;
 
-    // Preparar datos sin el campo confirmarContrasena
-    const { confirmarContrasena, ...registerData } = this.registerForm.value;
+    // Obtener CSRF token antes de registrar
+    this.authService.getCsrfToken().subscribe({
+      next: () => {
+        // Preparar datos sin el campo confirmarContrasena
+        const { confirmarContrasena, ...registerData } = this.registerForm.value;
 
-    this.authService.register(registerData as RegisterData).subscribe({
-      next: (response) => {
-        this.loading = false;
-        this.showMessage('Código 2FA enviado a tu correo');
+        console.log('Datos de registro:', registerData);
 
-        // Navegar a la página de verificación 2FA con el tempToken
-        this.router.navigate(['/verify-2fa'], {
-          state: {
-            tempToken: response.tempToken,
-            type: 'register',
-            destination: response.destino
+        this.authService.register(registerData as RegisterData).subscribe({
+          next: (response) => {
+            this.loading = false;
+            this.showMessage('Código 2FA enviado a tu correo');
+
+            // Navegar a la página de verificación 2FA con el tempToken
+            this.router.navigate(['/verify-2fa'], {
+              state: {
+                tempToken: response.tempToken,
+                type: 'register',
+                destination: response.destino
+              }
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+            console.error('Error completo:', error);
+            const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
+            this.showMessage(errorMsg);
           }
         });
       },
-      error: (error) => {
+      error: (csrfError) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al registrar usuario';
-        this.showMessage(errorMsg);
+        console.error('Error obteniendo CSRF token:', csrfError);
+        this.showMessage('Error de conexión con el servidor');
       }
     });
   }
