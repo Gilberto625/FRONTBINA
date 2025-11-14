@@ -334,7 +334,7 @@ export class AuthService {
    */
   obtenerEstadoSeguridad(email: string): Observable<EstadoSeguridad> {
     return this.http.post<EstadoSeguridad>(
-      `${this.apiUrl}/estado-seguridad/`,
+      `${this.apiUrl}/seguridad/estado/`,
       { email },
       {
         headers: this.getHeaders(),
@@ -359,11 +359,15 @@ export class AuthService {
 
   /**
    * Cambiar contraseña (usuario autenticado)
+   * NOTA: Este endpoint NO está implementado en el backend todavía
+   * Usar recuperación de contraseña por email como alternativa
    */
   cambiarContrasena(email: string, contrasenaActual: string, nuevaContrasena: string): Observable<any> {
+    // TODO: Implementar endpoint /cambiar-contrasena/ en el backend
+    // Por ahora, usar el flujo de recuperación por email
     return this.http.post(
-      `${this.apiUrl}/cambiar-contrasena/`,
-      { email, contrasenaActual, nuevaContrasena },
+      `${this.apiUrl}/restablecer/email/`,
+      { email, nuevaContrasena },
       {
         headers: this.getHeaders(),
         withCredentials: true
