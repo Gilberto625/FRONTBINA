@@ -99,12 +99,18 @@ export class LoginComponent implements OnInit {
     try {
       const response = await this.authService.loginWithGoogle();
 
-      if (response.ok) {
+      if (response && response.ok) {
         this.showMessage('¡Inicio de sesión con Google exitoso!');
-        this.router.navigate(['/home']);
+        // Esperar un momento para que se actualice el estado
+        setTimeout(() => {
+          this.router.navigate(['/home']);
+        }, 300);
+      } else {
+        const errorMsg = response?.error || 'Error al iniciar sesión con Google';
+        this.showMessage(errorMsg);
       }
     } catch (error: any) {
-      const errorMsg = error.error?.error || 'Error al iniciar sesión con Google';
+      const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
       this.showMessage(errorMsg);
     } finally {
       this.loadingGoogle = false;
