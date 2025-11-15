@@ -1,126 +1,133 @@
 <div class="verify-container">
-  <mat-card class="verify-card">
-    <mat-card-header>
-      <div class="header-content">
-        <mat-icon class="header-icon">verified_user</mat-icon>
-        <mat-card-title>Verificación 2FA</mat-card-title>
-        <mat-card-subtitle>
-          {{ type === 'register' ? 'Confirma tu registro' : 'Confirma tu identidad' }}
-        </mat-card-subtitle>
+  <div class="verify-card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="icon-wrapper">
+        <span class="header-icon">🔐</span>
       </div>
-    </mat-card-header>
+      <h1 class="card-title">Verificación 2FA</h1>
+      <p class="card-subtitle">
+        {{ type === 'register' ? 'Confirma tu registro' : 'Confirma tu identidad' }}
+      </p>
+    </div>
 
-    <mat-card-content>
+    <!-- Content -->
+    <div class="card-body">
       <!-- Selector de método (solo para login con múltiples métodos) -->
-      <div class="method-selector" *ngIf="type === 'login' && metodosDisponibles.length > 1">
+      <div class="method-selector-wrapper" *ngIf="type === 'login' && metodosDisponibles.length > 1">
         <p class="method-label">Selecciona el método de verificación:</p>
-        <mat-button-toggle-group
-          [(value)]="metodoSeleccionado"
-          (change)="onMetodoChange($event.value)"
-          class="method-toggle-group">
-          <mat-button-toggle
+        <div class="method-toggle-group">
+          <button
             *ngFor="let metodo of metodosDisponibles"
-            [value]="metodo"
+            type="button"
+            [class.active]="metodoSeleccionado === metodo"
+            (click)="onMetodoChangeFromButton(metodo)"
             class="method-toggle">
-            <mat-icon *ngIf="metodo === 'email'">email</mat-icon>
-            <mat-icon *ngIf="metodo === 'totp'">smartphone</mat-icon>
-            <mat-icon *ngIf="metodo === 'backup'">password</mat-icon>
+            <span class="method-icon">
+              {{ metodo === 'email' ? '📧' : metodo === 'totp' ? '📱' : '🔑' }}
+            </span>
             <span class="method-text">
               {{ metodo === 'email' ? 'Email' : metodo === 'totp' ? 'Autenticador' : 'Código de respaldo' }}
             </span>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+          </button>
+        </div>
       </div>
 
-      <!-- Info del código -->
-      <p class="info-text">
-        <ng-container *ngIf="metodoSeleccionado === 'email'">
-          Hemos enviado un código de 6 dígitos a: <strong>{{ destination }}</strong>
-        </ng-container>
-        <ng-container *ngIf="metodoSeleccionado === 'totp'">
-          Ingresa el código de 6 dígitos {{ metodoTexto }}
-        </ng-container>
-        <ng-container *ngIf="metodoSeleccionado === 'backup'">
-          Ingresa uno de tus códigos de respaldo (8 dígitos)
-        </ng-container>
-      </p>
+      <!-- Info Section -->
+      <div class="info-section">
+        <div class="info-box">
+          <span class="info-icon">ℹ️</span>
+          <div class="info-content">
+            <ng-container *ngIf="metodoSeleccionado === 'email'">
+              <p class="info-text">Hemos enviado un código de 6 dígitos a:</p>
+              <p class="info-email">{{ destination }}</p>
+            </ng-container>
+            <ng-container *ngIf="metodoSeleccionado === 'totp'">
+              <p class="info-text">Ingresa el código de 6 dígitos {{ metodoTexto }}</p>
+            </ng-container>
+            <ng-container *ngIf="metodoSeleccionado === 'backup'">
+              <p class="info-text">Ingresa uno de tus códigos de respaldo (8 dígitos)</p>
+            </ng-container>
+          </div>
+        </div>
 
-      <p class="warning-text" *ngIf="metodoSeleccionado === 'email' || metodoSeleccionado === 'totp'">
-        <mat-icon>access_time</mat-icon>
-        El código expira en 5 minutos
-      </p>
+        <!-- Warning Box -->
+        <div class="warning-box" *ngIf="metodoSeleccionado === 'email' || metodoSeleccionado === 'totp'">
+          <span class="warning-icon">⏰</span>
+          <span class="warning-text">El código expira en 5 minutos</span>
+        </div>
 
-      <p class="warning-text" *ngIf="metodoSeleccionado === 'backup'">
-        <mat-icon>warning</mat-icon>
-        Cada código de respaldo solo puede usarse una vez
-      </p>
+        <div class="warning-box" *ngIf="metodoSeleccionado === 'backup'">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">Cada código de respaldo solo puede usarse una vez</span>
+        </div>
+      </div>
 
-      <!-- Formulario -->
-      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
+      <!-- Form Section -->
+      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="verify-form">
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Código de {{ codigoLength }} dígitos</mat-label>
+          <label for="codigo" class="input-label">Código de {{ codigoLength }} dígitos</label>
+          <div class="input-wrapper">
             <input
-              matInput
+              id="codigo"
+              type="text"
               formControlName="codigo"
               [placeholder]="codigoPlaceholder"
               [maxlength]="codigoLength"
-              autocomplete="off">
-            <mat-icon matPrefix>lock</mat-icon>
-            <mat-error *ngIf="verifyForm.get('codigo')?.hasError('required')">
+              autocomplete="off"
+              class="input-field code-input-field"
+              [class.input-error]="verifyForm.get('codigo')?.invalid && verifyForm.get('codigo')?.touched"
+            />
+            <div class="input-feedback error" *ngIf="verifyForm.get('codigo')?.hasError('required') && verifyForm.get('codigo')?.touched">
               El código es obligatorio
-            </mat-error>
-            <mat-error *ngIf="verifyForm.get('codigo')?.hasError('pattern')">
+            </div>
+            <div class="input-feedback error" *ngIf="verifyForm.get('codigo')?.hasError('pattern') && verifyForm.get('codigo')?.touched">
               Debe ser un código de {{ codigoLength }} dígitos
-            </mat-error>
-          </mat-form-field>
+            </div>
+          </div>
         </div>
 
-        <!-- Botón para solicitar código por email (si tiene TOTP habilitado) -->
-        <div class="alt-method" *ngIf="type === 'login' && metodosDisponibles.includes('totp') && metodoSeleccionado !== 'email'">
+        <!-- Alternative Actions -->
+        <div class="alternative-actions">
+          <!-- Botón para solicitar código por email (si tiene TOTP habilitado) -->
           <button
-            mat-button
+            *ngIf="type === 'login' && metodosDisponibles.includes('totp') && metodoSeleccionado !== 'email'"
             type="button"
             (click)="solicitarCodigoPorEmail()"
             [disabled]="loading"
-            class="alt-method-button">
-            <mat-icon>email</mat-icon>
-            ¿No tienes acceso al autenticador? Recibe un código por email
+            class="btn btn-alt alt-action-button">
+            <span>📧 ¿No tienes acceso al autenticador? Recibe un código por email</span>
           </button>
-        </div>
 
-        <!-- Botón para reenviar código OTP (para registro con SendGrid) -->
-        <div class="alt-method" *ngIf="type === 'register' && metodoSeleccionado === 'email'">
+          <!-- Botón para reenviar código OTP (para registro con SendGrid) -->
           <button
-            mat-button
+            *ngIf="type === 'register' && metodoSeleccionado === 'email'"
             type="button"
             (click)="reenviarCodigoOTP()"
             [disabled]="loading"
-            class="alt-method-button">
-            <mat-icon>refresh</mat-icon>
-            Reenviar código OTP
+            class="btn btn-primary resend-button">
+            <span>🔄 Reenviar código OTP</span>
           </button>
         </div>
 
+        <!-- Submit Button -->
         <div class="form-actions">
           <button
-            mat-raised-button
-            color="primary"
             type="submit"
-            [disabled]="loading"
-            class="submit-button">
-            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            class="btn btn-primary submit-button"
+            [disabled]="loading || verifyForm.invalid">
             <span *ngIf="!loading">Verificar Código</span>
+            <span *ngIf="loading" class="spinner"></span>
           </button>
         </div>
-
-        <div class="back-link">
-          <a routerLink="/login">
-            <mat-icon>arrow_back</mat-icon>
-            Volver al inicio de sesión
-          </a>
-        </div>
       </form>
-    </mat-card-content>
-  </mat-card>
+
+      <!-- Back Link -->
+      <div class="back-link-wrapper">
+        <a routerLink="/login" class="back-link">
+          ← Volver al inicio de sesión
+        </a>
+      </div>
+    </div>
+  </div>
 </div>

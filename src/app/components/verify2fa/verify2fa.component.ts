@@ -60,10 +60,13 @@ export class Verify2faComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Verificar que tengamos un tempToken
+    // Validar que existe un token
     if (!this.tempToken) {
-      this.showMessage('Sesión inválida. Por favor intenta de nuevo.');
-      this.router.navigate(['/login']);
+      this.showMessage('No se encontró un token de verificación. Por favor, inicia el proceso de registro o login.');
+      // Redirigir al login después de 2 segundos
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 2000);
       return;
     }
 
@@ -84,6 +87,11 @@ export class Verify2faComponent implements OnInit {
   onMetodoChange(metodo: string): void {
     this.metodoSeleccionado = metodo;
     this.updateFormValidation();
+  }
+  
+  // Método para manejar el cambio de método desde botones HTML
+  onMetodoChangeFromButton(metodo: string): void {
+    this.onMetodoChange(metodo);
   }
 
   solicitarCodigoPorEmail(): void {
