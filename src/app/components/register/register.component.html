@@ -1,0 +1,220 @@
+<div class="register-container">
+  <div class="register-card">
+    <h1 class="card-title">Registro de Usuario</h1>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Nombre -->
+      <div class="form-row">
+        <label for="nombre" class="input-label">Nombre</label>
+        <div class="input-wrapper">
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            placeholder="Juan"
+            class="input-field"
+            [class.input-error]="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('nombre')?.hasError('required') && registerForm.get('nombre')?.touched">
+            El nombre es obligatorio
+          </div>
+        </div>
+      </div>
+
+      <!-- Apellido Paterno -->
+      <div class="form-row">
+        <label for="apellidopaterno" class="input-label">Apellido Paterno</label>
+        <div class="input-wrapper">
+          <input
+            id="apellidopaterno"
+            type="text"
+            formControlName="apellidopaterno"
+            placeholder="Pérez"
+            class="input-field"
+            [class.input-error]="registerForm.get('apellidopaterno')?.invalid && registerForm.get('apellidopaterno')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('apellidopaterno')?.hasError('required') && registerForm.get('apellidopaterno')?.touched">
+            El apellido paterno es obligatorio
+          </div>
+        </div>
+      </div>
+
+      <!-- Apellido Materno -->
+      <div class="form-row">
+        <label for="apellidomaterno" class="input-label">Apellido Materno</label>
+        <div class="input-wrapper">
+          <input
+            id="apellidomaterno"
+            type="text"
+            formControlName="apellidomaterno"
+            placeholder="García"
+            class="input-field"
+            [class.input-error]="registerForm.get('apellidomaterno')?.invalid && registerForm.get('apellidomaterno')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('apellidomaterno')?.hasError('required') && registerForm.get('apellidomaterno')?.touched">
+            El apellido materno es obligatorio
+          </div>
+        </div>
+      </div>
+
+      <!-- Usuario -->
+      <div class="form-row">
+        <label for="username" class="input-label">Usuario</label>
+        <div class="input-wrapper">
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            placeholder="juanperez"
+            class="input-field"
+            [class.input-error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
+            El usuario es obligatorio
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('username')?.hasError('minlength') && registerForm.get('username')?.touched">
+            Mínimo 4 caracteres
+          </div>
+        </div>
+      </div>
+
+      <!-- Correo -->
+      <div class="form-row">
+        <label for="correo" class="input-label">Correo Electrónico</label>
+        <div class="input-wrapper">
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            placeholder="juan@example.com"
+            class="input-field"
+            [class.input-error]="registerForm.get('correo')?.invalid && registerForm.get('correo')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('correo')?.hasError('required') && registerForm.get('correo')?.touched">
+            El correo es obligatorio
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('correo')?.hasError('email') && registerForm.get('correo')?.touched">
+            Ingresa un correo válido
+          </div>
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-row">
+        <label for="telefono" class="input-label">Teléfono</label>
+        <div class="input-wrapper">
+          <input
+            id="telefono"
+            type="tel"
+            formControlName="telefono"
+            placeholder="1234567890"
+            class="input-field"
+            [class.input-error]="registerForm.get('telefono')?.invalid && registerForm.get('telefono')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('telefono')?.hasError('required') && registerForm.get('telefono')?.touched">
+            El teléfono es obligatorio
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('telefono')?.hasError('pattern') && registerForm.get('telefono')?.touched">
+            Ingresa 10 dígitos
+          </div>
+        </div>
+      </div>
+
+      <!-- Contraseña -->
+      <div class="form-row">
+        <label for="contrasena" class="input-label">Contraseña</label>
+        <div class="input-wrapper">
+          <input
+            id="contrasena"
+            type="password"
+            formControlName="contrasena"
+            class="input-field"
+            [class.input-error]="registerForm.get('contrasena')?.invalid && registerForm.get('contrasena')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('contrasena')?.hasError('required') && registerForm.get('contrasena')?.touched">
+            La contraseña es obligatoria
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('contrasena')?.hasError('minlength') && registerForm.get('contrasena')?.touched">
+            Mínimo 8 caracteres
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmar Contraseña -->
+      <div class="form-row">
+        <label for="confirmarContrasena" class="input-label">Confirmar Contraseña</label>
+        <div class="input-wrapper">
+          <input
+            id="confirmarContrasena"
+            type="password"
+            formControlName="confirmarContrasena"
+            class="input-field"
+            [class.input-error]="registerForm.get('confirmarContrasena')?.invalid && registerForm.get('confirmarContrasena')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('confirmarContrasena')?.hasError('required') && registerForm.get('confirmarContrasena')?.touched">
+            Confirma tu contraseña
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta Secreta -->
+      <div class="form-row">
+        <label for="preguntasecreta" class="input-label">Pregunta Secreta</label>
+        <div class="input-wrapper">
+          <select
+            id="preguntasecreta"
+            formControlName="preguntasecreta"
+            class="input-field select-field"
+            [class.input-error]="registerForm.get('preguntasecreta')?.invalid && registerForm.get('preguntasecreta')?.touched"
+          >
+            <option value="" disabled selected>Selecciona una pregunta</option>
+            <option value="¿Cuál es el nombre de tu primera mascota?">¿Cuál es el nombre de tu primera mascota?</option>
+            <option value="¿Cuál es el nombre de tu madre?">¿Cuál es el nombre de tu madre?</option>
+            <option value="¿En qué ciudad naciste?">¿En qué ciudad naciste?</option>
+            <option value="¿Cuál es el nombre de tu mejor amigo de la infancia?">¿Cuál es el nombre de tu mejor amigo de la infancia?</option>
+            <option value="¿Cuál es el modelo de tu primer automóvil?">¿Cuál es el modelo de tu primer automóvil?</option>
+            <option value="¿Cuál es el nombre de tu escuela primaria?">¿Cuál es el nombre de tu escuela primaria?</option>
+          </select>
+          <div class="input-feedback error" *ngIf="registerForm.get('preguntasecreta')?.hasError('required') && registerForm.get('preguntasecreta')?.touched">
+            Debes seleccionar una pregunta secreta
+          </div>
+        </div>
+      </div>
+
+      <!-- Respuesta Secreta -->
+      <div class="form-row">
+        <label for="respuestasecreta" class="input-label">Respuesta Secreta</label>
+        <div class="input-wrapper">
+          <input
+            id="respuestasecreta"
+            type="text"
+            formControlName="respuestasecreta"
+            placeholder="Firulais"
+            class="input-field"
+            [class.input-error]="registerForm.get('respuestasecreta')?.invalid && registerForm.get('respuestasecreta')?.touched"
+          />
+          <div class="input-feedback error" *ngIf="registerForm.get('respuestasecreta')?.hasError('required') && registerForm.get('respuestasecreta')?.touched">
+            La respuesta secreta es obligatoria
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón Registrar -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary submit-button"
+          [disabled]="loading || registerForm.invalid"
+        >
+          <span *ngIf="!loading">Registrar</span>
+          <span *ngIf="loading" class="spinner"></span>
+        </button>
+      </div>
+
+      <!-- Enlace a login -->
+      <div class="login-link">
+        <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
+      </div>
+    </form>
+  </div>
+</div>

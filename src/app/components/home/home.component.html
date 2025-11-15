@@ -1,0 +1,49 @@
+<div class="home-container">
+  <!-- Toolbar -->
+  <header class="toolbar">
+    <div class="toolbar-content">
+      <h1 class="toolbar-title">Mi Aplicación</h1>
+      <button class="icon-button" (click)="logout()" aria-label="Cerrar sesión">
+        <span class="icon">🚪</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="content">
+    <div class="welcome-card">
+      <h2 class="card-title">¡Bienvenido!</h2>
+
+      <div class="user-info">
+        <h3>Hola, {{ currentUser?.username }}!</h3>
+        <p><strong>Email:</strong> {{ currentUser?.email }}</p>
+        <p><strong>ID de Usuario:</strong> {{ currentUser?.id }}</p>
+      </div>
+
+      <div class="success-message">
+        <span class="icon success-icon">✓</span>
+        <p>Has iniciado sesión exitosamente</p>
+      </div>
+
+      <div class="features">
+        <h4>Características de tu cuenta:</h4>
+        <ul class="features-list">
+          <li>✅ Autenticación 2FA activada</li>
+          <li>✅ Sesión segura</li>
+          <li>✅ Protección con CSRF tokens</li>
+        </ul>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-primary" routerLink="/security">
+          <span class="icon">🔒</span>
+          Centro de Seguridad
+        </button>
+        <button class="btn btn-secondary logout-button" (click)="logout()">
+          <span class="icon">🚪</span>
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
