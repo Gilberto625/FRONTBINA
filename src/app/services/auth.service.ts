@@ -122,6 +122,13 @@ export class AuthService {
         headers: this.getHeaders(),
         withCredentials: true
       }
+    ).pipe(
+      tap((response: any) => {
+        // Si el login es directo (sin 2FA), guardar el usuario
+        if (response.ok && response.usuario && !response.requires2fa) {
+          this.setCurrentUser(response.usuario);
+        }
+      })
     );
   }
 

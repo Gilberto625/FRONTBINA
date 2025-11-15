@@ -78,8 +78,11 @@ export class LoginComponent implements OnInit {
           });
         } else if (response.ok) {
           // Login directo sin 2FA (usuarios no verificados)
+          // El servicio ya guarda el usuario en el pipe tap
           this.showMessage('¡Inicio de sesión exitoso!');
-          this.router.navigate(['/home']);
+          setTimeout(() => {
+            this.router.navigate(['/home']);
+          }, 300);
         }
       },
       error: (error) => {
