@@ -167,9 +167,24 @@ export class Verify2faComponent implements OnInit {
 
           // Redirigir según el tipo
           if (this.type === 'register') {
-            this.router.navigate(['/login']);
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 500);
           } else {
-            this.router.navigate(['/home']);
+            // Para login, verificar que el usuario se haya guardado
+            const usuarioGuardado = this.authService.getCurrentUser();
+            console.log('Usuario guardado después de verificación:', usuarioGuardado);
+            console.log('Estado autenticado:', this.authService.isAuthenticated());
+            
+            // Esperar un momento para que se actualice el estado
+            setTimeout(() => {
+              if (this.authService.isAuthenticated()) {
+                this.router.navigate(['/home']);
+              } else {
+                console.error('Usuario no autenticado después de verificación');
+                this.showMessage('Error: No se pudo autenticar. Por favor, intenta de nuevo.');
+              }
+            }, 500);
           }
         }
       },
