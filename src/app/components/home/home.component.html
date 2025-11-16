@@ -1,49 +1,134 @@
 <div class="home-container">
   <!-- Toolbar -->
-  <header class="toolbar">
-    <div class="toolbar-content">
-      <h1 class="toolbar-title">Mi Aplicación</h1>
-      <button class="icon-button" (click)="logout()" aria-label="Cerrar sesión">
-        <span class="icon">🚪</span>
-      </button>
-    </div>
-  </header>
+  <mat-toolbar class="home-toolbar">
+    <span class="toolbar-title">Stylo Barber Connect</span>
+    <span class="spacer"></span>
+    <button mat-icon-button routerLink="/profile" aria-label="Perfil">
+      <h2>Perfil</h2>
+    </button>
+    <button mat-icon-button (click)="logout()" aria-label="Cerrar sesión">
+      <h2>Cerrar Sesión</h2>
+    </button>
+  </mat-toolbar>
 
   <!-- Contenido principal -->
   <main class="content">
-    <div class="welcome-card">
-      <h2 class="card-title">¡Bienvenido!</h2>
+    <div class="welcome-section">
+      <h1 class="welcome-title">¡Bienvenido, {{ currentUser?.username }}!</h1>
+      <p class="welcome-subtitle">Has iniciado sesión exitosamente en el sistema</p>
+    </div>
 
-      <div class="user-info">
-        <h3>Hola, {{ currentUser?.username }}!</h3>
-        <p><strong>Email:</strong> {{ currentUser?.email }}</p>
-        <p><strong>ID de Usuario:</strong> {{ currentUser?.id }}</p>
-      </div>
+    <div class="cards-grid">
+      <!-- Card de Información del Usuario -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <h2 class="card-icon">Información del Usuario</h2>
+          <mat-card-title>Información del Usuario</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-item">
+            <strong>Nombre de Usuario:</strong>
+            <p>{{ currentUser?.username }}</p>
+          </div>
+          <div class="info-item">
+            <strong>Email:</strong>
+            <p>{{ currentUser?.email }}</p>
+          </div>
+          <div class="info-item">
+            <strong>ID de Usuario:</strong>
+            <p>{{ currentUser?.id }}</p>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary" routerLink="/profile">
+            <h2>Editar Perfil</h2>
+            Ver Perfil Completo
+          </button>
+        </mat-card-actions>
+      </mat-card>
 
-      <div class="success-message">
-        <span class="icon success-icon">✓</span>
-        <p>Has iniciado sesión exitosamente</p>
-      </div>
+      <!-- Card de Seguridad -->
+      <mat-card class="security-card">
+        <mat-card-header>
+          <h2 class="card-icon">Seguridad</h2>
+          <mat-card-title>Seguridad</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="security-features">
+            <div class="feature-item">
+              <h2 class="feature-icon success">Autenticación 2FA activa</h2>
+              <span>Autenticación 2FA activa</span>
+            </div>
+            <div class="feature-item">
+              <h2 class="feature-icon success">Sesiones seguras</h2>
+              <span>Sesiones seguras</span>
+            </div>
+            <div class="feature-item">
+              <h2 class="feature-icon success">Protección CSRF</h2>
+              <span>Protección CSRF</span>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary" routerLink="/security">
+            <h2>Centro de Seguridad</h2>
+            Centro de Seguridad
+          </button>
+        </mat-card-actions>
+      </mat-card>
 
-      <div class="features">
-        <h4>Características de tu cuenta:</h4>
-        <ul class="features-list">
-          <li>✅ Autenticación 2FA activada</li>
-          <li>✅ Sesión segura</li>
-          <li>✅ Protección con CSRF tokens</li>
-        </ul>
-      </div>
+      <!-- Card de Acciones Rápidas -->
+      <mat-card class="actions-card">
+        <mat-card-header>
+          <mat-icon class="card-icon">dashboard</mat-icon>
+          <mat-card-title>Acciones Rápidas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="quick-actions">
+            <button mat-raised-button color="primary" routerLink="/profile" class="action-button">
+              <mat-icon>account_circle</mat-icon>
+              Mi Perfil
+            </button>
+            <button mat-raised-button color="accent" routerLink="/security" class="action-button">
+              <mat-icon>security</mat-icon>
+              Seguridad
+            </button>
+            <button mat-raised-button routerLink="/change-password" class="action-button">
+              <mat-icon>lock</mat-icon>
+              Cambiar Contraseña
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-      <div class="card-actions">
-        <button class="btn btn-primary" routerLink="/security">
-          <span class="icon">🔒</span>
-          Centro de Seguridad
-        </button>
-        <button class="btn btn-secondary logout-button" (click)="logout()">
-          <span class="icon">🚪</span>
-          Cerrar Sesión
-        </button>
-      </div>
+      <!-- Card de Tecnologías -->
+      <mat-card class="tech-card">
+        <mat-card-header>
+          <mat-card-title>Sistema Implementado</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="tech-list">
+            <div class="tech-item">
+              <strong>Frontend:</strong> Angular 17 + Material
+            </div>
+            <div class="tech-item">
+              <strong>Backend:</strong> Django 5.2.7
+            </div>
+            <div class="tech-item">
+              <strong>2FA:</strong> SendGrid OTP
+            </div>
+            <div class="tech-item">
+              <strong>Google Login:</strong> Firebase Auth
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button routerLink="/">
+            <h2>info</h2>
+            Ver Más Información
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
   </main>
 </div>

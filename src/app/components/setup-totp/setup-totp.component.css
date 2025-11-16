@@ -1,18 +1,33 @@
+/* === Fuentes === */
+
+:root {
+  --color-primary: #1A1A1A;
+  --color-accent: #D4AF37;
+  --color-white: #FFFFFF;
+  --color-background: #F8F8F8;
+  --color-border: #E0E0E0;
+  --color-gray-dark: #757575;
+  --color-error: #DC3545;
+}
+
 .setup-totp-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--color-background);
   padding: 20px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .setup-totp-card {
   max-width: 650px;
   width: 100%;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  padding: 20px;
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  box-sizing: border-box;
 }
 
 .header-content {
@@ -25,22 +40,24 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  color: #667eea;
+  color: var(--color-accent);
   margin: 0 auto 16px;
   display: block;
 }
 
 mat-card-title {
   font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: var(--color-primary);
   margin-bottom: 8px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 mat-card-subtitle {
   font-size: 14px;
-  color: #666;
+  color: var(--color-gray-dark);
   line-height: 1.5;
+  font-family: 'Montserrat', sans-serif;
 }
 
 mat-card-content {
@@ -53,9 +70,10 @@ mat-card-content {
 
 .step-description {
   font-size: 14px;
-  color: #666;
+  color: var(--color-primary);
   margin-bottom: 20px;
   line-height: 1.5;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .qr-container {
@@ -63,7 +81,7 @@ mat-card-content {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: var(--color-background);
   border-radius: 8px;
   margin-bottom: 20px;
 }
@@ -72,7 +90,7 @@ mat-card-content {
   max-width: 250px;
   width: 100%;
   height: auto;
-  border: 4px solid white;
+  border: 4px solid var(--color-white);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -87,8 +105,9 @@ mat-card-content {
 }
 
 .loading-container p {
-  color: #666;
+  color: var(--color-primary);
   font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .secret-key-container {
@@ -108,6 +127,20 @@ mat-card-content {
 
 .step-actions button {
   min-width: 100px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.step-actions button[color="primary"] {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.step-actions button[color="primary"]:hover {
+  background-color: #B8941F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .step-actions button mat-spinner {
@@ -119,14 +152,21 @@ mat-card-content {
   text-align: center;
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--color-border);
 }
 
 .cancel-button {
-  color: #666;
+  color: var(--color-accent);
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+.cancel-button:hover {
+  text-decoration: underline;
 }
 
 .cancel-button mat-icon {
@@ -147,6 +187,8 @@ mat-card-content {
 ::ng-deep .mat-step-label {
   font-size: 16px;
   font-weight: 500;
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* Responsive */
@@ -154,7 +196,7 @@ mat-card-content {
   .setup-totp-card {
     max-width: 100%;
     margin: 10px;
-    padding: 16px;
+    padding: 24px;
   }
 
   mat-card-title {

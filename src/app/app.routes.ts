@@ -4,8 +4,7 @@ import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
+    loadComponent: () => import('./components/landing/landing.component').then(m => m.LandingComponent)
   },
   {
     path: 'register',
@@ -53,7 +52,12 @@ export const routes: Routes = [
     canActivate: [authGuard]  // Ruta protegida
   },
   {
+    path: 'profile',
+    loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent),
+    canActivate: [authGuard]  // Ruta protegida
+  },
+  {
     path: '**',
-    redirectTo: '/login'
+    redirectTo: '/'
   }
 ];

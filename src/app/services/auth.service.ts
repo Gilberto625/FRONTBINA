@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Auth, GoogleAuthProvider, signInWithPopup, UserCredential } from '@angular/fire/auth';
 
@@ -165,20 +165,22 @@ export class AuthService {
       const idToken = await result.user.getIdToken();
 
       // Enviar el token al backend Django
-      return this.http.post(
-        `${this.apiUrl}/login/google/`,
-        { idToken },
-        {
-          headers: this.getHeaders(),
-          withCredentials: true
-        }
-      ).pipe(
-        tap((response: any) => {
-          if (response.ok) {
-            this.setCurrentUser(response.usuario);
+      return firstValueFrom(
+        this.http.post(
+          `${this.apiUrl}/login/google/`,
+          { idToken },
+          {
+            headers: this.getHeaders(),
+            withCredentials: true
           }
-        })
-      ).toPromise();
+        ).pipe(
+          tap((response: any) => {
+            if (response.ok) {
+              this.setCurrentUser(response.usuario);
+            }
+          })
+        )
+      );
 
     } catch (error) {
       console.error('Error en login con Google:', error);

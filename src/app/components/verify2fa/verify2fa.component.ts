@@ -95,18 +95,36 @@ export class Verify2faComponent implements OnInit {
   }
 
   solicitarCodigoPorEmail(): void {
+    // Solo disponible para registro, no para login
+    if (this.type !== 'register') {
+      this.showMessage('Esta funcionalidad solo está disponible durante el registro');
+      return;
+    }
+
+    // Necesitamos el correo del usuario, lo guardamos en localStorage durante el registro
+    const correo = localStorage.getItem('registerEmail') || '';
+    
+    if (!correo) {
+      this.showMessage('No se encontró el correo. Por favor, intenta registrarte de nuevo.');
+      return;
+    }
+
     this.loading = true;
 
-    this.authService.solicitarCodigoEmail(this.tempToken).subscribe({
+    this.authService.reenviarOTP(correo).subscribe({
       next: (response) => {
         this.loading = false;
-        this.showMessage('Nuevo código enviado a tu correo');
+        if (response.ok) {
+          this.showMessage('✅ Nuevo código enviado a tu correo. Expira en 10 minutos.');
+        } else {
+          this.showMessage(response.message || 'Código reenviado');
+        }
         this.metodoSeleccionado = 'email';
         this.updateFormValidation();
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al solicitar código';
+        const errorMsg = error.error?.error || error.error?.message || 'Error al reenviar código';
         this.showMessage(errorMsg);
       }
     });
@@ -142,14 +160,17 @@ export class Verify2faComponent implements OnInit {
 
     // Decidir qué método llamar según el tipo y método seleccionado
     if (this.type === 'register') {
-      // Intentar primero con OTP SendGrid, si falla usar el método 2FA tradicional
+      // Usar OTP SendGrid para registro
       verifyObservable = this.authService.verificarOTPRegistro(this.tempToken, codigo);
     } else {
-      // Para login, verificar si es TOTP o backup
+      // Para login, solo soportamos email OTP (el backend no tiene TOTP implementado)
+      // El método verificarTOTPLogin no funcionará porque el backend no tiene esos endpoints
       if (this.metodoSeleccionado === 'totp' || this.metodoSeleccionado === 'backup') {
-        verifyObservable = this.authService.verificarTOTPLogin(this.tempToken, codigo, this.metodoSeleccionado as 'totp' | 'backup');
+        this.showMessage('TOTP y códigos de respaldo no están disponibles. Usa el código por email.');
+        this.loading = false;
+        return;
       } else {
-        // Email - intentar OTP SendGrid primero
+        // Email - usar OTP SendGrid
         verifyObservable = this.authService.verifyLogin2FA(this.tempToken, codigo);
       }
     }

@@ -1,16 +1,15 @@
-/* === Variables de colores (igual que login) === */
-/* Updated: 2024 - Colores dorados del login */
+/* === Fuentes === */
+
 :root {
   --color-primary: #1A1A1A;
   --color-accent: #D4AF37;
   --color-white: #FFFFFF;
-  --color-background: #FFFFFF;
-  --color-border: rgba(0, 0, 0, 0.2);
+  --color-background: #F8F8F8;
+  --color-border: #E0E0E0;
   --color-gray-dark: #757575;
-  --color-error: #ff5252;
+  --color-error: #DC3545;
 }
 
-/* === Container === */
 .verify-container {
   display: flex;
   justify-content: center;
@@ -18,28 +17,22 @@
   min-height: 100vh;
   background-color: var(--color-background);
   padding: 16px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* === Card === */
 .verify-card {
   width: 100%;
   max-width: 480px;
   background: var(--color-white);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px;
   box-sizing: border-box;
-  overflow: visible;
 }
 
-/* === Header === */
 .card-header {
-  padding: 32px 32px 24px;
   text-align: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
+  margin-bottom: 24px;
 }
 
 .icon-wrapper {
@@ -48,57 +41,46 @@
 
 .header-icon {
   font-size: 48px;
-  display: inline-block;
-  line-height: 1;
+  display: block;
+  margin: 0 auto;
 }
 
 .card-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--color-primary);
   margin: 0 0 8px 0;
   text-align: center;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .card-subtitle {
   font-size: 14px;
-  font-weight: 400;
   color: var(--color-gray-dark);
   margin: 0;
   text-align: center;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* === Body === */
 .card-body {
-  padding: 32px;
-  box-sizing: border-box;
+  padding: 0;
 }
 
-/* === Method Selector === */
 .method-selector-wrapper {
   margin-bottom: 24px;
   padding: 16px;
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: var(--color-background);
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
+  border: 1px solid var(--color-border);
 }
 
 .method-label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-primary);
   margin: 0 0 12px 0;
   text-align: center;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .method-toggle-group {
@@ -110,50 +92,41 @@
 .method-toggle {
   width: 100%;
   padding: 12px 16px;
-  background-color: rgba(0, 0, 0, 0.04);
-  border: 1.5px solid rgba(0, 0, 0, 0.15);
+  background-color: var(--color-background);
+  border: 1.5px solid var(--color-border);
   border-radius: 8px;
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  box-sizing: border-box;
-  text-align: center;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .method-toggle:hover {
-  border-color: rgba(0, 0, 0, 0.3);
-  background-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--color-accent);
+  background-color: rgba(212, 175, 55, 0.1);
 }
 
 .method-toggle.active {
-  background-color: var(--color-accent) !important;
-  border-color: var(--color-accent) !important;
-  color: var(--color-white) !important;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-primary);
   font-weight: 600;
 }
 
 .method-icon {
   font-size: 18px;
-  flex-shrink: 0;
 }
 
 .method-text {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* === Info Section === */
 .info-section {
   margin-bottom: 24px;
 }
@@ -163,24 +136,19 @@
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: var(--color-background);
   border-radius: 8px;
   border-left: 3px solid var(--color-accent);
   margin-bottom: 12px;
-  box-sizing: border-box;
 }
 
 .info-icon {
   font-size: 20px;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .info-content {
   flex: 1;
-  min-width: 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 .info-text {
@@ -189,21 +157,15 @@
   color: var(--color-primary);
   margin: 0 0 6px 0;
   line-height: 1.5;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .info-email {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-accent);
+  color: var(--color-primary);
   margin: 0;
-  word-break: break-all;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-  line-height: 1.5;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .warning-box {
@@ -214,7 +176,6 @@
   background-color: rgba(212, 175, 55, 0.12);
   border-radius: 8px;
   border: 1px solid rgba(212, 175, 55, 0.25);
-  box-sizing: border-box;
 }
 
 .warning-icon {
@@ -228,14 +189,9 @@
   color: var(--color-primary);
   margin: 0;
   line-height: 1.4;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-  flex: 1;
-  min-width: 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* === Form === */
 .verify-form {
   margin-bottom: 24px;
 }
@@ -250,9 +206,7 @@
   font-weight: 500;
   color: var(--color-primary);
   margin-bottom: 8px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .input-wrapper {
@@ -263,8 +217,8 @@
   width: 100%;
   padding: 12px 16px;
   font-size: 18px;
-  font-family: 'Inter', sans-serif;
-  border: 1.5px solid rgba(0, 0, 0, 0.2);
+  font-family: 'Montserrat', sans-serif;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-white);
   color: var(--color-primary);
@@ -273,9 +227,6 @@
   text-align: center;
   letter-spacing: 6px;
   font-weight: 600;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .input-field:focus {
@@ -287,7 +238,7 @@
 .input-field::placeholder {
   letter-spacing: 3px;
   font-weight: 400;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--color-gray-dark);
 }
 
 .input-field.input-error {
@@ -298,54 +249,48 @@
   font-size: 12px;
   margin-top: 6px;
   color: var(--color-gray-dark);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .input-feedback.error {
   color: var(--color-error);
 }
 
-/* === Alternative Actions === */
 .alternative-actions {
   margin-bottom: 16px;
 }
 
 .btn-alt {
-  background-color: rgba(212, 175, 55, 0.08) !important;
-  color: var(--color-accent) !important;
-  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  background-color: rgba(212, 175, 55, 0.08);
+  color: var(--color-primary);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   font-size: 13px;
   padding: 10px 14px;
   min-height: 44px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
   text-align: center;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .btn-alt:hover:not(:disabled) {
-  background-color: rgba(212, 175, 55, 0.15) !important;
-  border-color: var(--color-accent) !important;
-  color: var(--color-white) !important;
+  background-color: rgba(212, 175, 55, 0.15);
+  border-color: var(--color-accent);
 }
 
-/* Botón de reenviar con estilo de botón principal */
 .resend-button {
-  background-color: var(--color-accent) !important;
-  color: var(--color-white) !important;
-  border: none !important;
-  font-size: 14px !important;
-  padding: 12px 24px !important;
-  min-height: 48px !important;
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border: none;
+  font-size: 14px;
+  padding: 12px 24px;
+  min-height: 48px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }
 
 .resend-button:hover:not(:disabled) {
-  background-color: #B8941F !important;
+  background-color: #B8941F;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  color: var(--color-white) !important;
 }
 
 .btn-alt:disabled {
@@ -353,14 +298,6 @@
   cursor: not-allowed;
 }
 
-.btn-alt span {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-  display: inline-block;
-}
-
-/* === Form Actions === */
 .form-actions {
   margin-top: 16px;
 }
@@ -370,7 +307,7 @@
   padding: 12px 24px;
   font-size: 16px;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -381,9 +318,6 @@
   gap: 8px;
   min-height: 48px;
   box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .btn:disabled {
@@ -392,29 +326,22 @@
 }
 
 .btn-primary {
-  background-color: var(--color-accent) !important;
-  color: var(--color-white) !important;
+  background-color: var(--color-accent);
+  color: var(--color-primary);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #B8941F !important;
+  background-color: #B8941F;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  color: var(--color-white) !important;
-}
-
-.btn span {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .spinner {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid var(--color-white);
+  border: 2px solid rgba(26, 26, 26, 0.3);
+  border-top: 2px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -423,92 +350,42 @@
   to { transform: rotate(360deg); }
 }
 
-/* === Back Link === */
 .back-link-wrapper {
   text-align: center;
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--color-border);
 }
 
 .back-link {
-  color: var(--color-gray-dark);
+  color: var(--color-accent);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
-  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .back-link:hover {
-  color: var(--color-accent);
   text-decoration: underline;
 }
 
-/* === Responsive === */
+/* Responsive */
 @media (max-width: 600px) {
   .verify-container {
     padding: 12px;
-    align-items: flex-start;
-    padding-top: 16px;
   }
 
   .verify-card {
-    max-width: 100%;
-  }
-
-  .card-header {
-    padding: 28px 24px 20px;
-  }
-
-  .header-icon {
-    font-size: 40px;
+    padding: 24px;
   }
 
   .card-title {
-    font-size: 22px;
-  }
-
-  .card-subtitle {
-    font-size: 13px;
-  }
-
-  .card-body {
-    padding: 24px 20px;
+    font-size: 24px;
   }
 
   .input-field {
     font-size: 16px;
     letter-spacing: 4px;
     padding: 10px 14px;
-  }
-
-  .btn {
-    font-size: 15px;
-    padding: 10px 20px;
-    min-height: 46px;
-  }
-
-  .btn-alt {
-    font-size: 12px;
-    padding: 8px 12px;
-    min-height: 40px;
-  }
-}
-
-@media (max-width: 400px) {
-  .card-header {
-    padding: 24px 20px 18px;
-  }
-
-  .card-body {
-    padding: 20px 16px;
-  }
-
-  .input-field {
-    font-size: 18px;
-    letter-spacing: 3px;
   }
 }

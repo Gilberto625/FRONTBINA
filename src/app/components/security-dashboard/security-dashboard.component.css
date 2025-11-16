@@ -1,17 +1,37 @@
+/* === Fuentes === */
+
+:root {
+  --color-primary: #1A1A1A;
+  --color-accent: #D4AF37;
+  --color-white: #FFFFFF;
+  --color-background: #F8F8F8;
+  --color-border: #E0E0E0;
+  --color-gray-dark: #757575;
+  --color-error: #DC3545;
+  --color-success: #28A745;
+}
+
 .security-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--color-background);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .security-toolbar {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--color-white);
+  color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.security-toolbar mat-icon {
+  color: var(--color-primary);
 }
 
 .toolbar-title {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .spacer {
@@ -34,8 +54,9 @@
 }
 
 .loading-container p {
-  color: white;
+  color: var(--color-primary);
   font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .security-grid {
@@ -47,13 +68,14 @@
 
 .security-card {
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: var(--color-white);
 }
 
 .security-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .security-card mat-card-header {
@@ -64,20 +86,21 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  color: #999;
+  color: var(--color-gray-dark);
   margin-bottom: 12px;
   display: block;
 }
 
 .card-icon.active {
-  color: #4caf50;
+  color: var(--color-success);
 }
 
 .security-card mat-card-title {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-primary);
   margin-bottom: 12px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .security-card mat-card-content {
@@ -94,7 +117,8 @@
 .status-label {
   font-size: 14px;
   font-weight: 500;
-  color: #666;
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .status-badge {
@@ -105,16 +129,17 @@
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .status-badge.active {
   background-color: #e8f5e9;
-  color: #4caf50;
+  color: var(--color-success);
 }
 
 .status-badge.inactive {
   background-color: #ffebee;
-  color: #f44336;
+  color: var(--color-error);
 }
 
 .status-badge.warning {
@@ -130,9 +155,10 @@
 
 .card-description {
   font-size: 14px;
-  color: #666;
+  color: var(--color-gray-dark);
   line-height: 1.5;
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .security-card mat-card-actions {
@@ -145,6 +171,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .security-card mat-card-actions button mat-icon {
@@ -155,7 +182,8 @@
 
 .tips-card {
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--color-white);
 }
 
 .tips-card mat-card-header {
@@ -166,7 +194,7 @@
   font-size: 36px;
   width: 36px;
   height: 36px;
-  color: #ff9800;
+  color: var(--color-accent);
   margin-bottom: 12px;
   display: block;
 }
@@ -174,7 +202,8 @@
 .tips-card mat-card-title {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .tips-card mat-list {
@@ -188,7 +217,7 @@
 }
 
 .tips-card mat-list-item mat-icon {
-  color: #4caf50;
+  color: var(--color-success);
 }
 
 /* Responsive */

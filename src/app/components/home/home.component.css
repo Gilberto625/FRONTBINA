@@ -1,6 +1,5 @@
 /* === Fuentes === */
 
-
 :root {
   --color-primary: #1A1A1A;
   --color-accent: #D4AF37;
@@ -13,179 +12,230 @@
 
 .home-container {
   min-height: 100vh;
+  background-color: var(--color-background);
   display: flex;
   flex-direction: column;
-  background-color: var(--color-background);
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Toolbar */
-.toolbar {
-  background-color: var(--color-white);
+.home-toolbar {
+  background: var(--color-white);
+  color: var(--color-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.toolbar-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
 }
 
 .toolbar-title {
-  font-size: 22px;
+  flex: 1;
+  font-size: 1.3rem;
   font-weight: 600;
-  color: var(--color-primary);
-  margin: 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
-.icon-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  color: var(--color-primary);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
+.spacer {
+  flex: 1;
 }
 
-.icon-button:hover {
-  background-color: rgba(26, 26, 26, 0.05);
-}
-
-/* Contenido */
 .content {
   flex: 1;
-  padding: 24px 16px;
-  display: flex;
-  justify-content: center;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.welcome-card {
-  width: 100%;
-  max-width: 600px;
+.welcome-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
   background: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 32px;
-  box-sizing: border-box;
 }
 
-.card-title {
-  font-size: 28px;
+.welcome-title {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
   font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.user-info h3 {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 0 0 16px 0;
-}
-
-.user-info p {
-  font-size: 16px;
-  color: var(--color-primary);
-  margin: 8px 0;
-}
-
-.success-message {
-  display: flex;
-  align-items: center;
-  background-color: rgba(40, 167, 69, 0.1);
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin: 24px 0;
-}
-
-.success-icon {
-  font-size: 24px;
-  color: var(--color-success);
-  margin-right: 12px;
-  font-weight: bold;
-}
-
-.features h4 {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 24px 0 12px 0;
-}
-
-.features-list {
-  padding-left: 20px;
-  margin: 0;
-}
-
-.features-list li {
-  font-size: 16px;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-}
-
-/* Botones */
-.card-actions {
-  margin-top: 24px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 500;
   font-family: 'Montserrat', sans-serif;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  display: inline-flex;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: var(--color-gray-dark);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.info-card,
+.security-card,
+.actions-card,
+.tech-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--color-accent);
+  margin-right: 1rem;
+}
+
+mat-card-header {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  text-decoration: none;
+  margin-bottom: 1rem;
 }
 
-.btn-primary {
-  background-color: var(--color-accent);
+.info-item {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.info-item strong {
+  display: block;
+  color: var(--color-accent);
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.info-item p {
+  margin: 0;
   color: var(--color-primary);
-  border: none;
+  font-size: 1.1rem;
 }
 
-.btn-primary:hover {
-  background-color: #B8941F;
+.security-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.feature-icon {
+  color: var(--color-success);
+}
+
+.feature-icon.success {
+  color: var(--color-success);
+}
+
+/* === Botones de Acciones Rápidas - Estilo Personalizado === */
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-button {
+  width: 100%;
+  justify-content: flex-start;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  background-color: var(--color-accent) !important; /* Dorado */
+  color: var(--color-primary) !important; /* Negro */
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-transform: none !important;
+  font-size: 1rem;
+}
+
+.action-button:hover {
+  background-color: #B8941F !important; /* Dorado más oscuro */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.btn-secondary {
-  background-color: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
+.action-button mat-icon {
+  margin-right: 0.5rem;
+  color: var(--color-primary) !important;
 }
 
-.btn-secondary:hover {
-  background-color: var(--color-primary);
-  color: var(--color-white);
+/* Asegurar estilos consistentes en botones de otras cards */
+.info-card mat-card-actions button,
+.security-card mat-card-actions button,
+.tech-card mat-card-actions button {
+  background-color: var(--color-accent) !important;
+  color: var(--color-primary) !important;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 500;
+  text-transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.icon {
-  display: inline-block;
+.info-card mat-card-actions button:hover,
+.security-card mat-card-actions button:hover,
+.tech-card mat-card-actions button:hover {
+  background-color: #B8941F !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
+.tech-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tech-item {
+  padding: 0.5rem;
+  background: var(--color-background);
+  border-radius: 4px;
+  border-left: 3px solid var(--color-accent);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.tech-item strong {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

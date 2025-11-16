@@ -1,8 +1,77 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* === Variables CSS Globales === */
+:root {
+  --color-primary: #1A1A1A;
+  --color-accent: #D4AF37;
+  --color-white: #FFFFFF;
+  --color-background: #F8F8F8;
+  --color-border: #E0E0E0;
+  --color-gray-dark: #757575;
+  --color-error: #DC3545;
+}
+
 /* Tipografía global */
 * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Asegurar que todos los textos estén en negro por defecto */
+body {
+  color: var(--color-primary);
+  background-color: var(--color-background);
+  margin: 0;
+  padding: 0;
+}
+
+/* Títulos en negro */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+/* Material Card Titles en negro */
+mat-card-title {
+  color: var(--color-primary) !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+mat-card-subtitle {
+  color: var(--color-gray-dark) !important;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Párrafos en negro/gris oscuro */
+p {
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Links en color accent */
+a {
+  color: var(--color-accent);
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Material Icons - color por defecto */
+mat-icon {
+  font-family: 'Material Icons';
+}
+
+/* Override de Material para asegurar colores correctos */
+.mat-mdc-card {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+}
+
+.mat-mdc-card-title {
+  color: var(--color-primary) !important;
+}
+
+.mat-mdc-card-subtitle {
+  color: var(--color-gray-dark) !important;
 }
