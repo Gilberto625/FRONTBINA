@@ -79,7 +79,7 @@
         </div>
       </div>
 
-      <!-- Alternative Actions -->
+      <!-- Alternative Actions for Login -->
       <div class="alternative-actions" *ngIf="type === 'login'">
         <!-- Botón para solicitar código por email (si tiene TOTP habilitado) -->
         <button
@@ -90,10 +90,13 @@
           class="btn btn-secondary">
           📧 ¿No tienes acceso al autenticador? Recibe un código por email
         </button>
+      </div>
 
+      <!-- Alternative Actions for Register -->
+      <div class="alternative-actions" *ngIf="type === 'register'">
         <!-- Botón para reenviar código OTP (para registro con SendGrid) -->
         <button
-          *ngIf="type === 'register' && metodoSeleccionado === 'email'"
+          *ngIf="metodoSeleccionado === 'email'"
           type="button"
           (click)="reenviarCodigoOTP()"
           [disabled]="loading"
