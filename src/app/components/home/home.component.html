@@ -1,18 +1,18 @@
 <div class="home-container">
   <!-- Toolbar -->
-  <header class="home-toolbar">
-    <h1 class="toolbar-title">Stylo Barber Connect</h1>
+  <div class="home-toolbar">
+    <span class="toolbar-title">Stylo Barber Connect</span>
     <div class="toolbar-actions">
-      <a routerLink="/profile" class="toolbar-link" aria-label="Perfil">
-        <span class="toolbar-icon">👤</span>
+      <button class="toolbar-button" routerLink="/profile" aria-label="Perfil">
+        <span>👤</span>
         <span>Perfil</span>
-      </a>
-      <button type="button" class="toolbar-link" (click)="logout()" aria-label="Cerrar sesión">
-        <span class="toolbar-icon">🚪</span>
+      </button>
+      <button class="toolbar-button" (click)="logout()" aria-label="Cerrar sesión">
+        <span>🚪</span>
         <span>Cerrar Sesión</span>
       </button>
     </div>
-  </header>
+  </div>
 
   <!-- Contenido principal -->
   <main class="content">
@@ -44,8 +44,7 @@
         </div>
         <div class="card-actions">
           <a routerLink="/profile" class="btn btn-primary">
-            <span>✏️</span>
-            <span>Ver Perfil Completo</span>
+            Ver Perfil Completo
           </a>
         </div>
       </div>
@@ -53,29 +52,28 @@
       <!-- Card de Seguridad -->
       <div class="security-card card">
         <div class="card-header">
-          <span class="card-icon">🔒</span>
+          <span class="card-icon">🔐</span>
           <h2 class="card-title">Seguridad</h2>
         </div>
         <div class="card-content">
           <div class="security-features">
             <div class="feature-item">
-              <span class="feature-icon">✅</span>
+              <span class="feature-icon success">✓</span>
               <span>Autenticación 2FA activa</span>
             </div>
             <div class="feature-item">
-              <span class="feature-icon">✅</span>
+              <span class="feature-icon success">✓</span>
               <span>Sesiones seguras</span>
             </div>
             <div class="feature-item">
-              <span class="feature-icon">✅</span>
+              <span class="feature-icon success">✓</span>
               <span>Protección CSRF</span>
             </div>
           </div>
         </div>
         <div class="card-actions">
           <a routerLink="/security" class="btn btn-primary">
-            <span>🛡️</span>
-            <span>Centro de Seguridad</span>
+            Centro de Seguridad
           </a>
         </div>
       </div>
@@ -88,16 +86,16 @@
         </div>
         <div class="card-content">
           <div class="quick-actions">
-            <a routerLink="/profile" class="action-button">
-              <span class="action-icon">👤</span>
+            <a routerLink="/profile" class="action-button btn btn-primary">
+              <span>👤</span>
               <span>Mi Perfil</span>
             </a>
-            <a routerLink="/security" class="action-button">
-              <span class="action-icon">🛡️</span>
+            <a routerLink="/security" class="action-button btn btn-primary">
+              <span>🔒</span>
               <span>Seguridad</span>
             </a>
-            <a routerLink="/change-password" class="action-button">
-              <span class="action-icon">🔑</span>
+            <a routerLink="/change-password" class="action-button btn btn-primary">
+              <span>🔑</span>
               <span>Cambiar Contraseña</span>
             </a>
           </div>
@@ -128,8 +126,7 @@
         </div>
         <div class="card-actions">
           <a routerLink="/" class="btn btn-primary">
-            <span>ℹ️</span>
-            <span>Ver Más Información</span>
+            Ver Más Información
           </a>
         </div>
       </div>

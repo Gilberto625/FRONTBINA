@@ -1,15 +1,15 @@
 <div class="profile-container">
   <!-- Toolbar -->
-  <header class="profile-toolbar">
-    <button type="button" class="toolbar-button" (click)="goHome()" aria-label="Volver">
-      <span class="toolbar-icon">←</span>
+  <div class="profile-toolbar">
+    <button class="toolbar-button" (click)="goHome()" aria-label="Volver">
+      <span>←</span>
     </button>
-    <h1 class="toolbar-title">Mi Perfil</h1>
+    <span class="toolbar-title">Mi Perfil</span>
     <div class="spacer"></div>
-    <button type="button" class="toolbar-button" (click)="logout()" aria-label="Cerrar sesión">
-      <span class="toolbar-icon">🚪</span>
+    <button class="toolbar-button" (click)="logout()" aria-label="Cerrar sesión">
+      <span>🚪</span>
     </button>
-  </header>
+  </div>
 
   <div class="profile-content">
     <!-- Información del Usuario -->
@@ -20,7 +20,7 @@
       </div>
 
       <div class="card-content">
-        <form [formGroup]="profileForm" *ngIf="currentUser">
+        <form [formGroup]="profileForm" *ngIf="currentUser" class="profile-form">
           <div class="form-row">
             <label for="username" class="input-label">Nombre de Usuario</label>
             <div class="input-wrapper">
@@ -30,7 +30,6 @@
                 formControlName="username"
                 class="input-field"
                 [disabled]="!editMode"
-                aria-label="Nombre de usuario"
               />
             </div>
           </div>
@@ -44,7 +43,6 @@
                 formControlName="email"
                 class="input-field"
                 [disabled]="!editMode"
-                aria-label="Correo electrónico"
               />
             </div>
           </div>
@@ -58,7 +56,6 @@
                 formControlName="id"
                 class="input-field"
                 disabled
-                aria-label="ID de usuario"
               />
             </div>
           </div>
@@ -87,32 +84,32 @@
     <!-- Acciones Rápidas -->
     <div class="actions-card card">
       <div class="card-header">
-        <span class="header-icon">⚡</span>
+        <span class="card-icon">⚡</span>
         <h2 class="card-title">Acciones Rápidas</h2>
       </div>
       <div class="card-content">
-        <div class="actions-list">
-          <button type="button" class="action-item" (click)="goToChangePassword()">
+        <div class="action-list">
+          <a (click)="goToChangePassword()" class="action-item">
             <span class="action-icon">🔑</span>
             <span class="action-text">Cambiar Contraseña</span>
             <span class="action-arrow">→</span>
-          </button>
+          </a>
 
           <div class="divider"></div>
 
-          <button type="button" class="action-item" (click)="goToSecurity()">
-            <span class="action-icon">🛡️</span>
+          <a (click)="goToSecurity()" class="action-item">
+            <span class="action-icon">🔒</span>
             <span class="action-text">Centro de Seguridad</span>
             <span class="action-arrow">→</span>
-          </button>
+          </a>
 
           <div class="divider"></div>
 
-          <button type="button" class="action-item" (click)="logout()">
+          <a (click)="logout()" class="action-item">
             <span class="action-icon">🚪</span>
             <span class="action-text">Cerrar Sesión</span>
             <span class="action-arrow">→</span>
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -120,12 +117,12 @@
     <!-- Información de la Cuenta -->
     <div class="info-card card">
       <div class="card-header">
-        <span class="header-icon">ℹ️</span>
+        <span class="card-icon">ℹ️</span>
         <h2 class="card-title">Estado de la Cuenta</h2>
       </div>
       <div class="card-content">
         <div class="info-item">
-          <span class="info-icon success">✅</span>
+          <span class="info-icon success">✓</span>
           <div class="info-content">
             <strong>Cuenta Verificada</strong>
             <p>Tu cuenta está verificada y activa</p>
@@ -135,7 +132,7 @@
         <div class="divider"></div>
 
         <div class="info-item">
-          <span class="info-icon success">✅</span>
+          <span class="info-icon success">✓</span>
           <div class="info-content">
             <strong>Autenticación 2FA</strong>
             <p>Verificación de dos factores activa mediante OTP por email</p>
