@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService, EstadoSeguridad } from '../../services/auth.service';
 
 @Component({
@@ -17,14 +10,7 @@ import { AuthService, EstadoSeguridad } from '../../services/auth.service';
   imports: [
     CommonModule,
     RouterModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatToolbarModule
+    MatSnackBarModule
   ],
   templateUrl: './security-dashboard.component.html',
   styleUrl: './security-dashboard.component.css'

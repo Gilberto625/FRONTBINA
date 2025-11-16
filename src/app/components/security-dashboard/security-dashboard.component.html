@@ -1,164 +1,163 @@
 <div class="security-container">
   <!-- Toolbar -->
-  <mat-toolbar class="security-toolbar">
-    <button mat-icon-button (click)="goHome()">
-      <mat-icon>arrow_back</mat-icon>
+  <div class="security-toolbar">
+    <button class="toolbar-button" (click)="goHome()">
+      ←
     </button>
     <span class="toolbar-title">Centro de Seguridad</span>
-    <span class="spacer"></span>
-    <button mat-icon-button (click)="logout()">
-      <mat-icon>logout</mat-icon>
+    <button class="toolbar-button" (click)="logout()">
+      🚪
     </button>
-  </mat-toolbar>
+  </div>
 
   <div class="security-content">
     <div class="loading-container" *ngIf="loading">
-      <mat-spinner diameter="60"></mat-spinner>
+      <div class="spinner-large"></div>
       <p>Cargando estado de seguridad...</p>
     </div>
 
     <div class="security-grid" *ngIf="!loading">
       <!-- Card: Email 2FA -->
-      <mat-card class="security-card">
-        <mat-card-header>
+      <div class="security-card">
+        <div class="card-header">
           <h3 class="card-title">📧 Verificación por Email</h3>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+        <div class="card-body">
           <div class="status-row">
             <span class="status-label">Estado:</span>
             <span class="status-badge active">
-              <mat-icon>check_circle</mat-icon>
-              Siempre activo
+              ✓ Siempre activo
             </span>
           </div>
           <p class="card-description">
             Recibes un código de verificación por email cada vez que inicias sesión.
           </p>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Card: TOTP -->
-      <mat-card class="security-card">
-        <mat-card-header>
+      <div class="security-card">
+        <div class="card-header">
           <h3 class="card-title">📱 Autenticador TOTP</h3>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+        <div class="card-body">
           <div class="status-row">
             <span class="status-label">Estado:</span>
             <span class="status-badge" [class.active]="estadoSeguridad.totp_habilitado" [class.inactive]="!estadoSeguridad.totp_habilitado">
-              <mat-icon>{{ estadoSeguridad.totp_habilitado ? 'check_circle' : 'cancel' }}</mat-icon>
+              {{ estadoSeguridad.totp_habilitado ? '✓' : '✕' }}
               {{ estadoSeguridad.totp_habilitado ? 'Habilitado' : 'Deshabilitado' }}
             </span>
           </div>
           <p class="card-description">
             Usa Google Authenticator u otra app para generar códigos de verificación.
           </p>
-        </mat-card-content>
-        <mat-card-actions>
+        </div>
+        <div class="card-actions">
           <button
-            mat-raised-button
-            color="primary"
+            type="button"
+            class="btn btn-primary"
             (click)="setupTOTP()"
             *ngIf="!estadoSeguridad.totp_habilitado">
-            <mat-icon>add</mat-icon>
-            Configurar TOTP
+            ➕ Configurar TOTP
           </button>
           <button
-            mat-stroked-button
+            type="button"
+            class="btn btn-secondary"
             (click)="setupTOTP()"
             *ngIf="estadoSeguridad.totp_habilitado">
-            <mat-icon>settings</mat-icon>
-            Reconfigurar
+            ⚙️ Reconfigurar
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Card: Códigos de respaldo -->
-      <mat-card class="security-card">
-        <mat-card-header>
+      <div class="security-card">
+        <div class="card-header">
           <h3 class="card-title">🔑 Códigos de Respaldo</h3>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+        <div class="card-body">
           <div class="status-row">
             <span class="status-label">Disponibles:</span>
             <span class="status-badge" [class.active]="estadoSeguridad.codigos_respaldo_disponibles > 0" [class.warning]="estadoSeguridad.codigos_respaldo_disponibles <= 3 && estadoSeguridad.codigos_respaldo_disponibles > 0" [class.inactive]="estadoSeguridad.codigos_respaldo_disponibles === 0">
-              <mat-icon>{{ estadoSeguridad.codigos_respaldo_disponibles > 0 ? 'check_circle' : 'warning' }}</mat-icon>
+              {{ estadoSeguridad.codigos_respaldo_disponibles > 0 ? '✓' : '⚠' }}
               {{ estadoSeguridad.codigos_respaldo_disponibles }} códigos
             </span>
           </div>
           <p class="card-description">
             Usa estos códigos cuando no tengas acceso a tu autenticador.
           </p>
-        </mat-card-content>
-        <mat-card-actions>
+        </div>
+        <div class="card-actions">
           <button
-            mat-raised-button
-            color="primary"
+            type="button"
+            class="btn btn-primary"
             (click)="generateBackupCodes()">
-            <mat-icon>{{ estadoSeguridad.codigos_respaldo_disponibles > 0 ? 'refresh' : 'add' }}</mat-icon>
-            {{ estadoSeguridad.codigos_respaldo_disponibles > 0 ? 'Regenerar códigos' : 'Generar códigos' }}
+            {{ estadoSeguridad.codigos_respaldo_disponibles > 0 ? '🔄 Regenerar códigos' : '➕ Generar códigos' }}
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Card: Contraseña -->
-      <mat-card class="security-card">
-        <mat-card-header>
+      <div class="security-card">
+        <div class="card-header">
           <h3 class="card-title">🔒 Contraseña</h3>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+        <div class="card-body">
           <div class="status-row">
             <span class="status-label">Seguridad:</span>
             <span class="status-badge active">
-              <mat-icon>check_circle</mat-icon>
-              Fuerte
+              ✓ Fuerte
             </span>
           </div>
           <p class="card-description">
             Cambia tu contraseña regularmente para mantener tu cuenta segura.
           </p>
-        </mat-card-content>
-        <mat-card-actions>
+        </div>
+        <div class="card-actions">
           <button
-            mat-raised-button
-            color="primary"
+            type="button"
+            class="btn btn-primary"
             (click)="changePassword()">
-            <mat-icon>key</mat-icon>
-            Cambiar contraseña
+            🔑 Cambiar contraseña
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
+      </div>
     </div>
 
     <!-- Consejos de seguridad -->
-    <mat-card class="tips-card" *ngIf="!loading">
-      <mat-card-header>
-        <mat-icon class="tips-icon">lightbulb</mat-icon>
-        <mat-card-title>Consejos de Seguridad</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item>
-            <mat-icon matListItemIcon>check</mat-icon>
-            <div matListItemTitle>Habilita TOTP para mayor seguridad</div>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item>
-            <mat-icon matListItemIcon>check</mat-icon>
-            <div matListItemTitle>Genera códigos de respaldo y guárdalos en un lugar seguro</div>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item>
-            <mat-icon matListItemIcon>check</mat-icon>
-            <div matListItemTitle>Usa una contraseña única que no uses en otros sitios</div>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item>
-            <mat-icon matListItemIcon>check</mat-icon>
-            <div matListItemTitle>Cambia tu contraseña cada 3-6 meses</div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+    <div class="tips-card" *ngIf="!loading">
+      <div class="card-header">
+        <h2 class="card-title">💡 Consejos de Seguridad</h2>
+      </div>
+      <div class="card-body">
+        <ul class="tips-list">
+          <li class="tip-item">
+            <span class="tip-icon">✓</span>
+            <span class="tip-text">Habilita TOTP para mayor seguridad</span>
+          </li>
+
+          <div class="divider"></div>
+
+          <li class="tip-item">
+            <span class="tip-icon">✓</span>
+            <span class="tip-text">Genera códigos de respaldo y guárdalos en un lugar seguro</span>
+          </li>
+
+          <div class="divider"></div>
+
+          <li class="tip-item">
+            <span class="tip-icon">✓</span>
+            <span class="tip-text">Usa una contraseña única que no uses en otros sitios</span>
+          </li>
+
+          <div class="divider"></div>
+
+          <li class="tip-item">
+            <span class="tip-icon">✓</span>
+            <span class="tip-text">Cambia tu contraseña cada 3-6 meses</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
