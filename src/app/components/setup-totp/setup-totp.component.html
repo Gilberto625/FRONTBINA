@@ -1,118 +1,134 @@
 <div class="setup-totp-container">
-  <mat-card class="setup-totp-card">
-    <mat-card-header>
-      <div class="header-content">
-        <h2 class="header-title">📱 Configurar Autenticación de Dos Factores (TOTP)</h2>
-        <mat-card-subtitle>Protege tu cuenta con Google Authenticator o similar</mat-card-subtitle>
+  <div class="setup-totp-card">
+    <h1 class="card-title">📱 Configurar Autenticación TOTP</h1>
+    <p class="card-subtitle">Protege tu cuenta con Google Authenticator o similar</p>
+
+    <!-- Steps Indicator -->
+    <div class="steps-indicator">
+      <div class="step-item" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+        <div class="step-number">{{ currentStep > 1 ? '✓' : '1' }}</div>
+        <div class="step-label">Escanear QR</div>
       </div>
-    </mat-card-header>
+      <div class="step-line" [class.completed]="currentStep > 1"></div>
+      <div class="step-item" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
+        <div class="step-number">{{ currentStep > 2 ? '✓' : '2' }}</div>
+        <div class="step-label">Clave manual</div>
+      </div>
+      <div class="step-line" [class.completed]="currentStep > 2"></div>
+      <div class="step-item" [class.active]="currentStep === 3" [class.completed]="currentStep > 3">
+        <div class="step-number">{{ currentStep > 3 ? '✓' : '3' }}</div>
+        <div class="step-label">Verificar</div>
+      </div>
+    </div>
 
-    <mat-card-content>
-      <mat-stepper orientation="vertical" #stepper>
-        <!-- Paso 1: Escanear QR -->
-        <mat-step label="Escanea el código QR" completed="false">
-          <div class="step-content">
-            <p class="step-description">
-              Abre tu aplicación de autenticación (Google Authenticator, Authy, etc.) y escanea este código QR:
-            </p>
+    <!-- Paso 1: Escanear QR -->
+    <div class="step-content" *ngIf="currentStep === 1">
+      <h3 class="step-title">Paso 1: Escanea el código QR</h3>
+      <p class="step-description">
+        Abre tu aplicación de autenticación (Google Authenticator, Authy, etc.) y escanea este código QR:
+      </p>
 
-            <div class="qr-container" *ngIf="qrCodeUrl && !loading">
-              <img [src]="qrCodeUrl" alt="QR Code" class="qr-code">
-            </div>
+      <div class="qr-container" *ngIf="qrCodeUrl && !loading">
+        <img [src]="qrCodeUrl" alt="QR Code" class="qr-code">
+      </div>
 
-            <div class="loading-container" *ngIf="loading">
-              <mat-spinner diameter="60"></mat-spinner>
-              <p>Generando código QR...</p>
-            </div>
+      <div class="loading-container" *ngIf="loading">
+        <div class="spinner-large"></div>
+        <p class="loading-text">Generando código QR...</p>
+      </div>
 
-            <div class="step-actions">
-              <button mat-raised-button color="primary" matStepperNext [disabled]="loading">
-                Siguiente
-              </button>
-            </div>
-          </div>
-        </mat-step>
-
-        <!-- Paso 2: Clave secreta manual -->
-        <mat-step label="Clave secreta (alternativa)" completed="false">
-          <div class="step-content">
-            <p class="step-description">
-              Si no puedes escanear el código QR, ingresa esta clave manualmente en tu aplicación:
-            </p>
-
-            <div class="secret-key-container">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Clave Secreta</mat-label>
-                <input matInput [value]="secretKey" readonly>
-                <mat-icon matPrefix>vpn_key</mat-icon>
-                <button
-                  mat-icon-button
-                  matSuffix
-                  type="button"
-                  (click)="copySecretKey()"
-                  matTooltip="Copiar">
-                  <mat-icon>content_copy</mat-icon>
-                </button>
-              </mat-form-field>
-            </div>
-
-            <div class="step-actions">
-              <button mat-button matStepperPrevious>Atrás</button>
-              <button mat-raised-button color="primary" matStepperNext>
-                Siguiente
-              </button>
-            </div>
-          </div>
-        </mat-step>
-
-        <!-- Paso 3: Verificar código -->
-        <mat-step label="Verificar código" completed="false">
-          <div class="step-content">
-            <p class="step-description">
-              Ingresa el código de 6 dígitos que aparece en tu aplicación de autenticación:
-            </p>
-
-            <form [formGroup]="verifyForm" (ngSubmit)="onVerify()">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Código de verificación</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  formControlName="codigo"
-                  placeholder="123456"
-                  maxlength="6"
-                  [disabled]="loading">
-                <mat-icon matPrefix>verified_user</mat-icon>
-                <mat-error *ngIf="verifyForm.get('codigo')?.hasError('required')">
-                  El código es requerido
-                </mat-error>
-                <mat-error *ngIf="verifyForm.get('codigo')?.hasError('pattern')">
-                  Ingresa un código de 6 dígitos
-                </mat-error>
-              </mat-form-field>
-
-              <div class="step-actions">
-                <button mat-button matStepperPrevious type="button">Atrás</button>
-                <button
-                  mat-raised-button
-                  color="primary"
-                  type="submit"
-                  [disabled]="loading || verifyForm.invalid">
-                  <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
-                  <span *ngIf="!loading">Habilitar TOTP</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </mat-step>
-      </mat-stepper>
-
-      <div class="cancel-container">
-        <button mat-button routerLink="/security" class="cancel-button">
-          <mat-icon>close</mat-icon>
-          Cancelar
+      <div class="step-actions">
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="loading">
+          Siguiente →
         </button>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+
+    <!-- Paso 2: Clave secreta manual -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      <h3 class="step-title">Paso 2: Clave secreta (alternativa)</h3>
+      <p class="step-description">
+        Si no puedes escanear el código QR, ingresa esta clave manualmente en tu aplicación:
+      </p>
+
+      <div class="secret-key-container">
+        <div class="form-row">
+          <label class="input-label">Clave Secreta</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              [value]="secretKey"
+              readonly
+              class="input-field secret-field"
+            />
+            <button
+              type="button"
+              class="copy-button"
+              (click)="copySecretKey()"
+              title="Copiar">
+              📋
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button type="button" class="btn btn-secondary" (click)="previousStep()">
+          ← Atrás
+        </button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()">
+          Siguiente →
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 3: Verificar código -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      <h3 class="step-title">Paso 3: Verificar código</h3>
+      <p class="step-description">
+        Ingresa el código de 6 dígitos que aparece en tu aplicación de autenticación:
+      </p>
+
+      <form [formGroup]="verifyForm" (ngSubmit)="onVerify()" class="verify-form">
+        <div class="form-row">
+          <label for="codigo" class="input-label">Código de verificación</label>
+          <div class="input-wrapper">
+            <input
+              id="codigo"
+              type="text"
+              formControlName="codigo"
+              placeholder="123456"
+              maxlength="6"
+              class="input-field code-field"
+              [class.input-error]="verifyForm.get('codigo')?.invalid && verifyForm.get('codigo')?.touched"
+              [disabled]="loading"
+            />
+            <div class="input-feedback error" *ngIf="verifyForm.get('codigo')?.hasError('required') && verifyForm.get('codigo')?.touched">
+              El código es requerido
+            </div>
+            <div class="input-feedback error" *ngIf="verifyForm.get('codigo')?.hasError('pattern') && verifyForm.get('codigo')?.touched">
+              Ingresa un código de 6 dígitos
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="btn btn-secondary" (click)="previousStep()">
+            ← Atrás
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading || verifyForm.invalid">
+            <span *ngIf="!loading">✓ Habilitar TOTP</span>
+            <span *ngIf="loading" class="spinner"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="cancel-wrapper">
+      <a routerLink="/security" class="cancel-link">✕ Cancelar configuración</a>
+    </div>
+  </div>
 </div>

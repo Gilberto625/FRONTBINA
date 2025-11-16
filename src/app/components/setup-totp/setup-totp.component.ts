@@ -2,14 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -20,14 +13,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    MatStepperModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule
+    MatSnackBarModule
   ],
   templateUrl: './setup-totp.component.html',
   styleUrl: './setup-totp.component.css'
@@ -38,6 +24,7 @@ export class SetupTotpComponent implements OnInit {
   qrCodeUrl: SafeUrl = '';
   secretKey: string = '';
   email: string = '';
+  currentStep: number = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -125,6 +112,18 @@ export class SetupTotpComponent implements OnInit {
     }).catch(() => {
       this.showMessage('Error al copiar la clave');
     });
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 3) {
+      this.currentStep++;
+    }
+  }
+
+  previousStep(): void {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
   }
 
   private showMessage(message: string): void {
