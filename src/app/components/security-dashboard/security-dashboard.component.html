@@ -21,8 +21,7 @@
       <!-- Card: Email 2FA -->
       <mat-card class="security-card">
         <mat-card-header>
-          <mat-icon class="card-icon" [class.active]="estadoSeguridad.email_2fa">email</mat-icon>
-          <mat-card-title>Verificación por Email</mat-card-title>
+          <h3 class="card-title">📧 Verificación por Email</h3>
         </mat-card-header>
         <mat-card-content>
           <div class="status-row">
@@ -41,8 +40,7 @@
       <!-- Card: TOTP -->
       <mat-card class="security-card">
         <mat-card-header>
-          <mat-icon class="card-icon" [class.active]="estadoSeguridad.totp_habilitado">smartphone</mat-icon>
-          <mat-card-title>Autenticador TOTP</mat-card-title>
+          <h3 class="card-title">📱 Autenticador TOTP</h3>
         </mat-card-header>
         <mat-card-content>
           <div class="status-row">
@@ -78,8 +76,7 @@
       <!-- Card: Códigos de respaldo -->
       <mat-card class="security-card">
         <mat-card-header>
-          <mat-icon class="card-icon" [class.active]="estadoSeguridad.codigos_respaldo_disponibles > 0">password</mat-icon>
-          <mat-card-title>Códigos de Respaldo</mat-card-title>
+          <h3 class="card-title">🔑 Códigos de Respaldo</h3>
         </mat-card-header>
         <mat-card-content>
           <div class="status-row">
@@ -107,8 +104,7 @@
       <!-- Card: Contraseña -->
       <mat-card class="security-card">
         <mat-card-header>
-          <mat-icon class="card-icon active">lock</mat-icon>
-          <mat-card-title>Contraseña</mat-card-title>
+          <h3 class="card-title">🔒 Contraseña</h3>
         </mat-card-header>
         <mat-card-content>
           <div class="status-row">

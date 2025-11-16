@@ -4,10 +4,10 @@
     <span class="toolbar-title">Stylo Barber Connect</span>
     <span class="spacer"></span>
     <button mat-icon-button routerLink="/profile" aria-label="Perfil">
-      <h2>Perfil</h2>
+      <mat-icon>person</mat-icon>
     </button>
     <button mat-icon-button (click)="logout()" aria-label="Cerrar sesión">
-      <h2>Cerrar Sesión</h2>
+      <mat-icon>logout</mat-icon>
     </button>
   </mat-toolbar>
 
@@ -22,7 +22,6 @@
       <!-- Card de Información del Usuario -->
       <mat-card class="info-card">
         <mat-card-header>
-          <h2 class="card-icon">Información del Usuario</h2>
           <mat-card-title>Información del Usuario</mat-card-title>
         </mat-card-header>
         <mat-card-content>
@@ -41,7 +40,7 @@
         </mat-card-content>
         <mat-card-actions>
           <button mat-button color="primary" routerLink="/profile">
-            <h2>Editar Perfil</h2>
+            <mat-icon>edit</mat-icon>
             Ver Perfil Completo
           </button>
         </mat-card-actions>
@@ -50,28 +49,27 @@
       <!-- Card de Seguridad -->
       <mat-card class="security-card">
         <mat-card-header>
-          <h2 class="card-icon">Seguridad</h2>
           <mat-card-title>Seguridad</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="security-features">
             <div class="feature-item">
-              <h2 class="feature-icon success">Autenticación 2FA activa</h2>
+              <mat-icon class="feature-icon success">verified_user</mat-icon>
               <span>Autenticación 2FA activa</span>
             </div>
             <div class="feature-item">
-              <h2 class="feature-icon success">Sesiones seguras</h2>
+              <mat-icon class="feature-icon success">shield</mat-icon>
               <span>Sesiones seguras</span>
             </div>
             <div class="feature-item">
-              <h2 class="feature-icon success">Protección CSRF</h2>
+              <mat-icon class="feature-icon success">security</mat-icon>
               <span>Protección CSRF</span>
             </div>
           </div>
         </mat-card-content>
         <mat-card-actions>
           <button mat-button color="primary" routerLink="/security">
-            <h2>Centro de Seguridad</h2>
+            <mat-icon>admin_panel_settings</mat-icon>
             Centro de Seguridad
           </button>
         </mat-card-actions>
@@ -124,7 +122,7 @@
         </mat-card-content>
         <mat-card-actions>
           <button mat-button routerLink="/">
-            <h2>info</h2>
+            <mat-icon>info</mat-icon>
             Ver Más Información
           </button>
         </mat-card-actions>
