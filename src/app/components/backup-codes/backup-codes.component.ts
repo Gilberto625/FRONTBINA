@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -16,13 +10,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     RouterModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule
+    MatSnackBarModule
   ],
   templateUrl: './backup-codes.component.html',
   styleUrl: './backup-codes.component.css'
