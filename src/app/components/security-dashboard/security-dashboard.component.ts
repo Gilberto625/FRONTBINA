@@ -95,8 +95,8 @@ export class SecurityDashboardComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  logout(): void {
-    this.authService.logout();
+  async logout(): Promise<void> {
+    await this.authService.logout();
     this.router.navigate(['/login']);
   }
 

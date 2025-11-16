@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Auth, GoogleAuthProvider, signInWithPopup, UserCredential } from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, signInWithPopup, signOut, UserCredential } from '@angular/fire/auth';
 
 export interface Usuario {
   id?: number;
@@ -159,6 +159,12 @@ export class AuthService {
     try {
       // Autenticar con Google usando Firebase
       const provider = new GoogleAuthProvider();
+      
+      // Forzar que siempre muestre el selector de cuentas
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
       const result: UserCredential = await signInWithPopup(this.auth, provider);
 
       // Obtener el ID token de Firebase
@@ -214,7 +220,16 @@ export class AuthService {
   /**
    * Cerrar sesión
    */
-  logout(): void {
+  async logout(): Promise<void> {
+    // Cerrar sesión de Firebase para que la próxima vez muestre selector de cuentas
+    try {
+      await signOut(this.auth);
+    } catch (error) {
+      console.error('Error al cerrar sesión de Firebase:', error);
+      // Continuar con el logout aunque falle Firebase
+    }
+    
+    // Limpiar estado local
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     localStorage.removeItem('currentUser');

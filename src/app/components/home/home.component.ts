@@ -34,8 +34,8 @@ export class HomeComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
   }
 
-  logout(): void {
-    this.authService.logout();
+  async logout(): Promise<void> {
+    await this.authService.logout();
     this.router.navigate(['/login']);
   }
 }
