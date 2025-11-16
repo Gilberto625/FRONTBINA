@@ -56,7 +56,7 @@ export class ProfileComponent implements OnInit {
     this.profileForm = this.fb.group({
       username: [{ value: this.currentUser.username || '', disabled: true }],
       email: [{ value: this.currentUser.email || '', disabled: true }],
-      id: [{ value: this.currentUser.id || '', disabled: true }]
+      id: [{ value: this.currentUser.id?.toString() || '', disabled: true }]
     });
   }
 
