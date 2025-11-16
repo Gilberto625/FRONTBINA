@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, firstValueFrom, map } from 'rxjs';
+import { BehaviorSubject, Observable, tap, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Auth, GoogleAuthProvider, signInWithPopup, signOut, UserCredential } from '@angular/fire/auth';
+import { Auth, GoogleAuthProvider, signInWithPopup, UserCredential } from '@angular/fire/auth';
 
 export interface Usuario {
   id?: number;
@@ -159,12 +159,6 @@ export class AuthService {
     try {
       // Autenticar con Google usando Firebase
       const provider = new GoogleAuthProvider();
-      
-      // Forzar que siempre muestre el selector de cuentas
-      provider.setCustomParameters({
-        prompt: 'select_account'
-      });
-      
       const result: UserCredential = await signInWithPopup(this.auth, provider);
 
       // Obtener el ID token de Firebase
@@ -220,16 +214,7 @@ export class AuthService {
   /**
    * Cerrar sesión
    */
-  async logout(): Promise<void> {
-    // Cerrar sesión de Firebase para que la próxima vez muestre selector de cuentas
-    try {
-      await signOut(this.auth);
-    } catch (error) {
-      console.error('Error al cerrar sesión de Firebase:', error);
-      // Continuar con el logout aunque falle Firebase
-    }
-    
-    // Limpiar estado local
+  logout(): void {
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     localStorage.removeItem('currentUser');
@@ -357,31 +342,13 @@ export class AuthService {
    * Obtener estado de seguridad del usuario
    */
   obtenerEstadoSeguridad(email: string): Observable<EstadoSeguridad> {
-    return this.http.post<any>(
+    return this.http.post<EstadoSeguridad>(
       `${this.apiUrl}/seguridad/estado/`,
       { email },
       {
         headers: this.getHeaders(),
         withCredentials: true
       }
-    ).pipe(
-      map((response: any): EstadoSeguridad => {
-        // Convertir strings a booleanos si es necesario
-        return {
-          email_2fa: typeof response.email_2fa === 'string' 
-            ? (response.email_2fa === 'true' || response.email_2fa === 'True')
-            : Boolean(response.email_2fa),
-          totp_habilitado: typeof response.totp_habilitado === 'string'
-            ? (response.totp_habilitado === 'true' || response.totp_habilitado === 'True')
-            : Boolean(response.totp_habilitado),
-          tiene_preguntas_seguridad: typeof response.tiene_preguntas_seguridad === 'string'
-            ? (response.tiene_preguntas_seguridad === 'true' || response.tiene_preguntas_seguridad === 'True')
-            : Boolean(response.tiene_preguntas_seguridad),
-          codigos_respaldo_disponibles: typeof response.codigos_respaldo_disponibles === 'string'
-            ? (parseInt(response.codigos_respaldo_disponibles, 10) || 0)
-            : (Number(response.codigos_respaldo_disponibles) || 0)
-        };
-      })
     );
   }
 

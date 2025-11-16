@@ -1,4 +1,5 @@
-/* === Variables CSS === */
+/* === Fuentes === */
+
 :root {
   --color-primary: #1A1A1A;
   --color-accent: #D4AF37;
@@ -6,8 +7,8 @@
   --color-background: #F8F8F8;
   --color-border: #E0E0E0;
   --color-gray-dark: #757575;
+  --color-error: #DC3545;
   --color-success: #28A745;
-  --color-warning: #FFC107;
 }
 
 .security-container {
@@ -17,132 +18,93 @@
 }
 
 .security-toolbar {
-  background: var(--color-white);
+  background-color: var(--color-white);
   color: var(--color-primary);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.toolbar-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+.security-toolbar mat-icon {
   color: var(--color-primary);
-}
-
-.toolbar-button:hover {
-  background-color: var(--color-background);
-}
-
-.toolbar-icon {
-  font-size: 20px;
-  display: block;
 }
 
 .toolbar-title {
-  flex: 1;
-  text-align: center;
-  font-size: 1.2rem;
+  font-size: 18px;
   font-weight: 600;
+  color: var(--color-primary);
   font-family: 'Montserrat', sans-serif;
-  margin: 0;
 }
 
 .spacer {
-  flex: 1;
+  flex: 1 1 auto;
 }
 
 .security-content {
+  padding: 24px;
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin: 0 auto;
 }
 
 .loading-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
-  gap: 1rem;
+  align-items: center;
+  min-height: 400px;
+  gap: 16px;
 }
 
-.spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(26, 26, 26, 0.3);
-  border-top: 2px solid var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.spinner.large {
-  width: 60px;
-  height: 60px;
-  border-width: 4px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.loading-container p {
+  color: var(--color-primary);
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .security-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
-.card {
-  background: var(--color-white);
+.security-card {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: var(--color-white);
 }
 
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border);
+.security-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.security-card mat-card-header {
+  padding: 20px 20px 16px 20px;
 }
 
 .card-icon {
-  font-size: 2rem;
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--color-gray-dark);
+  margin-bottom: 12px;
   display: block;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
 }
 
 .card-icon.active {
-  opacity: 1;
+  color: var(--color-success);
 }
 
-.card-title {
-  font-size: 1.25rem;
+.security-card mat-card-title {
+  font-size: 20px;
   font-weight: 600;
   color: var(--color-primary);
-  margin: 0;
+  margin-bottom: 12px;
   font-family: 'Montserrat', sans-serif;
 }
 
-.card-content {
-  flex: 1;
-  margin-bottom: 16px;
+.security-card mat-card-content {
+  padding: 0 20px 16px 20px;
 }
 
 .status-row {
@@ -155,115 +117,121 @@
 .status-label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-gray-dark);
+  color: var(--color-primary);
   font-family: 'Montserrat', sans-serif;
 }
 
 .status-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 16px;
+  padding: 4px 12px;
+  border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
   font-family: 'Montserrat', sans-serif;
-  background-color: var(--color-background);
-  color: var(--color-gray-dark);
 }
 
 .status-badge.active {
-  background-color: rgba(40, 167, 69, 0.1);
+  background-color: #e8f5e9;
   color: var(--color-success);
 }
 
 .status-badge.inactive {
-  background-color: rgba(220, 53, 69, 0.1);
+  background-color: #ffebee;
   color: var(--color-error);
 }
 
 .status-badge.warning {
-  background-color: rgba(255, 193, 7, 0.1);
-  color: var(--color-warning);
+  background-color: #fff3cd;
+  color: #ff9800;
 }
 
-.badge-icon {
-  font-size: 14px;
-  display: block;
+.status-badge mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 .card-description {
   font-size: 14px;
   color: var(--color-gray-dark);
-  margin: 0;
   line-height: 1.5;
+  margin: 0;
   font-family: 'Montserrat', sans-serif;
 }
 
-.card-actions {
-  padding-top: 16px;
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.security-card mat-card-actions {
+  padding: 16px 20px 20px 20px;
 }
 
-.btn {
-  flex: 1;
-  min-width: 120px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  font-family: 'Montserrat', sans-serif;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  display: flex;
-  justify-content: center;
+.security-card mat-card-actions button {
+  width: 100%;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.security-card mat-card-actions button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.tips-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--color-white);
+}
+
+.tips-card mat-card-header {
+  padding: 20px 20px 16px 20px;
+}
+
+.tips-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: var(--color-accent);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.tips-card mat-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-primary);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.tips-card mat-list {
+  padding: 0;
+}
+
+.tips-card mat-list-item {
+  height: auto;
   min-height: 48px;
-  box-sizing: border-box;
-  text-decoration: none;
+  padding: 12px 0;
 }
 
-.btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
-}
-
-.btn-primary:hover {
-  background-color: #B8941F;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.btn-secondary {
-  background-color: var(--color-background);
-  color: var(--color-primary);
-  border: 1px solid var(--color-border);
-}
-
-.btn-secondary:hover {
-  background-color: var(--color-border);
+.tips-card mat-list-item mat-icon {
+  color: var(--color-success);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .security-content {
-    padding: 0 0.5rem;
+    padding: 16px;
   }
 
   .security-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .card-actions {
-    flex-direction: column;
-  }
-
-  .btn {
-    width: 100%;
+  .toolbar-title {
+    font-size: 16px;
   }
 }

@@ -59,10 +59,7 @@ export class ResetPasswordComponent implements OnInit {
   ngOnInit(): void {
     // Obtener step de la URL o del localStorage
     this.route.queryParams.subscribe(params => {
-      const stepParam = params['step'] as string;
-      this.step = (stepParam === 'verify-otp' || stepParam === 'reset-password') 
-        ? stepParam as 'verify-otp' | 'reset-password'
-        : 'verify-otp';
+      this.step = params['step'] || 'verify-otp';
       const method = params['method'] || 'otp';
       
       // Si viene de preguntas secretas, ir directo a reset-password

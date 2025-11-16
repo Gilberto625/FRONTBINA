@@ -87,10 +87,6 @@ export class SecurityDashboardComponent implements OnInit {
     this.router.navigate(['/backup-codes']);
   }
 
-  viewBackupCodes(): void {
-    this.router.navigate(['/backup-codes']);
-  }
-
   changePassword(): void {
     this.router.navigate(['/change-password']);
   }
@@ -99,8 +95,8 @@ export class SecurityDashboardComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  async logout(): Promise<void> {
-    await this.authService.logout();
+  logout(): void {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 

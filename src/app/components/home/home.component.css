@@ -1,4 +1,5 @@
-/* === Variables CSS === */
+/* === Fuentes === */
+
 :root {
   --color-primary: #1A1A1A;
   --color-accent: #D4AF37;
@@ -21,51 +22,17 @@
   background: var(--color-white);
   color: var(--color-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
 }
 
 .toolbar-title {
+  flex: 1;
   font-size: 1.3rem;
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
-  margin: 0;
 }
 
-.toolbar-actions {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-.toolbar-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-primary);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: 'Montserrat', sans-serif;
-  padding: 8px 16px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.toolbar-link:hover {
-  background-color: var(--color-background);
-  color: var(--color-accent);
-}
-
-.toolbar-icon {
-  font-size: 18px;
+.spacer {
+  flex: 1;
 }
 
 .content {
@@ -74,7 +41,6 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .welcome-section {
@@ -106,42 +72,30 @@
   gap: 2rem;
 }
 
-.card {
+.info-card,
+.security-card,
+.actions-card,
+.tech-card {
   height: 100%;
   display: flex;
   flex-direction: column;
   background: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  box-sizing: border-box;
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-border);
 }
 
 .card-icon {
   font-size: 2.5rem;
-  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--color-accent);
+  margin-right: 1rem;
 }
 
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.card-content {
-  flex: 1;
-  margin-bottom: 16px;
+mat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .info-item {
@@ -180,15 +134,19 @@
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
 }
 
 .feature-icon {
-  font-size: 18px;
-  display: block;
+  color: var(--color-success);
 }
+
+.feature-icon.success {
+  color: var(--color-success);
+}
+
+/* === Botones de Acciones Rápidas - Estilo Personalizado === */
 
 .quick-actions {
   display: flex;
@@ -198,66 +156,50 @@
 
 .action-button {
   width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
-  background-color: var(--color-accent);
-  color: var(--color-primary);
-  border: none;
-  border-radius: 8px;
+  justify-content: flex-start;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  font-size: 1rem;
-  text-decoration: none;
+  border-radius: 8px;
+  padding: 12px 24px;
   transition: all 0.3s ease;
+  background-color: var(--color-accent) !important; /* Dorado */
+  color: var(--color-primary) !important; /* Negro */
+  border: none !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  text-transform: none !important;
+  font-size: 1rem;
 }
 
 .action-button:hover {
-  background-color: #B8941F;
+  background-color: #B8941F !important; /* Dorado más oscuro */
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.action-icon {
-  font-size: 20px;
+.action-button mat-icon {
+  margin-right: 0.5rem;
+  color: var(--color-primary) !important;
 }
 
-.card-actions {
-  padding-top: 16px;
-  border-top: 1px solid var(--color-border);
-}
-
-.btn {
-  width: 100%;
-  padding: 12px 24px;
-  font-size: 16px;
+/* Asegurar estilos consistentes en botones de otras cards */
+.info-card mat-card-actions button,
+.security-card mat-card-actions button,
+.tech-card mat-card-actions button {
+  background-color: var(--color-accent) !important;
+  color: var(--color-primary) !important;
+  border-radius: 6px;
+  padding: 8px 16px;
   font-weight: 500;
-  font-family: 'Montserrat', sans-serif;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  box-sizing: border-box;
-  text-decoration: none;
+  text-transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
-}
-
-.btn-primary:hover {
-  background-color: #B8941F;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.info-card mat-card-actions button:hover,
+.security-card mat-card-actions button:hover,
+.tech-card mat-card-actions button:hover {
+  background-color: #B8941F !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .tech-list {
@@ -272,7 +214,6 @@
   border-radius: 4px;
   border-left: 3px solid var(--color-accent);
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
 }
 
 .tech-item strong {
@@ -296,15 +237,5 @@
 
   .cards-grid {
     grid-template-columns: 1fr;
-  }
-
-  .home-toolbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .toolbar-actions {
-    width: 100%;
-    justify-content: space-between;
   }
 }

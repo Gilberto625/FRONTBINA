@@ -56,7 +56,7 @@ export class ProfileComponent implements OnInit {
     this.profileForm = this.fb.group({
       username: [{ value: this.currentUser.username || '', disabled: true }],
       email: [{ value: this.currentUser.email || '', disabled: true }],
-      id: [{ value: this.currentUser.id?.toString() || '', disabled: true }]
+      id: [{ value: this.currentUser.id || '', disabled: true }]
     });
   }
 
@@ -83,8 +83,8 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  async logout(): Promise<void> {
-    await this.authService.logout();
+  logout(): void {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 
