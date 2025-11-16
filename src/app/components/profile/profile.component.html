@@ -1,135 +1,157 @@
 <div class="profile-container">
   <!-- Toolbar -->
-  <mat-toolbar class="profile-toolbar">
-    <button mat-icon-button (click)="goHome()" aria-label="Volver">
-      <mat-icon>arrow_back</mat-icon>
+  <header class="profile-toolbar">
+    <button type="button" class="toolbar-button" (click)="goHome()" aria-label="Volver">
+      <span class="toolbar-icon">←</span>
     </button>
-    <span class="toolbar-title">Mi Perfil</span>
-    <span class="spacer"></span>
-    <button mat-icon-button (click)="logout()" aria-label="Cerrar sesión">
-      <mat-icon>logout</mat-icon>
+    <h1 class="toolbar-title">Mi Perfil</h1>
+    <div class="spacer"></div>
+    <button type="button" class="toolbar-button" (click)="logout()" aria-label="Cerrar sesión">
+      <span class="toolbar-icon">🚪</span>
     </button>
-  </mat-toolbar>
+  </header>
 
   <div class="profile-content">
     <!-- Información del Usuario -->
-    <mat-card class="profile-card">
-      <mat-card-header>
-        <div class="header-content">
-          <mat-icon class="header-icon">account_circle</mat-icon>
-          <mat-card-title>Información Personal</mat-card-title>
-        </div>
-      </mat-card-header>
+    <div class="profile-card card">
+      <div class="card-header">
+        <span class="header-icon">👤</span>
+        <h2 class="card-title">Información Personal</h2>
+      </div>
 
-      <mat-card-content>
+      <div class="card-content">
         <form [formGroup]="profileForm" *ngIf="currentUser">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Nombre de Usuario</mat-label>
-            <input matInput formControlName="username">
-            <mat-icon matPrefix>person</mat-icon>
-          </mat-form-field>
+          <div class="form-row">
+            <label for="username" class="input-label">Nombre de Usuario</label>
+            <div class="input-wrapper">
+              <input
+                id="username"
+                type="text"
+                formControlName="username"
+                class="input-field"
+                [disabled]="!editMode"
+                aria-label="Nombre de usuario"
+              />
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput type="email" formControlName="email">
-            <mat-icon matPrefix>email</mat-icon>
-          </mat-form-field>
+          <div class="form-row">
+            <label for="email" class="input-label">Correo Electrónico</label>
+            <div class="input-wrapper">
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                class="input-field"
+                [disabled]="!editMode"
+                aria-label="Correo electrónico"
+              />
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>ID de Usuario</mat-label>
-            <input matInput formControlName="id">
-            <mat-icon matPrefix>badge</mat-icon>
-          </mat-form-field>
+          <div class="form-row">
+            <label for="id" class="input-label">ID de Usuario</label>
+            <div class="input-wrapper">
+              <input
+                id="id"
+                type="text"
+                formControlName="id"
+                class="input-field"
+                disabled
+                aria-label="ID de usuario"
+              />
+            </div>
+          </div>
 
           <div class="form-actions" *ngIf="!editMode">
-            <button mat-raised-button color="primary" (click)="toggleEditMode()">
-              <mat-icon>edit</mat-icon>
-              Editar Perfil
+            <button type="button" class="btn btn-primary" (click)="toggleEditMode()">
+              <span>✏️</span>
+              <span>Editar Perfil</span>
             </button>
           </div>
 
           <div class="form-actions" *ngIf="editMode">
-            <button mat-raised-button color="primary" (click)="saveProfile()">
-              <mat-icon>save</mat-icon>
-              Guardar Cambios
+            <button type="button" class="btn btn-primary" (click)="saveProfile()">
+              <span>💾</span>
+              <span>Guardar Cambios</span>
             </button>
-            <button mat-button (click)="toggleEditMode()">
-              <mat-icon>cancel</mat-icon>
-              Cancelar
+            <button type="button" class="btn btn-secondary" (click)="toggleEditMode()">
+              <span>❌</span>
+              <span>Cancelar</span>
             </button>
           </div>
         </form>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
 
     <!-- Acciones Rápidas -->
-    <mat-card class="actions-card">
-      <mat-card-header>
-        <mat-card-title>Acciones Rápidas</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item (click)="goToChangePassword()" class="action-item">
-            <mat-icon matListItemIcon>lock</mat-icon>
-            <span matListItemTitle>Cambiar Contraseña</span>
-            <mat-icon matListItemMeta>chevron_right</mat-icon>
-          </mat-list-item>
+    <div class="actions-card card">
+      <div class="card-header">
+        <span class="header-icon">⚡</span>
+        <h2 class="card-title">Acciones Rápidas</h2>
+      </div>
+      <div class="card-content">
+        <div class="actions-list">
+          <button type="button" class="action-item" (click)="goToChangePassword()">
+            <span class="action-icon">🔑</span>
+            <span class="action-text">Cambiar Contraseña</span>
+            <span class="action-arrow">→</span>
+          </button>
 
-          <mat-divider></mat-divider>
+          <div class="divider"></div>
 
-          <mat-list-item (click)="goToSecurity()" class="action-item">
-            <mat-icon matListItemIcon>security</mat-icon>
-            <span matListItemTitle>Centro de Seguridad</span>
-            <mat-icon matListItemMeta>chevron_right</mat-icon>
-          </mat-list-item>
+          <button type="button" class="action-item" (click)="goToSecurity()">
+            <span class="action-icon">🛡️</span>
+            <span class="action-text">Centro de Seguridad</span>
+            <span class="action-arrow">→</span>
+          </button>
 
-          <mat-divider></mat-divider>
+          <div class="divider"></div>
 
-          <mat-list-item (click)="logout()" class="action-item">
-            <mat-icon matListItemIcon>logout</mat-icon>
-            <span matListItemTitle>Cerrar Sesión</span>
-            <mat-icon matListItemMeta>chevron_right</mat-icon>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+          <button type="button" class="action-item" (click)="logout()">
+            <span class="action-icon">🚪</span>
+            <span class="action-text">Cerrar Sesión</span>
+            <span class="action-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Información de la Cuenta -->
-    <mat-card class="info-card">
-      <mat-card-header>
-        <mat-card-title>Estado de la Cuenta</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+    <div class="info-card card">
+      <div class="card-header">
+        <span class="header-icon">ℹ️</span>
+        <h2 class="card-title">Estado de la Cuenta</h2>
+      </div>
+      <div class="card-content">
         <div class="info-item">
-          <mat-icon class="info-icon success">check_circle</mat-icon>
+          <span class="info-icon success">✅</span>
           <div class="info-content">
             <strong>Cuenta Verificada</strong>
             <p>Tu cuenta está verificada y activa</p>
           </div>
         </div>
 
-        <mat-divider></mat-divider>
+        <div class="divider"></div>
 
         <div class="info-item">
-          <mat-icon class="info-icon success">verified_user</mat-icon>
+          <span class="info-icon success">✅</span>
           <div class="info-content">
             <strong>Autenticación 2FA</strong>
             <p>Verificación de dos factores activa mediante OTP por email</p>
           </div>
         </div>
 
-        <mat-divider></mat-divider>
+        <div class="divider"></div>
 
         <div class="info-item">
-          <mat-icon class="info-icon">email</mat-icon>
+          <span class="info-icon">📧</span>
           <div class="info-content">
             <strong>Email de Verificación</strong>
             <p>{{ currentUser?.email }}</p>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
 </div>
-
-

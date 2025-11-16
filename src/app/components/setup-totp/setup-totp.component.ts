@@ -38,6 +38,7 @@ export class SetupTotpComponent implements OnInit {
   qrCodeUrl: SafeUrl = '';
   secretKey: string = '';
   email: string = '';
+  currentStep: number = 1;
 
   constructor(
     private fb: FormBuilder,
