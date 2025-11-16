@@ -22,7 +22,7 @@
       <!-- Card de Información del Usuario -->
       <mat-card class="info-card">
         <mat-card-header>
-          <h2 class="card-icon">Información del Usuario</h2>
+          <mat-card-title>Información del Usuario</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="info-item">
@@ -49,7 +49,6 @@
       <!-- Card de Seguridad -->
       <mat-card class="security-card">
         <mat-card-header>
-          <h2 class="card-icon">Seguridad</h2>
           <mat-card-title>Seguridad</mat-card-title>
         </mat-card-header>
         <mat-card-content>
@@ -79,21 +78,20 @@
       <!-- Card de Acciones Rápidas -->
       <mat-card class="actions-card">
         <mat-card-header>
-          <mat-icon class="card-icon">dashboard</mat-icon>
           <mat-card-title>Acciones Rápidas</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="quick-actions">
             <button mat-raised-button color="primary" routerLink="/profile" class="action-button">
-              <mat-icon>account_circle</mat-icon>
+              
               Mi Perfil
             </button>
             <button mat-raised-button color="accent" routerLink="/security" class="action-button">
-              <mat-icon>security</mat-icon>
+              
               Seguridad
             </button>
             <button mat-raised-button routerLink="/change-password" class="action-button">
-              <mat-icon>lock</mat-icon>
+              
               Cambiar Contraseña
             </button>
           </div>
