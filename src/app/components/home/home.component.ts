@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService, Usuario } from '../../services/auth.service';
 
 @Component({
@@ -12,11 +8,7 @@ import { AuthService, Usuario } from '../../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule
+    RouterModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

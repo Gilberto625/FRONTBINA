@@ -18,60 +18,97 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+/* Toolbar */
 .home-toolbar {
   background: var(--color-white);
   color: var(--color-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .toolbar-title {
   flex: 1;
-  font-size: 1.3rem;
+  font-size: 22px;
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
+  color: var(--color-primary);
 }
 
-.spacer {
-  flex: 1;
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
 }
 
+.toolbar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--color-primary);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.toolbar-button:hover {
+  background-color: var(--color-background);
+  transform: scale(1.1);
+}
+
+/* Content */
 .content {
   flex: 1;
-  padding: 2rem;
+  padding: 32px;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  box-sizing: border-box;
 }
 
+/* Welcome Section */
 .welcome-section {
   text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem;
+  margin-bottom: 48px;
+  padding: 32px;
   background: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-title {
-  font-size: 2.5rem;
+  font-size: 40px;
   color: var(--color-primary);
-  margin-bottom: 0.5rem;
+  margin: 0 0 8px 0;
   font-weight: 700;
   font-family: 'Montserrat', sans-serif;
 }
 
 .welcome-subtitle {
-  font-size: 1.2rem;
+  font-size: 18px;
   color: var(--color-gray-dark);
   font-family: 'Montserrat', sans-serif;
+  margin: 0;
 }
 
+/* Cards Grid */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  gap: 24px;
 }
 
+/* Cards */
 .info-card,
 .security-card,
 .actions-card,
@@ -82,25 +119,44 @@
   background: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card-icon {
-  font-size: 2.5rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  color: var(--color-accent);
-  margin-right: 1rem;
+.info-card:hover,
+.security-card:hover,
+.actions-card:hover,
+.tech-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-mat-card-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
+.card-header {
+  padding: 20px 24px 16px 24px;
+  border-bottom: 1px solid var(--color-border);
 }
 
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.card-body {
+  padding: 24px;
+  flex: 1;
+}
+
+.card-actions {
+  padding: 16px 24px 24px 24px;
+}
+
+/* Info Items */
 .info-item {
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border);
   font-family: 'Montserrat', sans-serif;
 }
@@ -114,106 +170,131 @@ mat-card-header {
 .info-item strong {
   display: block;
   color: var(--color-accent);
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
+  margin-bottom: 6px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .info-item p {
   margin: 0;
   color: var(--color-primary);
-  font-size: 1.1rem;
+  font-size: 17px;
+  font-weight: 500;
 }
 
+/* Security Features */
 .security-features {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 12px;
   font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  color: var(--color-primary);
 }
 
 .feature-icon {
+  font-size: 20px;
   color: var(--color-success);
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(40, 167, 69, 0.1);
+  border-radius: 50%;
+  padding: 4px;
 }
 
-.feature-icon.success {
-  color: var(--color-success);
-}
-
-/* === Botones de Acciones Rápidas - Estilo Personalizado === */
-
+/* Quick Actions */
 .quick-actions {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
 }
 
 .action-button {
-  width: 100%;
   justify-content: flex-start;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  border-radius: 8px;
-  padding: 12px 24px;
-  transition: all 0.3s ease;
-  background-color: var(--color-accent) !important; /* Dorado */
-  color: var(--color-primary) !important; /* Negro */
-  border: none !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-transform: none !important;
-  font-size: 1rem;
+  text-align: left;
 }
 
-.action-button:hover {
-  background-color: #B8941F !important; /* Dorado más oscuro */
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #B8941F;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.action-button mat-icon {
-  margin-right: 0.5rem;
-  color: var(--color-primary) !important;
+.btn-accent {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
 }
 
-/* Asegurar estilos consistentes en botones de otras cards */
-.info-card mat-card-actions button,
-.security-card mat-card-actions button,
-.tech-card mat-card-actions button {
-  background-color: var(--color-accent) !important;
-  color: var(--color-primary) !important;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-weight: 500;
-  text-transform: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.btn-accent:hover:not(:disabled) {
+  background-color: #B8941F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.info-card mat-card-actions button:hover,
-.security-card mat-card-actions button:hover,
-.tech-card mat-card-actions button:hover {
-  background-color: #B8941F !important;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+.btn-secondary {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
 }
 
+.btn-secondary:hover:not(:disabled) {
+  background-color: rgba(212, 175, 55, 0.1);
+  border-color: var(--color-accent);
+}
+
+/* Tech List */
 .tech-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .tech-item {
-  padding: 0.5rem;
+  padding: 12px;
   background: var(--color-background);
-  border-radius: 4px;
-  border-left: 3px solid var(--color-accent);
+  border-radius: 8px;
+  border-left: 4px solid var(--color-accent);
   font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
 }
 
 .tech-item strong {
@@ -224,18 +305,84 @@ mat-card-header {
 /* Responsive */
 @media (max-width: 768px) {
   .content {
-    padding: 1rem;
+    padding: 16px;
+  }
+
+  .welcome-section {
+    padding: 24px;
+    margin-bottom: 32px;
   }
 
   .welcome-title {
-    font-size: 2rem;
+    font-size: 32px;
   }
 
   .welcome-subtitle {
-    font-size: 1rem;
+    font-size: 16px;
   }
 
   .cards-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .toolbar-title {
+    font-size: 18px;
+  }
+
+  .card-header {
+    padding: 16px 20px 12px 20px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-actions {
+    padding: 12px 20px 20px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 12px;
+  }
+
+  .welcome-section {
+    padding: 20px;
+  }
+
+  .welcome-title {
+    font-size: 28px;
+  }
+
+  .welcome-subtitle {
+    font-size: 15px;
+  }
+
+  .toolbar-title {
+    font-size: 16px;
+  }
+
+  .toolbar-button {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .card-header {
+    padding: 12px 16px 8px 16px;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .card-actions {
+    padding: 8px 16px 16px 16px;
+  }
+
+  .card-title {
+    font-size: 18px;
   }
 }

@@ -1,15 +1,16 @@
 <div class="home-container">
   <!-- Toolbar -->
-  <mat-toolbar class="home-toolbar">
+  <div class="home-toolbar">
     <span class="toolbar-title">Stylo Barber Connect</span>
-    <span class="spacer"></span>
-    <button mat-icon-button routerLink="/profile" aria-label="Perfil">
-      <mat-icon>person</mat-icon>
-    </button>
-    <button mat-icon-button (click)="logout()" aria-label="Cerrar sesión">
-      <mat-icon>logout</mat-icon>
-    </button>
-  </mat-toolbar>
+    <div class="toolbar-actions">
+      <button class="toolbar-button" routerLink="/profile" aria-label="Perfil">
+        👤
+      </button>
+      <button class="toolbar-button" (click)="logout()" aria-label="Cerrar sesión">
+        🚪
+      </button>
+    </div>
+  </div>
 
   <!-- Contenido principal -->
   <main class="content">
@@ -20,11 +21,11 @@
 
     <div class="cards-grid">
       <!-- Card de Información del Usuario -->
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title>Información del Usuario</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="info-card">
+        <div class="card-header">
+          <h2 class="card-title">Información del Usuario</h2>
+        </div>
+        <div class="card-body">
           <div class="info-item">
             <strong>Nombre de Usuario:</strong>
             <p>{{ currentUser?.username }}</p>
@@ -37,74 +38,68 @@
             <strong>ID de Usuario:</strong>
             <p>{{ currentUser?.id }}</p>
           </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button color="primary" routerLink="/profile">
-            <mat-icon>edit</mat-icon>
-            Ver Perfil Completo
+        </div>
+        <div class="card-actions">
+          <button type="button" class="btn btn-primary" routerLink="/profile">
+            ✏️ Ver Perfil Completo
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Card de Seguridad -->
-      <mat-card class="security-card">
-        <mat-card-header>
-          <mat-card-title>Seguridad</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="security-card">
+        <div class="card-header">
+          <h2 class="card-title">Seguridad</h2>
+        </div>
+        <div class="card-body">
           <div class="security-features">
             <div class="feature-item">
-              <mat-icon class="feature-icon success">verified_user</mat-icon>
+              <span class="feature-icon">✓</span>
               <span>Autenticación 2FA activa</span>
             </div>
             <div class="feature-item">
-              <mat-icon class="feature-icon success">shield</mat-icon>
+              <span class="feature-icon">✓</span>
               <span>Sesiones seguras</span>
             </div>
             <div class="feature-item">
-              <mat-icon class="feature-icon success">security</mat-icon>
+              <span class="feature-icon">✓</span>
               <span>Protección CSRF</span>
             </div>
           </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button color="primary" routerLink="/security">
-            <mat-icon>admin_panel_settings</mat-icon>
-            Centro de Seguridad
+        </div>
+        <div class="card-actions">
+          <button type="button" class="btn btn-primary" routerLink="/security">
+            🛡️ Centro de Seguridad
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Card de Acciones Rápidas -->
-      <mat-card class="actions-card">
-        <mat-card-header>
-          <mat-icon class="card-icon">dashboard</mat-icon>
-          <mat-card-title>Acciones Rápidas</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="actions-card">
+        <div class="card-header">
+          <h2 class="card-title">📊 Acciones Rápidas</h2>
+        </div>
+        <div class="card-body">
           <div class="quick-actions">
-            <button mat-raised-button color="primary" routerLink="/profile" class="action-button">
-              <mat-icon>account_circle</mat-icon>
-              Mi Perfil
+            <button type="button" class="btn btn-primary action-button" routerLink="/profile">
+              👤 Mi Perfil
             </button>
-            <button mat-raised-button color="accent" routerLink="/security" class="action-button">
-              <mat-icon>security</mat-icon>
-              Seguridad
+            <button type="button" class="btn btn-accent action-button" routerLink="/security">
+              🛡️ Seguridad
             </button>
-            <button mat-raised-button routerLink="/change-password" class="action-button">
-              <mat-icon>lock</mat-icon>
-              Cambiar Contraseña
+            <button type="button" class="btn btn-secondary action-button" routerLink="/change-password">
+              🔒 Cambiar Contraseña
             </button>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
       <!-- Card de Tecnologías -->
-      <mat-card class="tech-card">
-        <mat-card-header>
-          <mat-card-title>Sistema Implementado</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+      <div class="tech-card">
+        <div class="card-header">
+          <h2 class="card-title">Sistema Implementado</h2>
+        </div>
+        <div class="card-body">
           <div class="tech-list">
             <div class="tech-item">
               <strong>Frontend:</strong> Angular 17 + Material
@@ -119,14 +114,13 @@
               <strong>Google Login:</strong> Firebase Auth
             </div>
           </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button routerLink="/">
-            <mat-icon>info</mat-icon>
-            Ver Más Información
+        </div>
+        <div class="card-actions">
+          <button type="button" class="btn btn-secondary" routerLink="/">
+            ℹ️ Ver Más Información
           </button>
-        </mat-card-actions>
-      </mat-card>
+        </div>
+      </div>
     </div>
   </main>
 </div>
