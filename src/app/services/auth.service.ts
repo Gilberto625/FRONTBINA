@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   /**
-   * LOGIN: Paso 1 - Iniciar sesión y enviar código 2FA
+   * LOGIN: Inicio de sesión directo (sin 2FA)
    */
   login(data: LoginData): Observable<any> {
     return this.http.post(
@@ -124,8 +124,8 @@ export class AuthService {
       }
     ).pipe(
       tap((response: any) => {
-        // Si el login es directo (sin 2FA), guardar el usuario
-        if (response.ok && response.usuario && !response.requires2fa) {
+        // Login directo sin 2FA - guardar usuario automáticamente
+        if (response.ok && response.usuario) {
           this.setCurrentUser(response.usuario);
         }
       })
@@ -221,12 +221,26 @@ export class AuthService {
   }
 
   /**
-   * Recuperar contraseña
+   * Obtener pregunta secreta
    */
-  recuperarContrasena(email: string, preguntaSecreta: string, respuestaSecreta: string): Observable<any> {
+  obtenerPreguntaSecreta(email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/obtener-pregunta-secreta/`,
+      { email },
+      {
+        headers: this.getHeaders(),
+        withCredentials: true
+      }
+    );
+  }
+
+  /**
+   * Verificar respuesta secreta
+   */
+  verificarRespuestaSecreta(email: string, respuestaSecreta: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/recuperar/`,
-      { email, preguntaSecreta, respuestaSecreta },
+      { email, respuestaSecreta },
       {
         headers: this.getHeaders(),
         withCredentials: true

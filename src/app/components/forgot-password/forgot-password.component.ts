@@ -2,13 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -17,137 +10,128 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule
+    RouterModule
   ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent implements OnInit {
-  forgotForm!: FormGroup;
-  secretForm!: FormGroup;
+  emailForm!: FormGroup;
+  answerForm!: FormGroup;
   loading = false;
-  recoveryMethod: 'otp' | 'secret' = 'otp';
+  step: 'email' | 'answer' = 'email';
+  preguntaSecreta: string = '';
+  userEmail: string = '';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     // Obtener CSRF token
     this.authService.getCsrfToken().subscribe();
 
-    // Crear formulario para OTP
-    this.forgotForm = this.fb.group({
+    // Crear formulario para email
+    this.emailForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });
 
-    // Crear formulario para preguntas secretas
-    this.secretForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      preguntaSecreta: ['', [Validators.required]],
+    // Crear formulario para respuesta
+    this.answerForm = this.fb.group({
       respuestaSecreta: ['', [Validators.required]]
     });
   }
 
-  setRecoveryMethod(method: 'otp' | 'secret'): void {
-    this.recoveryMethod = method;
-  }
+  onSubmitEmail(): void {
+    // Marcar como touched para mostrar errores
+    Object.keys(this.emailForm.controls).forEach(key => {
+      this.emailForm.get(key)?.markAsTouched();
+    });
 
-  onSubmit(): void {
-    if (this.recoveryMethod === 'otp') {
-      this.onSubmitOTP();
-    } else {
-      this.onSubmitSecret();
-    }
-  }
-
-  onSubmitOTP(): void {
-    if (this.forgotForm.invalid) {
-      this.showMessage('Por favor ingresa un email válido');
+    if (this.emailForm.invalid) {
       return;
     }
 
     this.loading = true;
-    const email = this.forgotForm.value.email;
+    const email = this.emailForm.value.email.trim();
 
-    this.authService.solicitarRecuperacionOTP(email).subscribe({
+    this.authService.obtenerPreguntaSecreta(email).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok) {
-          // Guardar el tempToken para el siguiente paso
-          localStorage.setItem('recoveryTempToken', response.tempToken);
-          localStorage.setItem('recoveryEmail', email);
-          localStorage.setItem('recoveryMethod', 'otp');
-          
-          this.showMessage('Código OTP enviado a tu correo electrónico. Expira en 10 minutos.');
-          
-          // Redirigir a verificación OTP
-          this.router.navigate(['/reset-password'], {
-            queryParams: { step: 'verify-otp' }
-          });
-        } else {
-          this.showMessage(response.message || 'Se ha enviado un código de recuperación a tu correo electrónico');
+        if (response.ok && response.preguntaSecreta) {
+          this.userEmail = email;
+          this.preguntaSecreta = response.preguntaSecreta;
+          this.step = 'answer';
         }
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || error.error?.message || 'Error al solicitar recuperación de contraseña';
-        this.showMessage(errorMsg);
+        const errorMsg = error.error?.error || 'No se encontró una cuenta con ese correo';
+        this.showError(errorMsg);
       }
     });
   }
 
-  onSubmitSecret(): void {
-    if (this.secretForm.invalid) {
-      this.showMessage('Por favor completa todos los campos');
+  onSubmitAnswer(): void {
+    // Marcar como touched para mostrar errores
+    Object.keys(this.answerForm.controls).forEach(key => {
+      this.answerForm.get(key)?.markAsTouched();
+    });
+
+    if (this.answerForm.invalid) {
       return;
     }
 
     this.loading = true;
-    const { email, preguntaSecreta, respuestaSecreta } = this.secretForm.value;
+    const respuestaSecreta = this.answerForm.value.respuestaSecreta.trim();
 
-    this.authService.recuperarContrasena(email, preguntaSecreta, respuestaSecreta).subscribe({
+    this.authService.verificarRespuestaSecreta(this.userEmail, respuestaSecreta).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok) {
+        if (response.ok && response.tempToken) {
           // Guardar el tempToken para el siguiente paso
           localStorage.setItem('recoveryTempToken', response.tempToken);
-          localStorage.setItem('recoveryEmail', email);
+          localStorage.setItem('recoveryEmail', this.userEmail);
           localStorage.setItem('recoveryMethod', 'secret');
           
-          this.showMessage('Verificación exitosa. Ahora puedes restablecer tu contraseña.');
-          
           // Redirigir a restablecer contraseña
-          this.router.navigate(['/reset-password'], {
-            queryParams: { step: 'reset-password', method: 'secret' }
-          });
-        } else {
-          this.showMessage(response.error || 'Error en la verificación');
+          this.router.navigate(['/reset-password']);
         }
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || error.error?.message || 'Error al verificar preguntas secretas';
-        this.showMessage(errorMsg);
+        const errorMsg = error.error?.error || 'Respuesta incorrecta';
+        this.showError(errorMsg);
       }
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  goBack(): void {
+    this.step = 'email';
+    this.emailForm.reset();
+    this.answerForm.reset();
+    this.preguntaSecreta = '';
+    this.userEmail = '';
+  }
+
+  private showError(message: string): void {
+    // Mostrar error en el DOM
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'toast-message error-toast';
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+      errorDiv.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+      errorDiv.classList.remove('show');
+      setTimeout(() => {
+        document.body.removeChild(errorDiv);
+      }, 300);
+    }, 4000);
   }
 }

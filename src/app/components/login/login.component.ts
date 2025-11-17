@@ -65,19 +65,8 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.loading = false;
 
-        if (response.requires2fa) {
-          // Redirigir a verificación 2FA
-          this.showMessage('Código 2FA enviado a tu correo');
-          this.router.navigate(['/verify-2fa'], {
-            state: {
-              tempToken: response.tempToken,
-              type: 'login',
-              destination: response.destino,
-              metodosDisponibles: response.metodos_disponibles || ['email']
-            }
-          });
-        } else if (response.ok) {
-          // Login directo sin 2FA (usuarios no verificados)
+        if (response.ok) {
+          // Login directo sin 2FA (modificado según requerimiento)
           // El servicio ya guarda el usuario en el pipe tap
           this.showMessage('¡Inicio de sesión exitoso!');
           setTimeout(() => {

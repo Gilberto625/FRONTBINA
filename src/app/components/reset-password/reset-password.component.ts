@@ -1,15 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -18,25 +10,15 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatListModule
+    RouterModule
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent implements OnInit {
   resetForm!: FormGroup;
-  otpForm!: FormGroup;
   loading = false;
   tempToken: string = '';
-  step: 'verify-otp' | 'reset-password' = 'verify-otp';
   hidePassword = true;
   hideConfirmPassword = true;
 
@@ -51,58 +33,59 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Obtener step de la URL o del localStorage
-    this.route.queryParams.subscribe(params => {
-      this.step = params['step'] || 'verify-otp';
-      const method = params['method'] || 'otp';
-      
-      // Si viene de preguntas secretas, ir directo a reset-password
-      if (method === 'secret') {
-        this.step = 'reset-password';
-      }
-    });
-
     // Obtener tempToken del localStorage
     this.tempToken = localStorage.getItem('recoveryTempToken') || '';
 
-    if (!this.tempToken && this.step === 'verify-otp') {
-      this.showMessage('No se encontró token de recuperación. Por favor, solicita uno nuevo.');
-      this.router.navigate(['/forgot-password']);
-      return;
-    }
-
-    // Si no hay token pero viene de secret, también redirigir
-    if (!this.tempToken && this.step === 'reset-password') {
-      this.showMessage('No se encontró token de recuperación. Por favor, solicita uno nuevo.');
-      this.router.navigate(['/forgot-password']);
+    if (!this.tempToken) {
+      this.showError('No se encontró token de recuperación. Por favor, solicita uno nuevo.');
+      setTimeout(() => {
+        this.router.navigate(['/forgot-password']);
+      }, 2000);
       return;
     }
 
     // Obtener CSRF token
     this.authService.getCsrfToken().subscribe();
 
-    // Crear formularios según el paso
-    if (this.step === 'verify-otp') {
-      this.otpForm = this.fb.group({
-        codigo: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]]
-      });
-    } else if (this.step === 'reset-password') {
-      this.resetForm = this.fb.group({
-        password: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', [Validators.required]]
-      });
+    // Crear formulario con validaciones
+    this.resetForm = this.fb.group({
+      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
+      confirmPassword: ['', [Validators.required]]
+    });
 
-      // Escuchar cambios en la contraseña para validar requisitos
-      this.resetForm.get('password')?.valueChanges.subscribe(password => {
-        this.checkPasswordRequirements(password);
-      });
+    // Escuchar cambios en la contraseña para validar requisitos
+    this.resetForm.get('password')?.valueChanges.subscribe(password => {
+      this.checkPasswordRequirements(password);
+    });
+  }
+
+  /**
+   * Validador personalizado: verifica que la contraseña tenga mayúscula, minúscula y número
+   */
+  passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    
+    if (!value) {
+      return null;
     }
+
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumber;
+
+    return passwordValid ? null : { 
+      passwordStrength: {
+        hasUpperCase,
+        hasLowerCase,
+        hasNumber
+      }
+    };
   }
 
   checkPasswordRequirements(password: string): void {
@@ -116,69 +99,22 @@ export class ResetPasswordComponent implements OnInit {
     return Object.values(this.passwordRequirements).every(req => req);
   }
 
-  onVerifyOTP(): void {
-    if (this.otpForm.invalid) {
-      this.showMessage('Por favor ingresa un código válido de 6 dígitos');
-      return;
-    }
-
-    this.loading = true;
-    const codigo = this.otpForm.value.codigo;
-
-    this.authService.verificarOTPRecuperacion(this.tempToken, codigo).subscribe({
-      next: (response) => {
-        this.loading = false;
-        if (response.ok) {
-          this.showMessage('Código verificado correctamente. Ahora puedes cambiar tu contraseña.');
-          this.step = 'reset-password';
-          // Crear formulario de contraseña
-          this.resetForm = this.fb.group({
-            password: ['', [Validators.required, Validators.minLength(8)]],
-            confirmPassword: ['', [Validators.required]]
-          });
-          // Escuchar cambios en la contraseña
-          this.resetForm.get('password')?.valueChanges.subscribe(password => {
-            this.checkPasswordRequirements(password);
-          });
-        }
-      },
-      error: (error) => {
-        this.loading = false;
-        const errorMsg = error.error?.error || error.error?.message || 'Código incorrecto o expirado';
-        this.showMessage(errorMsg);
-      }
-    });
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
   }
 
-  onResendOTP(): void {
-    const email = localStorage.getItem('recoveryEmail') || '';
-    if (!email) {
-      this.showMessage('No se encontró el correo. Por favor, solicita uno nuevo.');
-      this.router.navigate(['/forgot-password']);
-      return;
-    }
-
-    this.loading = true;
-    this.authService.reenviarOTPRecuperacion(email).subscribe({
-      next: (response) => {
-        this.loading = false;
-        if (response.ok) {
-          this.showMessage('Nuevo código enviado a tu correo. Expira en 10 minutos.');
-        } else {
-          this.showMessage(response.message || 'Código reenviado');
-        }
-      },
-      error: (error) => {
-        this.loading = false;
-        const errorMsg = error.error?.error || error.error?.message || 'Error al reenviar código';
-        this.showMessage(errorMsg);
-      }
-    });
+  toggleConfirmPasswordVisibility(): void {
+    this.hideConfirmPassword = !this.hideConfirmPassword;
   }
 
   onSubmit(): void {
+    // Marcar todos los campos como touched para mostrar errores
+    Object.keys(this.resetForm.controls).forEach(key => {
+      this.resetForm.get(key)?.markAsTouched();
+    });
+
     if (this.resetForm.invalid) {
-      this.showMessage('Por favor completa todos los campos correctamente');
+      this.showError('Por favor completa todos los campos correctamente');
       return;
     }
 
@@ -186,34 +122,23 @@ export class ResetPasswordComponent implements OnInit {
     const confirmPassword = this.resetForm.value.confirmPassword;
 
     if (password !== confirmPassword) {
-      this.showMessage('Las contraseñas no coinciden');
+      this.showError('Las contraseñas no coinciden');
       return;
     }
 
     if (!this.allRequirementsMet) {
-      this.showMessage('La contraseña no cumple con todos los requisitos');
+      this.showError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número');
       return;
     }
 
     this.loading = true;
 
-    // Determinar qué método usar según el origen
-    const recoveryMethod = localStorage.getItem('recoveryMethod') || 'otp';
-    
-    let updateObservable;
-    if (recoveryMethod === 'secret') {
-      // Usar el método tradicional de restablecer contraseña
-      updateObservable = this.authService.restablecerContrasena(this.tempToken, password);
-    } else {
-      // Usar el método OTP
-      updateObservable = this.authService.actualizarContrasenaOTP(this.tempToken, password);
-    }
-
-    updateObservable.subscribe({
+    // Usar el método de restablecer contraseña con token temporal
+    this.authService.restablecerContrasena(this.tempToken, password).subscribe({
       next: (response) => {
         this.loading = false;
         if (response.ok) {
-          this.showMessage('Contraseña actualizada exitosamente');
+          this.showSuccess('¡Contraseña actualizada exitosamente!');
           
           // Limpiar localStorage
           localStorage.removeItem('recoveryTempToken');
@@ -229,16 +154,34 @@ export class ResetPasswordComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || error.error?.message || 'Error al actualizar contraseña';
-        this.showMessage(errorMsg);
+        this.showError(errorMsg);
       }
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showError(message: string): void {
+    this.showToast(message, 'error');
+  }
+
+  private showSuccess(message: string): void {
+    this.showToast(message, 'success');
+  }
+
+  private showToast(message: string, type: 'error' | 'success'): void {
+    const toastDiv = document.createElement('div');
+    toastDiv.className = `toast-message ${type}-toast`;
+    toastDiv.textContent = message;
+    document.body.appendChild(toastDiv);
+    
+    setTimeout(() => {
+      toastDiv.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+      toastDiv.classList.remove('show');
+      setTimeout(() => {
+        document.body.removeChild(toastDiv);
+      }, 300);
+    }, 4000);
   }
 }

@@ -154,3 +154,136 @@
   text-decoration: underline;
 }
 
+/* === Estilos para contraseña con toggle === */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field {
+  padding-right: 48px; /* Espacio para el botón de toggle */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-dark);
+  transition: color 0.3s ease;
+  z-index: 1;
+}
+
+.password-toggle-btn:hover {
+  color: var(--color-primary);
+}
+
+.password-toggle-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* === Estilos para requisitos de contraseña === */
+.password-requirements {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #F8F9FA;
+  border-radius: 6px;
+  border-left: 3px solid var(--color-accent);
+}
+
+.requirements-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 8px 0;
+}
+
+.requirements-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.requirements-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+}
+
+.requirements-list li:last-child {
+  margin-bottom: 0;
+}
+
+.requirement-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.requirement-unmet {
+  color: var(--color-gray-dark);
+}
+
+.requirement-unmet .requirement-icon {
+  color: #DC3545;
+}
+
+.requirement-met {
+  color: #28A745;
+  font-weight: 500;
+}
+
+.requirement-met .requirement-icon {
+  color: #28A745;
+}
+
+/* === Select estilo personalizado === */
+.select-field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23757575' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* === Responsivo === */
+@media (max-width: 576px) {
+  .register-card {
+    padding: 24px;
+  }
+
+  .card-title {
+    font-size: 24px;
+  }
+
+  .input-field {
+    font-size: 14px;
+  }
+
+  .requirements-title,
+  .requirements-list li {
+    font-size: 12px;
+  }
+}
+

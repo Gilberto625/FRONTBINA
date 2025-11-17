@@ -5,7 +5,7 @@
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <!-- Nombre -->
       <div class="form-row">
-        <label for="nombre" class="input-label">Nombre</label>
+        <label for="nombre" class="input-label">Nombre *</label>
         <div class="input-wrapper">
           <input
             id="nombre"
@@ -18,12 +18,18 @@
           <div class="input-feedback error" *ngIf="registerForm.get('nombre')?.hasError('required') && registerForm.get('nombre')?.touched">
             El nombre es obligatorio
           </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('nombre')?.hasError('whitespace') && registerForm.get('nombre')?.touched">
+            El nombre no puede estar vacío
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('nombre')?.hasError('minlength') && registerForm.get('nombre')?.touched">
+            Mínimo 2 caracteres
+          </div>
         </div>
       </div>
 
       <!-- Apellido Paterno -->
       <div class="form-row">
-        <label for="apellidopaterno" class="input-label">Apellido Paterno</label>
+        <label for="apellidopaterno" class="input-label">Apellido Paterno *</label>
         <div class="input-wrapper">
           <input
             id="apellidopaterno"
@@ -36,12 +42,18 @@
           <div class="input-feedback error" *ngIf="registerForm.get('apellidopaterno')?.hasError('required') && registerForm.get('apellidopaterno')?.touched">
             El apellido paterno es obligatorio
           </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('apellidopaterno')?.hasError('whitespace') && registerForm.get('apellidopaterno')?.touched">
+            El apellido paterno no puede estar vacío
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('apellidopaterno')?.hasError('minlength') && registerForm.get('apellidopaterno')?.touched">
+            Mínimo 2 caracteres
+          </div>
         </div>
       </div>
 
       <!-- Apellido Materno -->
       <div class="form-row">
-        <label for="apellidomaterno" class="input-label">Apellido Materno</label>
+        <label for="apellidomaterno" class="input-label">Apellido Materno *</label>
         <div class="input-wrapper">
           <input
             id="apellidomaterno"
@@ -54,12 +66,18 @@
           <div class="input-feedback error" *ngIf="registerForm.get('apellidomaterno')?.hasError('required') && registerForm.get('apellidomaterno')?.touched">
             El apellido materno es obligatorio
           </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('apellidomaterno')?.hasError('whitespace') && registerForm.get('apellidomaterno')?.touched">
+            El apellido materno no puede estar vacío
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('apellidomaterno')?.hasError('minlength') && registerForm.get('apellidomaterno')?.touched">
+            Mínimo 2 caracteres
+          </div>
         </div>
       </div>
 
       <!-- Usuario -->
       <div class="form-row">
-        <label for="username" class="input-label">Usuario</label>
+        <label for="username" class="input-label">Usuario *</label>
         <div class="input-wrapper">
           <input
             id="username"
@@ -72,6 +90,9 @@
           <div class="input-feedback error" *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
             El usuario es obligatorio
           </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('username')?.hasError('whitespace') && registerForm.get('username')?.touched">
+            El usuario no puede estar vacío
+          </div>
           <div class="input-feedback error" *ngIf="registerForm.get('username')?.hasError('minlength') && registerForm.get('username')?.touched">
             Mínimo 4 caracteres
           </div>
@@ -80,7 +101,7 @@
 
       <!-- Correo -->
       <div class="form-row">
-        <label for="correo" class="input-label">Correo Electrónico</label>
+        <label for="correo" class="input-label">Correo Electrónico *</label>
         <div class="input-wrapper">
           <input
             id="correo"
@@ -93,6 +114,9 @@
           <div class="input-feedback error" *ngIf="registerForm.get('correo')?.hasError('required') && registerForm.get('correo')?.touched">
             El correo es obligatorio
           </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('correo')?.hasError('whitespace') && registerForm.get('correo')?.touched">
+            El correo no puede estar vacío
+          </div>
           <div class="input-feedback error" *ngIf="registerForm.get('correo')?.hasError('email') && registerForm.get('correo')?.touched">
             Ingresa un correo válido
           </div>
@@ -101,7 +125,7 @@
 
       <!-- Teléfono -->
       <div class="form-row">
-        <label for="telefono" class="input-label">Teléfono</label>
+        <label for="telefono" class="input-label">Teléfono *</label>
         <div class="input-wrapper">
           <input
             id="telefono"
@@ -115,51 +139,104 @@
             El teléfono es obligatorio
           </div>
           <div class="input-feedback error" *ngIf="registerForm.get('telefono')?.hasError('pattern') && registerForm.get('telefono')?.touched">
-            Ingresa 10 dígitos
+            Debe contener exactamente 10 dígitos numéricos
           </div>
         </div>
       </div>
 
       <!-- Contraseña -->
       <div class="form-row">
-        <label for="contrasena" class="input-label">Contraseña</label>
+        <label for="contrasena" class="input-label">Contraseña *</label>
         <div class="input-wrapper">
-          <input
-            id="contrasena"
-            type="password"
-            formControlName="contrasena"
-            class="input-field"
-            [class.input-error]="registerForm.get('contrasena')?.invalid && registerForm.get('contrasena')?.touched"
-          />
+          <div class="password-input-container">
+            <input
+              id="contrasena"
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="contrasena"
+              placeholder="Ingresa tu contraseña"
+              class="input-field password-field"
+              [class.input-error]="registerForm.get('contrasena')?.invalid && registerForm.get('contrasena')?.touched"
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="togglePasswordVisibility()"
+              tabindex="-1"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          
+          <!-- Mensajes de error -->
           <div class="input-feedback error" *ngIf="registerForm.get('contrasena')?.hasError('required') && registerForm.get('contrasena')?.touched">
             La contraseña es obligatoria
           </div>
-          <div class="input-feedback error" *ngIf="registerForm.get('contrasena')?.hasError('minlength') && registerForm.get('contrasena')?.touched">
-            Mínimo 8 caracteres
+          
+          <!-- Indicadores de requisitos de contraseña -->
+          <div class="password-requirements" *ngIf="registerForm.get('contrasena')?.touched">
+            <p class="requirements-title">La contraseña debe contener:</p>
+            <ul class="requirements-list">
+              <li [class.requirement-met]="passwordRequirements.minLength" [class.requirement-unmet]="!passwordRequirements.minLength">
+                <mat-icon class="requirement-icon">{{ passwordRequirements.minLength ? 'check_circle' : 'cancel' }}</mat-icon>
+                Al menos 8 caracteres
+              </li>
+              <li [class.requirement-met]="passwordRequirements.hasUpperCase" [class.requirement-unmet]="!passwordRequirements.hasUpperCase">
+                <mat-icon class="requirement-icon">{{ passwordRequirements.hasUpperCase ? 'check_circle' : 'cancel' }}</mat-icon>
+                Una letra mayúscula (A-Z)
+              </li>
+              <li [class.requirement-met]="passwordRequirements.hasLowerCase" [class.requirement-unmet]="!passwordRequirements.hasLowerCase">
+                <mat-icon class="requirement-icon">{{ passwordRequirements.hasLowerCase ? 'check_circle' : 'cancel' }}</mat-icon>
+                Una letra minúscula (a-z)
+              </li>
+              <li [class.requirement-met]="passwordRequirements.hasNumber" [class.requirement-unmet]="!passwordRequirements.hasNumber">
+                <mat-icon class="requirement-icon">{{ passwordRequirements.hasNumber ? 'check_circle' : 'cancel' }}</mat-icon>
+                Un número (0-9)
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
       <!-- Confirmar Contraseña -->
       <div class="form-row">
-        <label for="confirmarContrasena" class="input-label">Confirmar Contraseña</label>
+        <label for="confirmarContrasena" class="input-label">Confirmar Contraseña *</label>
         <div class="input-wrapper">
-          <input
-            id="confirmarContrasena"
-            type="password"
-            formControlName="confirmarContrasena"
-            class="input-field"
-            [class.input-error]="registerForm.get('confirmarContrasena')?.invalid && registerForm.get('confirmarContrasena')?.touched"
-          />
+          <div class="password-input-container">
+            <input
+              id="confirmarContrasena"
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              formControlName="confirmarContrasena"
+              placeholder="Confirma tu contraseña"
+              class="input-field password-field"
+              [class.input-error]="registerForm.get('confirmarContrasena')?.invalid && registerForm.get('confirmarContrasena')?.touched"
+            />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="toggleConfirmPasswordVisibility()"
+              tabindex="-1"
+            >
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          
           <div class="input-feedback error" *ngIf="registerForm.get('confirmarContrasena')?.hasError('required') && registerForm.get('confirmarContrasena')?.touched">
             Confirma tu contraseña
+          </div>
+          
+          <!-- Advertencia si las contraseñas no coinciden -->
+          <div class="input-feedback error" 
+               *ngIf="registerForm.get('confirmarContrasena')?.value && 
+                      registerForm.get('contrasena')?.value !== registerForm.get('confirmarContrasena')?.value && 
+                      registerForm.get('confirmarContrasena')?.touched">
+            Las contraseñas no coinciden
           </div>
         </div>
       </div>
 
       <!-- Pregunta Secreta -->
       <div class="form-row">
-        <label for="preguntasecreta" class="input-label">Pregunta Secreta</label>
+        <label for="preguntasecreta" class="input-label">Pregunta Secreta *</label>
         <div class="input-wrapper">
           <select
             id="preguntasecreta"
@@ -183,7 +260,7 @@
 
       <!-- Respuesta Secreta -->
       <div class="form-row">
-        <label for="respuestasecreta" class="input-label">Respuesta Secreta</label>
+        <label for="respuestasecreta" class="input-label">Respuesta Secreta *</label>
         <div class="input-wrapper">
           <input
             id="respuestasecreta"
@@ -195,6 +272,9 @@
           />
           <div class="input-feedback error" *ngIf="registerForm.get('respuestasecreta')?.hasError('required') && registerForm.get('respuestasecreta')?.touched">
             La respuesta secreta es obligatoria
+          </div>
+          <div class="input-feedback error" *ngIf="registerForm.get('respuestasecreta')?.hasError('whitespace') && registerForm.get('respuestasecreta')?.touched">
+            La respuesta no puede estar vacía
           </div>
         </div>
       </div>
