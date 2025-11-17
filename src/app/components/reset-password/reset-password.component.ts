@@ -133,8 +133,19 @@ export class ResetPasswordComponent implements OnInit {
 
     this.loading = true;
 
-    // Usar el método de restablecer contraseña con token temporal
-    this.authService.restablecerContrasena(this.tempToken, password).subscribe({
+    // Determinar qué método usar según el origen
+    const recoveryMethod = localStorage.getItem('recoveryMethod') || 'secret';
+    
+    let updateObservable;
+    if (recoveryMethod === 'otp') {
+      // Usar el método OTP
+      updateObservable = this.authService.actualizarContrasenaOTP(this.tempToken, password);
+    } else {
+      // Usar el método tradicional de restablecer contraseña
+      updateObservable = this.authService.restablecerContrasena(this.tempToken, password);
+    }
+
+    updateObservable.subscribe({
       next: (response) => {
         this.loading = false;
         if (response.ok) {

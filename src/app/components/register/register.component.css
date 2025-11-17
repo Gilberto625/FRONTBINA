@@ -186,10 +186,14 @@
   color: var(--color-primary);
 }
 
-.password-toggle-btn mat-icon {
-  font-size: 20px;
+.password-toggle-btn svg {
   width: 20px;
   height: 20px;
+  transition: opacity 0.2s ease;
+}
+
+.password-toggle-btn:hover svg {
+  opacity: 0.7;
 }
 
 /* === Estilos para requisitos de contraseña === */
@@ -228,10 +232,12 @@
 }
 
 .requirement-icon {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
   width: 18px;
-  height: 18px;
   flex-shrink: 0;
+  display: inline-block;
+  text-align: center;
 }
 
 .requirement-unmet {
@@ -239,7 +245,7 @@
 }
 
 .requirement-unmet .requirement-icon {
-  color: #DC3545;
+  color: var(--color-gray-dark);
 }
 
 .requirement-met {

@@ -163,33 +163,35 @@
               (click)="togglePasswordVisibility()"
               tabindex="-1"
             >
-              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <svg *ngIf="hidePassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+              <svg *ngIf="!hidePassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
             </button>
           </div>
           
-          <!-- Mensajes de error -->
-          <div class="input-feedback error" *ngIf="registerForm.get('contrasena')?.hasError('required') && registerForm.get('contrasena')?.touched">
-            La contraseña es obligatoria
-          </div>
-          
-          <!-- Indicadores de requisitos de contraseña -->
-          <div class="password-requirements" *ngIf="registerForm.get('contrasena')?.touched">
+          <!-- Indicadores de requisitos de contraseña (sin mensajes de error) -->
+          <div class="password-requirements">
             <p class="requirements-title">La contraseña debe contener:</p>
             <ul class="requirements-list">
               <li [class.requirement-met]="passwordRequirements.minLength" [class.requirement-unmet]="!passwordRequirements.minLength">
-                <mat-icon class="requirement-icon">{{ passwordRequirements.minLength ? 'check_circle' : 'cancel' }}</mat-icon>
+                <span class="requirement-icon">{{ passwordRequirements.minLength ? '✓' : '○' }}</span>
                 Al menos 8 caracteres
               </li>
               <li [class.requirement-met]="passwordRequirements.hasUpperCase" [class.requirement-unmet]="!passwordRequirements.hasUpperCase">
-                <mat-icon class="requirement-icon">{{ passwordRequirements.hasUpperCase ? 'check_circle' : 'cancel' }}</mat-icon>
+                <span class="requirement-icon">{{ passwordRequirements.hasUpperCase ? '✓' : '○' }}</span>
                 Una letra mayúscula (A-Z)
               </li>
               <li [class.requirement-met]="passwordRequirements.hasLowerCase" [class.requirement-unmet]="!passwordRequirements.hasLowerCase">
-                <mat-icon class="requirement-icon">{{ passwordRequirements.hasLowerCase ? 'check_circle' : 'cancel' }}</mat-icon>
+                <span class="requirement-icon">{{ passwordRequirements.hasLowerCase ? '✓' : '○' }}</span>
                 Una letra minúscula (a-z)
               </li>
               <li [class.requirement-met]="passwordRequirements.hasNumber" [class.requirement-unmet]="!passwordRequirements.hasNumber">
-                <mat-icon class="requirement-icon">{{ passwordRequirements.hasNumber ? 'check_circle' : 'cancel' }}</mat-icon>
+                <span class="requirement-icon">{{ passwordRequirements.hasNumber ? '✓' : '○' }}</span>
                 Un número (0-9)
               </li>
             </ul>
@@ -216,20 +218,15 @@
               (click)="toggleConfirmPasswordVisibility()"
               tabindex="-1"
             >
-              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <svg *ngIf="hideConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+              <svg *ngIf="!hideConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
             </button>
-          </div>
-          
-          <div class="input-feedback error" *ngIf="registerForm.get('confirmarContrasena')?.hasError('required') && registerForm.get('confirmarContrasena')?.touched">
-            Confirma tu contraseña
-          </div>
-          
-          <!-- Advertencia si las contraseñas no coinciden -->
-          <div class="input-feedback error" 
-               *ngIf="registerForm.get('confirmarContrasena')?.value && 
-                      registerForm.get('contrasena')?.value !== registerForm.get('confirmarContrasena')?.value && 
-                      registerForm.get('confirmarContrasena')?.touched">
-            Las contraseñas no coinciden
           </div>
         </div>
       </div>
