@@ -123,13 +123,21 @@ export class ForgotPasswordComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         if (response.ok && response.tempToken) {
+          // Mostrar mensaje de éxito
+          const successMsg = response.message || 'Respuesta correcta. Ahora puedes cambiar tu contraseña.';
+          this.showSuccess(successMsg);
+          
           // Guardar el tempToken para el siguiente paso
           localStorage.setItem('recoveryTempToken', response.tempToken);
           localStorage.setItem('recoveryEmail', this.userEmail);
           localStorage.setItem('recoveryMethod', 'secret');
           
-          // Redirigir a restablecer contraseña
-          this.router.navigate(['/reset-password']);
+          // Redirigir a restablecer contraseña después de mostrar el mensaje
+          setTimeout(() => {
+            this.router.navigate(['/reset-password']);
+          }, 1500);
+        } else {
+          this.showError('Error en la verificación. Intenta nuevamente.');
         }
       },
       error: (error) => {
