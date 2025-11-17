@@ -17,12 +17,9 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ForgotPasswordComponent implements OnInit {
   emailForm!: FormGroup;
-  answerForm!: FormGroup;
   otpForm!: FormGroup;
   loading = false;
-  step: 'method' | 'email' | 'answer' | 'verify-otp' = 'method';
-  recoveryMethod: 'secret' | 'otp' = 'secret';
-  preguntaSecreta: string = '';
+  step: 'email' | 'verify-otp' = 'email';
   userEmail: string = '';
   tempToken: string = '';
 
@@ -41,20 +38,10 @@ export class ForgotPasswordComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     });
 
-    // Crear formulario para respuesta
-    this.answerForm = this.fb.group({
-      respuestaSecreta: ['', [Validators.required]]
-    });
-
     // Crear formulario para OTP
     this.otpForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]]
     });
-  }
-
-  setRecoveryMethod(method: 'secret' | 'otp'): void {
-    this.recoveryMethod = method;
-    this.step = 'email';
   }
 
   onSubmitEmail(): void {
@@ -71,78 +58,19 @@ export class ForgotPasswordComponent implements OnInit {
     const email = this.emailForm.value.email.trim();
     this.userEmail = email;
 
-    if (this.recoveryMethod === 'secret') {
-      // Método de preguntas secretas
-      this.authService.obtenerPreguntaSecreta(email).subscribe({
-        next: (response) => {
-          this.loading = false;
-          if (response.ok && response.preguntaSecreta) {
-            this.preguntaSecreta = response.preguntaSecreta;
-            this.step = 'answer';
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          const errorMsg = error.error?.error || 'No se encontró una cuenta con ese correo';
-          this.showError(errorMsg);
-        }
-      });
-    } else {
-      // Método de OTP por email
-      this.authService.solicitarRecuperacionOTP(email).subscribe({
-        next: (response) => {
-          this.loading = false;
-          if (response.ok && response.tempToken) {
-            this.tempToken = response.tempToken;
-            this.step = 'verify-otp';
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          const errorMsg = error.error?.error || 'Error al enviar código OTP';
-          this.showError(errorMsg);
-        }
-      });
-    }
-  }
-
-  onSubmitAnswer(): void {
-    // Marcar como touched para mostrar errores
-    Object.keys(this.answerForm.controls).forEach(key => {
-      this.answerForm.get(key)?.markAsTouched();
-    });
-
-    if (this.answerForm.invalid) {
-      return;
-    }
-
-    this.loading = true;
-    const respuestaSecreta = this.answerForm.value.respuestaSecreta.trim();
-
-    this.authService.verificarRespuestaSecreta(this.userEmail, respuestaSecreta).subscribe({
+    // Solo método de OTP por email
+    this.authService.solicitarRecuperacionOTP(email).subscribe({
       next: (response) => {
         this.loading = false;
         if (response.ok && response.tempToken) {
-          // Mostrar mensaje de éxito
-          const successMsg = response.message || 'Respuesta correcta. Ahora puedes cambiar tu contraseña.';
-          this.showSuccess(successMsg);
-          
-          // Guardar el tempToken para el siguiente paso
-          localStorage.setItem('recoveryTempToken', response.tempToken);
-          localStorage.setItem('recoveryEmail', this.userEmail);
-          localStorage.setItem('recoveryMethod', 'secret');
-          
-          // Redirigir a restablecer contraseña después de mostrar el mensaje
-          setTimeout(() => {
-            this.router.navigate(['/reset-password']);
-          }, 1500);
-        } else {
-          this.showError('Error en la verificación. Intenta nuevamente.');
+          this.tempToken = response.tempToken;
+          this.step = 'verify-otp';
+          this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
         }
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Respuesta incorrecta';
+        const errorMsg = error.error?.error || 'Error al enviar código OTP';
         this.showError(errorMsg);
       }
     });
@@ -165,13 +93,17 @@ export class ForgotPasswordComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         if (response.ok) {
+          this.showSuccess('Código verificado correctamente');
+          
           // Guardar datos para reset-password
           localStorage.setItem('recoveryTempToken', this.tempToken);
           localStorage.setItem('recoveryEmail', this.userEmail);
           localStorage.setItem('recoveryMethod', 'otp');
           
           // Redirigir a cambiar contraseña
-          this.router.navigate(['/reset-password']);
+          setTimeout(() => {
+            this.router.navigate(['/reset-password']);
+          }, 1500);
         }
       },
       error: (error) => {
@@ -204,15 +136,10 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   goBack(): void {
-    if (this.step === 'verify-otp' || this.step === 'answer') {
+    if (this.step === 'verify-otp') {
       this.step = 'email';
       this.otpForm.reset();
-      this.answerForm.reset();
-    } else if (this.step === 'email') {
-      this.step = 'method';
-      this.emailForm.reset();
     }
-    this.preguntaSecreta = '';
   }
 
   private showError(message: string): void {
