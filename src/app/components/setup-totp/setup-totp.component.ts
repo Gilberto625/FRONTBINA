@@ -23,6 +23,7 @@ export class SetupTotpComponent implements OnInit {
   qrCodeUrl: SafeUrl = '';
   secretKey: string = '';
   email: string = '';
+  currentStep: number = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +69,7 @@ export class SetupTotpComponent implements OnInit {
         // El QR viene en base64
         this.qrCodeUrl = this.sanitizer.bypassSecurityTrustUrl(response.qr_code);
         this.secretKey = response.secret;
+        this.currentStep = 1; // Iniciar en el primer paso
       },
       error: (error) => {
         this.loading = false;

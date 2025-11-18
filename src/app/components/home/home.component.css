@@ -290,6 +290,17 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
+.card-button-primary {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+}
+
+.card-button-primary:hover {
+  background-color: #B8941F;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
 .info-item {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
@@ -354,17 +365,42 @@
   border-radius: 8px;
   padding: 12px 24px;
   transition: all 0.3s ease;
-  background-color: var(--color-accent); /* Dorado */
-  color: var(--color-primary); /* Negro */
-  border: none;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  border: 2px solid var(--color-border);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-transform: none;
   font-size: 1rem;
   cursor: pointer;
+  text-align: center;
 }
 
 .action-button:hover {
-  background-color: #B8941F; /* Dorado más oscuro */
+  background-color: #e9e9e9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.action-button-primary {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border: none;
+}
+
+.action-button-primary:hover {
+  background-color: #B8941F;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.action-button-accent {
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border: none;
+}
+
+.action-button-accent:hover {
+  background-color: #B8941F;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
