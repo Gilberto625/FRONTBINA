@@ -60,7 +60,7 @@
 .warning-box {
   background-color: rgba(212, 175, 55, 0.12);
   border: 2px solid rgba(212, 175, 55, 0.25);
-  border-left: 4px solid var(--color-accent);
+  border-left: 4px solid var(--color-primary-gold);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 24px;

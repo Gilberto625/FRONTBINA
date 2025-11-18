@@ -155,14 +155,25 @@
 }
 
 .form-button-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
 }
 
-.form-button-primary:hover {
+.form-button-primary:hover:not(:disabled) {
   background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.form-button-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .form-button-secondary {

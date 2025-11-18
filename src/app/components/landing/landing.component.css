@@ -132,7 +132,7 @@
 .product-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  border-color: var(--color-accent);
+  border-color: var(--color-primary-gold);
 }
 
 .product-icon {
@@ -172,7 +172,7 @@
 .product-price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--color-primary-gold);
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -287,7 +287,7 @@
   font-size: 4rem;
   width: 4rem;
   height: 4rem;
-  color: var(--color-accent);
+  color: var(--color-primary-gold);
   margin-bottom: 1rem;
   display: block;
   margin-left: auto;
@@ -330,7 +330,7 @@
 }
 
 .tech-category h3 {
-  color: var(--color-accent);
+  color: var(--color-primary-gold);
   margin-bottom: 1rem;
   font-size: 1.3rem;
   font-family: 'Montserrat', sans-serif;
@@ -380,7 +380,7 @@
 }
 
 .endpoint-card h4 {
-  color: var(--color-accent);
+  color: var(--color-primary-gold);
   margin-bottom: 1rem;
   font-size: 1.2rem;
   font-family: 'Montserrat', sans-serif;
@@ -429,7 +429,7 @@
 }
 
 .footer a {
-  color: var(--color-accent);
+  color: var(--color-primary-gold);
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
 }

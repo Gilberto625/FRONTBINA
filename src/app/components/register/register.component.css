@@ -207,7 +207,7 @@
   padding: 12px;
   background-color: var(--color-background-light);
   border-radius: var(--border-radius-md);
-  border-left: 3px solid var(--color-accent);
+  border-left: 3px solid var(--color-primary-gold);
 }
 
 .requirements-title {
