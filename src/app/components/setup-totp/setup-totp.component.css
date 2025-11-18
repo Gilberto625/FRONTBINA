@@ -1,14 +1,4 @@
-/* === Fuentes === */
-
-:root {
-  --color-primary: #1A1A1A;
-  --color-accent: #D4AF37;
-  --color-white: #FFFFFF;
-  --color-background: #F8F8F8;
-  --color-border: #E0E0E0;
-  --color-gray-dark: #757575;
-  --color-error: #DC3545;
-}
+/* === Componente Setup TOTP - Usa variables globales de styles.css === */
 
 .setup-totp-container {
   min-height: 100vh;
@@ -28,7 +18,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 32px;
   box-sizing: border-box;
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--color-primary-dark);
 }
 
 .card-header {
@@ -277,32 +267,57 @@
 }
 
 .step-button-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
   border: none;
+  box-shadow: var(--shadow-gold-sm);
 }
 
 .step-button-primary:hover:not(:disabled) {
-  background-color: #B8941F;
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.step-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.step-button-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .step-button {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
   border: none;
+  box-shadow: var(--shadow-gold-sm);
 }
 
 .step-button:hover:not(:disabled) {
-  background-color: #B8941F;
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.step-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.step-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .step-button:disabled {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 .spinner-small {

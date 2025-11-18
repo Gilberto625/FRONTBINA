@@ -1,13 +1,4 @@
-/* === Fuentes === */
-
-:root {
-  --color-primary: #1A1A1A;
-  --color-accent: #D4AF37;
-  --color-white: #FFFFFF;
-  --color-background: #F8F8F8;
-  --color-border: #E0E0E0;
-  --color-gray-dark: #757575;
-}
+/* === Componente Landing - Usa variables globales de styles.css === */
 
 .landing-container {
   min-height: 100vh;
@@ -74,19 +65,31 @@
 }
 
 .hero-button-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
 }
 
 .hero-button-accent {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
 }
 
 .hero-button:hover:not(:disabled) {
-  background-color: #B8941F;
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.hero-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .hero-button:disabled {
@@ -95,11 +98,11 @@
 }
 
 .hero-button-primary:hover:not(:disabled) {
-  background-color: #B8941F;
+  background-color: #C19F30;
 }
 
 .hero-button-accent:hover:not(:disabled) {
-  background-color: #B8941F;
+  background-color: #C19F30;
 }
 
 /* Products Section */
@@ -123,7 +126,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--color-primary-dark);
 }
 
 .product-card:hover {
@@ -174,32 +177,47 @@
 }
 
 .add-to-cart-btn {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 500;
-  font-family: 'Montserrat', sans-serif;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 48px;
+  min-height: var(--touch-target-md);
+  box-shadow: var(--shadow-gold-sm);
+  letter-spacing: 0.5px;
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
-  background-color: #B8941F;
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-to-cart-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.add-to-cart-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .add-to-cart-btn:disabled {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 /* Toast Message */

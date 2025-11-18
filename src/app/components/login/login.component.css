@@ -1,22 +1,11 @@
-/* === Fuentes === */
-
-:root {
-  /* Colores institucionales según guía */
-  --color-primary: #1A1A1A;      /* Negro carbón */
-  --color-accent: #D4AF37;       /* Dorado */
-  --color-white: #FFFFFF;        /* Blanco */
-  --color-background: #F8F8F8;   /* Blanco roto (fondo general) */
-  --color-border: #E0E0E0;       /* Gris claro para bordes */
-  --color-gray-dark: #757575;    /* Texto secundario */
-  --color-error: #DC3545;        /* Rojo para errores */
-}
+/* === Componente Login - Usa variables globales de styles.css === */
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--color-background);
+  background-color: var(--color-background-light);
   padding: 16px;
   font-family: 'Montserrat', sans-serif;
 }
@@ -25,11 +14,11 @@
   width: 100%;
   max-width: 420px;
   background: var(--color-white);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
   padding: 32px;
   box-sizing: border-box;
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--color-primary-dark);
 }
 
 .card-title {
@@ -61,8 +50,8 @@
   padding: 12px 16px;
   font-size: 16px;
   font-family: 'Montserrat', sans-serif;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
   background: var(--color-white);
   color: var(--color-primary);
   transition: all 0.3s ease;
@@ -71,7 +60,7 @@
 
 .input-field:focus {
   outline: none;
-  border-color: var(--color-accent);
+  border-color: var(--color-primary-gold);
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
@@ -120,7 +109,7 @@
   font-size: 16px;
   font-weight: 500;
   font-family: 'Montserrat', sans-serif;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
@@ -131,26 +120,40 @@
   min-height: 48px;
 }
 
-.btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
+  .btn:disabled {
+    background-color: var(--color-gray-medium);
+    color: var(--color-white);
+    cursor: not-allowed;
+    opacity: 0.5;
+    box-shadow: none;
+  }
 
 .btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #B8941F; /* Dorado oscuro */
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .btn-google {
   background-color: var(--color-white);
   color: var(--color-primary);
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--color-primary-dark);
 }
 
 .btn-google:hover:not(:disabled) {

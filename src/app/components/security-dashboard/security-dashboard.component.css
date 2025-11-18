@@ -1,15 +1,4 @@
-/* === Fuentes === */
-
-:root {
-  --color-primary: #1A1A1A;
-  --color-accent: #D4AF37;
-  --color-white: #FFFFFF;
-  --color-background: #F8F8F8;
-  --color-border: #E0E0E0;
-  --color-gray-dark: #757575;
-  --color-error: #DC3545;
-  --color-success: #28A745;
-}
+/* === Componente Security Dashboard - Usa variables globales de styles.css === */
 
 .security-container {
   min-height: 100vh;
@@ -97,7 +86,7 @@
 }
 
 .card {
-  border: 2px solid var(--color-primary);
+  border: 2px solid var(--color-primary-dark);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -206,14 +195,33 @@
 }
 
 .card-button-primary {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
 }
 
-.card-button-primary:hover {
-  background-color: #B8941F;
+.card-button-primary:hover:not(:disabled) {
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.card-button-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
+}
+
+.card-button-primary:disabled {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 .card-button-secondary {
