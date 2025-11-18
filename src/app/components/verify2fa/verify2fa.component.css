@@ -104,9 +104,9 @@
 }
 
 .method-toggle.active {
-  background-color: var(--color-accent);
+  background-color: var(--color-primary-gold);
   border-color: var(--color-primary-gold);
-  color: var(--color-primary);
+  color: var(--color-white);
   font-weight: 600;
 }
 
@@ -268,20 +268,42 @@
 }
 
 .resend-button {
-  background-color: var(--color-accent);
-  color: var(--color-primary);
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
   border: none;
   font-size: 14px;
   padding: 12px 24px;
   min-height: 48px;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: var(--shadow-gold-sm);
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-base);
+  letter-spacing: 0.5px;
 }
 
 .resend-button:hover:not(:disabled) {
   background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.resend-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.resend-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
+}
+
+.resend-button:disabled {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 .btn-alt:disabled {
@@ -368,7 +390,7 @@
 }
 
 .back-link {
-  color: var(--color-accent);
+  color: var(--color-primary-gold);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;

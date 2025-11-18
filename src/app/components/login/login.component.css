@@ -69,7 +69,7 @@
 }
 
 .input-field.input-success {
-  border-color: var(--color-accent); /* Opcional: puedes usar verde si quieres seguir la guía al pie de la letra */
+  border-color: var(--color-success);
 }
 
 .input-feedback {
