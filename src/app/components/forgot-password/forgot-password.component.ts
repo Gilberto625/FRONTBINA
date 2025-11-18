@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -26,7 +27,8 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +68,8 @@ export class ForgotPasswordComponent implements OnInit {
           this.tempToken = response.tempToken;
           this.step = 'verify-otp';
           this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
+        } else {
+          this.showSuccess('Si el correo existe, se enviará un código de recuperación.');
         }
       },
       error: (error) => {
@@ -100,10 +104,10 @@ export class ForgotPasswordComponent implements OnInit {
           localStorage.setItem('recoveryEmail', this.userEmail);
           localStorage.setItem('recoveryMethod', 'otp');
           
-          // Redirigir a cambiar contraseña
+          // Redirigir a cambiar contraseña después de cerrar el modal
           setTimeout(() => {
             this.router.navigate(['/reset-password']);
-          }, 1500);
+          }, 500);
         }
       },
       error: (error) => {
@@ -143,28 +147,10 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   private showError(message: string): void {
-    this.showToast(message, 'error');
+    this.modalService.showError(message);
   }
 
   private showSuccess(message: string): void {
-    this.showToast(message, 'success');
-  }
-
-  private showToast(message: string, type: 'error' | 'success'): void {
-    const toastDiv = document.createElement('div');
-    toastDiv.className = `toast-message ${type}-toast`;
-    toastDiv.textContent = message;
-    document.body.appendChild(toastDiv);
-    
-    setTimeout(() => {
-      toastDiv.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-      toastDiv.classList.remove('show');
-      setTimeout(() => {
-        document.body.removeChild(toastDiv);
-      }, 300);
-    }, 4000);
+    this.modalService.showSuccess(message);
   }
 }

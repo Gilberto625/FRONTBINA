@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService, Usuario } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-profile',
@@ -19,16 +11,7 @@ import { AuthService, Usuario } from '../../services/auth.service';
   imports: [
     CommonModule,
     RouterModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSnackBarModule,
-    MatDividerModule,
-    MatListModule
+    ReactiveFormsModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -42,7 +25,7 @@ export class ProfileComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +56,7 @@ export class ProfileComponent implements OnInit {
     if (this.profileForm.valid) {
       // Nota: El backend no tiene endpoint para actualizar perfil
       // Por ahora solo mostramos un mensaje
-      this.showMessage('La actualización de perfil no está disponible en este momento');
+      this.showMessage('La actualización de perfil no está disponible en este momento', 'info');
       this.editMode = false;
       this.profileForm.disable();
     }
@@ -96,12 +79,16 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/change-password']);
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else if (type === 'warning') {
+      this.modalService.showWarning(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }
 

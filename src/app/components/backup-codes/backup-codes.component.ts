@@ -1,28 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-backup-codes',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule
+    RouterModule
   ],
   templateUrl: './backup-codes.component.html',
   styleUrl: './backup-codes.component.css'
@@ -35,15 +22,17 @@ export class BackupCodesComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
     // Obtener email del usuario actual
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
-      this.showMessage('Debes iniciar sesión primero');
-      this.router.navigate(['/login']);
+      this.showMessage('Debes iniciar sesión primero', 'error');
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 500);
       return;
     }
 
@@ -65,20 +54,22 @@ export class BackupCodesComponent implements OnInit {
 
         if (response.ok && response.codigos) {
           this.backupCodes = response.codigos;
-          this.showMessage('Códigos de respaldo generados exitosamente');
+          this.showMessage('Códigos de respaldo generados exitosamente', 'success');
+        } else {
+          this.showMessage('Error al generar códigos de respaldo', 'error');
         }
       },
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || 'Error al generar códigos de respaldo';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
 
   downloadCodes(): void {
     if (this.backupCodes.length === 0) {
-      this.showMessage('No hay códigos para descargar');
+      this.showMessage('No hay códigos para descargar', 'warning');
       return;
     }
 
@@ -91,20 +82,20 @@ export class BackupCodesComponent implements OnInit {
     link.click();
     window.URL.revokeObjectURL(url);
 
-    this.showMessage('Códigos descargados como backup-codes.txt');
+    this.showMessage('Códigos descargados como backup-codes.txt', 'success');
   }
 
   copyCodes(): void {
     if (this.backupCodes.length === 0) {
-      this.showMessage('No hay códigos para copiar');
+      this.showMessage('No hay códigos para copiar', 'warning');
       return;
     }
 
     const codesText = this.backupCodes.join('\n');
     navigator.clipboard.writeText(codesText).then(() => {
-      this.showMessage('Códigos copiados al portapapeles');
+      this.showMessage('Códigos copiados al portapapeles', 'success');
     }).catch(() => {
-      this.showMessage('Error al copiar los códigos');
+      this.showMessage('Error al copiar los códigos', 'error');
     });
   }
 
@@ -112,11 +103,15 @@ export class BackupCodesComponent implements OnInit {
     this.router.navigate(['/security']);
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else if (type === 'warning') {
+      this.modalService.showWarning(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }

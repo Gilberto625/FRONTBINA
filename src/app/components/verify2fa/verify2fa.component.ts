@@ -2,15 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-verify2fa',
@@ -18,15 +11,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatButtonToggleModule,
-    MatIconModule
+    RouterModule
   ],
   templateUrl: './verify2fa.component.html',
   styleUrl: './verify2fa.component.css'
@@ -44,7 +29,7 @@ export class Verify2faComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {
     // Obtener datos del state de navegación
     const navigation = this.router.getCurrentNavigation();
@@ -62,11 +47,11 @@ export class Verify2faComponent implements OnInit {
   ngOnInit(): void {
     // Validar que existe un token
     if (!this.tempToken) {
-      this.showMessage('No se encontró un token de verificación. Por favor, inicia el proceso de registro o login.');
-      // Redirigir al login después de 2 segundos
+      this.showMessage('No se encontró un token de verificación. Por favor, inicia el proceso de registro o login.', 'error');
+      // Redirigir al login después de cerrar el modal
       setTimeout(() => {
         this.router.navigate(['/login']);
-      }, 2000);
+      }, 500);
       return;
     }
 
@@ -97,7 +82,7 @@ export class Verify2faComponent implements OnInit {
   solicitarCodigoPorEmail(): void {
     // Solo disponible para registro, no para login
     if (this.type !== 'register') {
-      this.showMessage('Esta funcionalidad solo está disponible durante el registro');
+      this.showMessage('Esta funcionalidad solo está disponible durante el registro', 'warning');
       return;
     }
 
@@ -105,7 +90,7 @@ export class Verify2faComponent implements OnInit {
     const correo = localStorage.getItem('registerEmail') || '';
     
     if (!correo) {
-      this.showMessage('No se encontró el correo. Por favor, intenta registrarte de nuevo.');
+      this.showMessage('No se encontró el correo. Por favor, intenta registrarte de nuevo.', 'error');
       return;
     }
 
@@ -115,9 +100,9 @@ export class Verify2faComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         if (response.ok) {
-          this.showMessage('✅ Nuevo código enviado a tu correo. Expira en 10 minutos.');
+          this.showMessage('Nuevo código enviado a tu correo. Expira en 10 minutos.', 'success');
         } else {
-          this.showMessage(response.message || 'Código reenviado');
+          this.showMessage(response.message || 'Código reenviado', 'info');
         }
         this.metodoSeleccionado = 'email';
         this.updateFormValidation();
@@ -125,7 +110,7 @@ export class Verify2faComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || error.error?.message || 'Error al reenviar código';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
@@ -149,7 +134,7 @@ export class Verify2faComponent implements OnInit {
   onSubmit(): void {
     if (this.verifyForm.invalid) {
       const length = this.metodoSeleccionado === 'backup' ? '8' : '6';
-      this.showMessage(`Ingresa un código válido de ${length} dígitos`);
+      this.showMessage(`Ingresa un código válido de ${length} dígitos`, 'error');
       return;
     }
 
@@ -166,7 +151,7 @@ export class Verify2faComponent implements OnInit {
       // Para login, solo soportamos email OTP (el backend no tiene TOTP implementado)
       // El método verificarTOTPLogin no funcionará porque el backend no tiene esos endpoints
       if (this.metodoSeleccionado === 'totp' || this.metodoSeleccionado === 'backup') {
-        this.showMessage('TOTP y códigos de respaldo no están disponibles. Usa el código por email.');
+        this.showMessage('TOTP y códigos de respaldo no están disponibles. Usa el código por email.', 'warning');
         this.loading = false;
         return;
       } else {
@@ -184,7 +169,7 @@ export class Verify2faComponent implements OnInit {
             ? '¡Registro exitoso! Ahora puedes iniciar sesión'
             : '¡Inicio de sesión exitoso!';
 
-          this.showMessage(message);
+          this.showMessage(message, 'success');
 
           // Redirigir según el tipo
           if (this.type === 'register') {
@@ -203,7 +188,7 @@ export class Verify2faComponent implements OnInit {
                 this.router.navigate(['/home']);
               } else {
                 console.error('Usuario no autenticado después de verificación');
-                this.showMessage('Error: No se pudo autenticar. Por favor, intenta de nuevo.');
+                this.showMessage('Error: No se pudo autenticar. Por favor, intenta de nuevo.', 'error');
               }
             }, 500);
           }
@@ -212,7 +197,7 @@ export class Verify2faComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || error.error?.message || 'Código incorrecto o expirado';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
 
         // Si hay demasiados intentos, redirigir
         if (error.status === 429) {
@@ -232,7 +217,7 @@ export class Verify2faComponent implements OnInit {
     const correo = localStorage.getItem('registerEmail') || '';
     
     if (!correo) {
-      this.showMessage('No se encontró el correo. Por favor, intenta registrarte de nuevo.');
+      this.showMessage('No se encontró el correo. Por favor, intenta registrarte de nuevo.', 'error');
       return;
     }
 
@@ -241,21 +226,25 @@ export class Verify2faComponent implements OnInit {
     this.authService.reenviarOTP(correo).subscribe({
       next: (response) => {
         this.loading = false;
-        this.showMessage('✅ Nuevo código enviado a tu correo. Expira en 10 minutos.');
+        this.showMessage('Nuevo código enviado a tu correo. Expira en 10 minutos.', 'success');
       },
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || error.error?.message || 'Error al reenviar código';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else if (type === 'warning') {
+      this.modalService.showWarning(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }

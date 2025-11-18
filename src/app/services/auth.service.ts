@@ -382,15 +382,11 @@ export class AuthService {
 
   /**
    * Cambiar contraseña (usuario autenticado)
-   * NOTA: Este endpoint NO está implementado en el backend todavía
-   * Usar recuperación de contraseña por email como alternativa
    */
   cambiarContrasena(email: string, contrasenaActual: string, nuevaContrasena: string): Observable<any> {
-    // TODO: Implementar endpoint /cambiar-contrasena/ en el backend
-    // Por ahora, usar el flujo de recuperación por email
     return this.http.post(
-      `${this.apiUrl}/restablecer/email/`,
-      { email, nuevaContrasena },
+      `${this.apiUrl}/cambiar-contrasena/`,
+      { email, contrasena_actual: contrasenaActual, nueva_contrasena: nuevaContrasena },
       {
         headers: this.getHeaders(),
         withCredentials: true

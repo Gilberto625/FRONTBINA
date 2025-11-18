@@ -2,15 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { AuthService, RegisterData } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-register',
@@ -18,15 +11,7 @@ import { AuthService, RegisterData } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatListModule
+    RouterModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -49,7 +34,7 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -154,19 +139,19 @@ export class RegisterComponent implements OnInit {
 
     // Validar que el formulario sea válido
     if (this.registerForm.invalid) {
-      this.showMessage('Por favor completa todos los campos correctamente');
+      this.showMessage('Por favor completa todos los campos correctamente', 'error');
       return;
     }
 
     // Validar que las contraseñas coincidan
     if (this.registerForm.value.contrasena !== this.registerForm.value.confirmarContrasena) {
-      this.showMessage('Las contraseñas no coinciden');
+      this.showMessage('Las contraseñas no coinciden', 'error');
       return;
     }
 
     // Validar que la contraseña cumpla con todos los requisitos
     if (!this.allRequirementsMet) {
-      this.showMessage('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número');
+      this.showMessage('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número', 'error');
       return;
     }
 
@@ -174,7 +159,7 @@ export class RegisterComponent implements OnInit {
     const formValues = this.registerForm.value;
     for (const key in formValues) {
       if (typeof formValues[key] === 'string' && formValues[key].trim() === '') {
-        this.showMessage('No se permiten campos vacíos o solo con espacios');
+        this.showMessage('No se permiten campos vacíos o solo con espacios', 'error');
         return;
       }
     }
@@ -205,42 +190,46 @@ export class RegisterComponent implements OnInit {
         this.authService.register(cleanedData as RegisterData).subscribe({
           next: (response) => {
             this.loading = false;
-            this.showMessage('Código OTP enviado a tu correo (SendGrid)');
+            this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
 
             // Guardar el correo en localStorage para poder reenviar código
             localStorage.setItem('registerEmail', cleanedData.correo);
 
-            // Navegar a la página de verificación 2FA con el tempToken
-            this.router.navigate(['/verify-2fa'], {
-              state: {
-                tempToken: response.tempToken,
-                type: 'register',
-                destination: response.destino || cleanedData.correo
-              }
-            });
+            // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
+            setTimeout(() => {
+              this.router.navigate(['/verify-2fa'], {
+                state: {
+                  tempToken: response.tempToken,
+                  type: 'register',
+                  destination: response.destino || cleanedData.correo
+                }
+              });
+            }, 500);
           },
           error: (error) => {
             this.loading = false;
             console.error('Error completo:', error);
             const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
-            this.showMessage(errorMsg);
+            this.showMessage(errorMsg, 'error');
           }
         });
       },
       error: (csrfError) => {
         this.loading = false;
         console.error('Error obteniendo CSRF token:', csrfError);
-        this.showMessage('Error de conexión con el servidor');
+        this.showMessage('Error de conexión con el servidor. Por favor, intenta de nuevo.', 'error');
       }
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }
 

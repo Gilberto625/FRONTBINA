@@ -1,17 +1,17 @@
 <div class="backup-codes-container">
-  <mat-card class="backup-codes-card">
-    <mat-card-header>
+  <div class="backup-codes-card">
+    <div class="card-header">
       <div class="header-content">
-        <mat-icon class="header-icon">password</mat-icon>
-        <mat-card-title>Códigos de Respaldo</mat-card-title>
-        <mat-card-subtitle>Guarda estos códigos en un lugar seguro</mat-card-subtitle>
+        <span class="header-icon">🔑</span>
+        <h1 class="card-title">Códigos de Respaldo</h1>
+        <p class="card-subtitle">Guarda estos códigos en un lugar seguro</p>
       </div>
-    </mat-card-header>
+    </div>
 
-    <mat-card-content>
+    <div class="card-content">
       <!-- Mensaje de advertencia -->
       <div class="warning-box">
-        <mat-icon class="warning-icon">warning</mat-icon>
+        <span class="warning-icon">⚠️</span>
         <div class="warning-content">
           <h3>Importante:</h3>
           <ul>
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <mat-divider></mat-divider>
+      <div class="divider"></div>
 
       <!-- Lista de códigos -->
       <div class="codes-section">
@@ -33,61 +33,59 @@
         </div>
 
         <div class="loading-container" *ngIf="loading">
-          <mat-spinner diameter="60"></mat-spinner>
+          <div class="spinner-large"></div>
           <p>Generando códigos de respaldo...</p>
         </div>
 
-        <mat-list class="codes-list" *ngIf="!loading && backupCodes.length > 0">
-          <mat-list-item *ngFor="let code of backupCodes; let i = index" class="code-item">
-            <mat-icon matListItemIcon>verified</mat-icon>
-            <div matListItemTitle class="code-number">{{ i + 1 }}.</div>
-            <div matListItemTitle class="code-value">{{ code }}</div>
-          </mat-list-item>
-        </mat-list>
+        <ul class="codes-list" *ngIf="!loading && backupCodes.length > 0">
+          <li *ngFor="let code of backupCodes; let i = index" class="code-item">
+            <span class="code-icon">✓</span>
+            <span class="code-number">{{ i + 1 }}.</span>
+            <span class="code-value">{{ code }}</span>
+          </li>
+        </ul>
 
         <div class="no-codes" *ngIf="!loading && backupCodes.length === 0">
-          <mat-icon>info</mat-icon>
+          <span class="no-codes-icon">ℹ️</span>
           <p>No se han generado códigos de respaldo</p>
         </div>
       </div>
 
-      <mat-divider></mat-divider>
+      <div class="divider"></div>
 
       <!-- Acciones -->
       <div class="actions-section">
         <button
-          mat-raised-button
-          color="primary"
+          class="action-button action-button-primary"
           (click)="downloadCodes()"
           [disabled]="loading || backupCodes.length === 0">
-          <mat-icon>download</mat-icon>
+          <span>⬇️</span>
           Descargar como .txt
         </button>
 
         <button
-          mat-raised-button
+          class="action-button"
           (click)="copyCodes()"
           [disabled]="loading || backupCodes.length === 0">
-          <mat-icon>content_copy</mat-icon>
+          <span>📋</span>
           Copiar al portapapeles
         </button>
 
         <button
-          mat-raised-button
+          class="action-button action-button-accent"
           (click)="generateCodes()"
-          [disabled]="loading"
-          color="accent">
-          <mat-icon>refresh</mat-icon>
+          [disabled]="loading">
+          <span>🔄</span>
           Generar nuevos códigos
         </button>
       </div>
 
       <div class="back-section">
-        <button mat-button (click)="goToSecurity()" class="back-button">
-          <mat-icon>arrow_back</mat-icon>
+        <button class="back-button" (click)="goToSecurity()">
+          <span>←</span>
           Volver a Seguridad
         </button>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

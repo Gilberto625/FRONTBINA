@@ -1,30 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService, EstadoSeguridad } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-security-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatToolbarModule
+    RouterModule
   ],
   templateUrl: './security-dashboard.component.html',
   styleUrl: './security-dashboard.component.css'
@@ -42,15 +27,17 @@ export class SecurityDashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
     // Obtener email del usuario actual
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
-      this.showMessage('Debes iniciar sesión primero');
-      this.router.navigate(['/login']);
+      this.showMessage('Debes iniciar sesión primero', 'error');
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 500);
       return;
     }
 
@@ -74,7 +61,14 @@ export class SecurityDashboardComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || 'Error al cargar estado de seguridad';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
+        // Usar valores por defecto en caso de error
+        this.estadoSeguridad = {
+          email_2fa: false,
+          totp_habilitado: false,
+          codigos_respaldo_disponibles: 0,
+          tiene_preguntas_seguridad: false
+        };
       }
     });
   }
@@ -100,11 +94,15 @@ export class SecurityDashboardComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else if (type === 'warning') {
+      this.modalService.showWarning(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }

@@ -7,12 +7,32 @@
         Plataforma moderna para servicio al cliente
       </p>
       <div class="hero-actions">
-        <a mat-raised-button color="primary" routerLink="/login" class="hero-button">
+        <a class="hero-button hero-button-primary" routerLink="/login">
           Iniciar Sesión
         </a>
-        <a mat-raised-button color="accent" routerLink="/register" class="hero-button">
+        <a class="hero-button hero-button-accent" routerLink="/register">
           Registrarse
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products-section">
+    <div class="container">
+      <h2 class="section-title">Nuestros Productos y Servicios</h2>
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of products">
+          <div class="product-icon">{{ product.icon }}</div>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-description">{{ product.description }}</p>
+          <div class="product-footer">
+            <span class="product-price">${{ product.price }}</span>
+            <button class="add-to-cart-btn" (click)="addToCart(product)">
+              🛒 Agregar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -22,41 +42,41 @@
     <div class="container">
       <h2 class="section-title">Características Principales</h2>
       <div class="features-grid">
-        <mat-card class="feature-card">
+        <div class="feature-card">
           <h2>Seguridad</h2>
           <h3>Autenticación 2FA</h3>
           <p>Verificación de dos factores mediante códigos OTP enviados por email usando SendGrid</p>
-        </mat-card>
+        </div>
 
-        <mat-card class="feature-card">
+        <div class="feature-card">
           <h2>Email</h2>
           <h3>OTP por Email</h3>
           <p>Códigos de verificación de 6 dígitos enviados automáticamente a tu correo electrónico</p>
-        </mat-card>
+        </div>
 
-        <mat-card class="feature-card">
+        <div class="feature-card">
           <h2>Google</h2>
           <h3>Login con Google</h3>
           <p>Inicio de sesión rápido y seguro usando Firebase Authentication</p>
-        </mat-card>
+        </div>
 
-        <mat-card class="feature-card">
+        <div class="feature-card">
           <h2>Recuperación</h2>
           <h3>Recuperación de Contraseña</h3>
           <p>Sistema seguro de recuperación mediante OTP y preguntas secretas</p>
-        </mat-card>
+        </div>
 
-        <mat-card class="feature-card">
+        <div class="feature-card">
           <h2>Sesiones</h2>
           <h3>Sesiones Seguras</h3>
           <p>Protección CSRF y gestión de sesiones con Django</p>
-        </mat-card>
+        </div>
 
-        <mat-card class="feature-card">
+        <div class="feature-card">
           <h2>Seguridad</h2>
           <h3>Seguridad Avanzada</h3>
           <p>Contraseñas hasheadas y validación de datos en servidor</p>
-        </mat-card>
+        </div>
       </div>
     </div>
   </section>
@@ -116,7 +136,7 @@
     <div class="container">
       <h2 class="section-title">Endpoints del Backend</h2>
       <div class="endpoints-list">
-        <mat-card class="endpoint-card">
+        <div class="endpoint-card">
           <h4>Autenticación</h4>
           <ul>
             <li><code>POST /api/usuarios/register/</code> - Registro de usuario</li>
@@ -125,9 +145,9 @@
             <li><code>POST /api/usuarios/register/2fa/verificar/</code> - Verificar 2FA registro</li>
             <li><code>POST /api/usuarios/login/2fa/verificar/</code> - Verificar 2FA login</li>
           </ul>
-        </mat-card>
+        </div>
 
-        <mat-card class="endpoint-card">
+        <div class="endpoint-card">
           <h4>OTP con SendGrid</h4>
           <ul>
             <li><code>POST /api/usuarios/verificar-otp/</code> - Verificar OTP registro</li>
@@ -137,22 +157,22 @@
             <li><code>POST /api/usuarios/reenviar-otp-recuperacion/</code> - Reenviar OTP recuperación</li>
             <li><code>POST /api/usuarios/actualizar-contrasena-otp/</code> - Actualizar contraseña con OTP</li>
           </ul>
-        </mat-card>
+        </div>
 
-        <mat-card class="endpoint-card">
+        <div class="endpoint-card">
           <h4>Recuperación de Contraseña</h4>
           <ul>
             <li><code>POST /api/usuarios/recuperar/</code> - Recuperar con preguntas secretas</li>
             <li><code>POST /api/usuarios/restablecer/</code> - Restablecer contraseña</li>
           </ul>
-        </mat-card>
+        </div>
 
-        <mat-card class="endpoint-card">
+        <div class="endpoint-card">
           <h4>Utilidades</h4>
           <ul>
             <li><code>GET /api/usuarios/csrf/</code> - Obtener token CSRF</li>
           </ul>
-        </mat-card>
+        </div>
       </div>
     </div>
   </section>

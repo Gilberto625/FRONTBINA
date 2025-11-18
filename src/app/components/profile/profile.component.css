@@ -20,10 +20,25 @@
   background: var(--color-white);
   color: var(--color-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 64px;
 }
 
-.profile-toolbar mat-icon {
+.toolbar-button {
+  background: transparent;
+  border: none;
   color: var(--color-primary);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.toolbar-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .toolbar-title {
@@ -47,13 +62,28 @@
   gap: 2rem;
 }
 
-.profile-card,
-.actions-card,
-.info-card {
+.card {
   width: 100%;
   background: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+
+.card-header {
+  padding: 20px 20px 16px 20px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.card-content {
+  padding: 0 20px 20px 20px;
 }
 
 .header-content {
@@ -64,14 +94,55 @@
 
 .header-icon {
   font-size: 2.5rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  color: var(--color-accent);
+  display: block;
 }
 
-.full-width {
+.form-field {
   width: 100%;
   margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 20px;
+  z-index: 1;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.form-input:disabled {
+  background-color: var(--color-background);
+  cursor: not-allowed;
 }
 
 .form-actions {
@@ -80,33 +151,78 @@
   margin-top: 1rem;
 }
 
-.form-actions button {
+.form-button {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   border-radius: 8px;
   padding: 12px 24px;
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.form-actions button[color="primary"] {
+.form-button-primary {
   background-color: var(--color-accent);
   color: var(--color-primary);
 }
 
-.form-actions button[color="primary"]:hover {
+.form-button-primary:hover {
   background-color: #B8941F;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.form-button-secondary {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  border: 2px solid var(--color-border);
+}
+
+.form-button-secondary:hover {
+  background-color: var(--color-border);
+}
+
+.actions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .action-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
   cursor: pointer;
   transition: background-color 0.2s;
   font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
 }
 
 .action-item:hover {
   background-color: var(--color-background);
+}
+
+.action-icon {
+  font-size: 24px;
+}
+
+.action-text {
+  flex: 1;
+  font-size: 16px;
+  color: var(--color-primary);
+}
+
+.action-arrow {
+  font-size: 20px;
+  color: var(--color-gray-dark);
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 0;
 }
 
 .info-item {
@@ -119,8 +235,7 @@
 
 .info-icon {
   font-size: 2rem;
-  width: 2rem;
-  height: 2rem;
+  display: block;
   color: var(--color-gray-dark);
 }
 
@@ -145,6 +260,29 @@
   font-size: 0.9rem;
 }
 
+/* Toast Message */
+.toast-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.toast-message.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .profile-content {
@@ -155,7 +293,7 @@
     flex-direction: column;
   }
 
-  .form-actions button {
+  .form-button {
     width: 100%;
   }
 }

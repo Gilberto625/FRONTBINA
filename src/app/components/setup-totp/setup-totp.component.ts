@@ -2,15 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -19,15 +12,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatStepperModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule
+    RouterModule
   ],
   templateUrl: './setup-totp.component.html',
   styleUrl: './setup-totp.component.css'
@@ -43,7 +28,7 @@ export class SetupTotpComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar,
+    private modalService: ModalService,
     private sanitizer: DomSanitizer
   ) {}
 
@@ -51,8 +36,10 @@ export class SetupTotpComponent implements OnInit {
     // Obtener email del usuario actual
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
-      this.showMessage('Debes iniciar sesión primero');
-      this.router.navigate(['/login']);
+      this.showMessage('Debes iniciar sesión primero', 'error');
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 500);
       return;
     }
 
@@ -73,6 +60,7 @@ export class SetupTotpComponent implements OnInit {
   configureTOTP(): void {
     this.loading = true;
 
+    // Nota: Este endpoint no está implementado en el backend aún
     this.authService.configurarTOTP(this.email).subscribe({
       next: (response) => {
         this.loading = false;
@@ -83,55 +71,70 @@ export class SetupTotpComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al configurar TOTP';
-        this.showMessage(errorMsg);
+        // Si el endpoint no existe, mostrar mensaje informativo
+        console.warn('Endpoint de TOTP no disponible');
+        this.showMessage('La configuración de TOTP no está disponible en este momento. Esta funcionalidad estará disponible próximamente.', 'warning');
+        // Redirigir de vuelta a seguridad después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/security']);
+        }, 2000);
       }
     });
   }
 
   onVerify(): void {
     if (this.verifyForm.invalid) {
-      this.showMessage('Ingresa un código válido de 6 dígitos');
+      this.showMessage('Ingresa un código válido de 6 dígitos', 'error');
       return;
     }
 
     this.loading = true;
     const codigo = this.verifyForm.value.codigo;
 
+    // Nota: Este endpoint no está implementado en el backend aún
     this.authService.habilitarTOTP(this.email, codigo).subscribe({
       next: (response) => {
         this.loading = false;
 
         if (response.ok) {
-          this.showMessage('TOTP habilitado exitosamente');
+          this.showMessage('TOTP habilitado exitosamente', 'success');
 
-          // Redirigir al dashboard de seguridad
+          // Redirigir al dashboard de seguridad después de cerrar el modal
           setTimeout(() => {
             this.router.navigate(['/security']);
-          }, 2000);
+          }, 500);
         }
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Código incorrecto';
-        this.showMessage(errorMsg);
+        // Si el endpoint no existe, mostrar mensaje informativo
+        console.warn('Endpoint de habilitar TOTP no disponible');
+        this.showMessage('La habilitación de TOTP no está disponible en este momento. Esta funcionalidad estará disponible próximamente.', 'warning');
+        // Redirigir de vuelta a seguridad después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/security']);
+        }, 2000);
       }
     });
   }
 
   copySecretKey(): void {
     navigator.clipboard.writeText(this.secretKey).then(() => {
-      this.showMessage('Clave secreta copiada al portapapeles');
+      this.showMessage('Clave secreta copiada al portapapeles', 'success');
     }).catch(() => {
-      this.showMessage('Error al copiar la clave');
+      this.showMessage('Error al copiar la clave', 'error');
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else if (type === 'warning') {
+      this.modalService.showWarning(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }

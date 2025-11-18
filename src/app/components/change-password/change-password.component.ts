@@ -2,15 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-change-password',
@@ -18,15 +11,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatListModule
+    RouterModule
   ],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
@@ -51,15 +36,17 @@ export class ChangePasswordComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
     // Obtener email del usuario actual
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
-      this.showMessage('Debes iniciar sesión primero');
-      this.router.navigate(['/login']);
+      this.showMessage('Debes iniciar sesión primero', 'error');
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 500);
       return;
     }
 
@@ -94,7 +81,7 @@ export class ChangePasswordComponent implements OnInit {
 
   onSubmit(): void {
     if (this.changeForm.invalid) {
-      this.showMessage('Por favor completa todos los campos correctamente');
+      this.showMessage('Por favor completa todos los campos correctamente', 'error');
       return;
     }
 
@@ -103,12 +90,12 @@ export class ChangePasswordComponent implements OnInit {
     const confirmPassword = this.changeForm.value.confirmPassword;
 
     if (newPassword !== confirmPassword) {
-      this.showMessage('Las contraseñas no coinciden');
+      this.showMessage('Las contraseñas no coinciden', 'error');
       return;
     }
 
     if (!this.allRequirementsMet) {
-      this.showMessage('La nueva contraseña no cumple con todos los requisitos');
+      this.showMessage('La nueva contraseña no cumple con todos los requisitos', 'error');
       return;
     }
 
@@ -119,27 +106,31 @@ export class ChangePasswordComponent implements OnInit {
         this.loading = false;
 
         if (response.ok) {
-          this.showMessage('Contraseña cambiada exitosamente');
+          this.showMessage('Contraseña cambiada exitosamente', 'success');
 
-          // Redirigir al dashboard de seguridad
+          // Redirigir al dashboard de seguridad después de cerrar el modal
           setTimeout(() => {
             this.router.navigate(['/security']);
-          }, 2000);
+          }, 500);
         }
       },
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || 'Error al cambiar contraseña';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else if (type === 'warning') {
+      this.modalService.showWarning(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }
