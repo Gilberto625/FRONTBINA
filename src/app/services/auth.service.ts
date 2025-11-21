@@ -77,6 +77,7 @@ export interface EstadoSeguridad {
   codigos_respaldo_disponibles: number;
   last_login?: string;
   email_2fa?: boolean;
+  tiene_preguntas_seguridad?: boolean;
 }
 
 @Injectable({
