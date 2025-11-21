@@ -1,0 +1,404 @@
+<div class="empleados-container">
+  <div class="header-section">
+    <h1>Gestión de Empleados</h1>
+    <p>Administra el personal de la barbería, roles y permisos</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Barra de herramientas -->
+    <div class="toolbar">
+      <div class="search-section">
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="filtros.buscar" 
+            (input)="filtrarEmpleados()"
+            placeholder="Buscar empleados..."
+            class="search-input">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <select [(ngModel)]="filtros.rol" (change)="filtrarEmpleados()" class="filter-select">
+          <option value="">Todos los roles</option>
+          <option *ngFor="let rol of roles" [value]="rol.id">
+            {{ rol.nombre }}
+          </option>
+        </select>
+
+        <select [(ngModel)]="filtros.estado" (change)="filtrarEmpleados()" class="filter-select">
+          <option value="">Todos los estados</option>
+          <option value="activo">Activos</option>
+          <option value="inactivo">Inactivos</option>
+        </select>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-success" (click)="abrirModalEmpleado()">
+          <i class="fas fa-user-plus"></i>
+          Nuevo Empleado
+        </button>
+        <button class="btn btn-info" (click)="exportarEmpleados()">
+          <i class="fas fa-download"></i>
+          Exportar
+        </button>
+      </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon total">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ estadisticas.total_empleados }}</h3>
+          <p>Total Empleados</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon activos">
+          <i class="fas fa-user-check"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ estadisticas.empleados_activos }}</h3>
+          <p>Empleados Activos</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon barberos">
+          <i class="fas fa-cut"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ estadisticas.barberos }}</h3>
+          <p>Barberos</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon nomina">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-info">
+          <h3>${{ estadisticas.nomina_mensual | number:'1.2-2' }}</h3>
+          <p>Nómina Mensual</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de empleados -->
+    <div class="empleados-grid" *ngIf="!cargando && empleadosFiltrados.length > 0">
+      <div class="empleado-card" *ngFor="let empleado of empleadosFiltrados">
+        <div class="empleado-header">
+          <div class="empleado-avatar">
+            <img [src]="'/assets/images/avatar-default.jpg'" 
+                 [alt]="empleado.usuario.first_name"
+                 (error)="onImageError($event)">
+          </div>
+          <div class="empleado-info">
+            <h3>{{ empleado.usuario.first_name }} {{ empleado.usuario.last_name }}</h3>
+            <p class="empleado-email">{{ empleado.usuario.email }}</p>
+            <span class="rol-badge" [class]="'rol-' + empleado.rol">
+              {{ getRolNombre(empleado.rol) }}
+            </span>
+          </div>
+          <div class="empleado-status">
+            <span class="status-badge" [class]="empleado.activo ? 'status-activo' : 'status-inactivo'">
+              {{ getEstadoTexto(empleado.activo) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="empleado-details">
+          <div class="detail-item">
+            <i class="fas fa-phone"></i>
+            <span>{{ empleado.telefono }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <span>Desde: {{ empleado.fecha_contratacion | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="detail-item" *ngIf="empleado.salario">
+            <i class="fas fa-money-bill"></i>
+            <span>${{ empleado.salario | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <div class="empleado-especialidades" *ngIf="empleado.especialidades && empleado.especialidades.length > 0">
+          <h4>Especialidades:</h4>
+          <div class="especialidades-list">
+            <span class="especialidad-tag" *ngFor="let especialidad of empleado.especialidades">
+              {{ especialidad }}
+            </span>
+          </div>
+        </div>
+
+        <div class="empleado-stats" *ngIf="empleado.estadisticas">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Citas este mes:</span>
+              <span class="stat-value">{{ empleado.estadisticas.citas_mes }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Ingresos:</span>
+              <span class="stat-value">${{ empleado.estadisticas.ingresos_mes | number:'1.2-2' }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Calificación:</span>
+              <span class="stat-value">{{ empleado.estadisticas.calificacion_promedio }}/5</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Clientes:</span>
+              <span class="stat-value">{{ empleado.estadisticas.clientes_atendidos }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="empleado-actions">
+          <button class="action-btn edit" (click)="abrirModalEmpleado(empleado)" title="Editar">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="action-btn view" (click)="verDetallesEmpleado(empleado)" title="Ver detalles">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="action-btn password" (click)="resetearPassword(empleado)" title="Resetear contraseña">
+            <i class="fas fa-key"></i>
+          </button>
+          <button class="action-btn toggle" 
+                  (click)="toggleEstadoEmpleado(empleado)" 
+                  [title]="empleado.activo ? 'Desactivar' : 'Activar'">
+            <i class="fas" [class.fa-toggle-on]="empleado.activo" [class.fa-toggle-off]="!empleado.activo"></i>
+          </button>
+          <button class="action-btn delete" (click)="eliminarEmpleado(empleado)" title="Eliminar">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de carga -->
+    <div class="loading-state" *ngIf="cargando">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Cargando empleados...</p>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="!cargando && empleadosFiltrados.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <h3>No hay empleados</h3>
+      <p>No se encontraron empleados que coincidan con los filtros aplicados.</p>
+      <button class="btn btn-primary" (click)="abrirModalEmpleado()">
+        <i class="fas fa-user-plus"></i>
+        Agregar Primer Empleado
+      </button>
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination-container" *ngIf="totalPaginas > 1">
+      <nav class="pagination">
+        <button class="page-btn" 
+                [disabled]="paginaActual === 1" 
+                (click)="cambiarPagina(paginaActual - 1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <span class="page-info">
+          Página {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+        
+        <button class="page-btn" 
+                [disabled]="paginaActual === totalPaginas" 
+                (click)="cambiarPagina(paginaActual + 1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de empleado -->
+<div class="modal-overlay" *ngIf="mostrarModalEmpleado" (click)="cerrarModalEmpleado()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ empleadoEditando?.id ? 'Editar Empleado' : 'Nuevo Empleado' }}</h2>
+      <button class="close-btn" (click)="cerrarModalEmpleado()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <form class="empleado-form" (ngSubmit)="guardarEmpleado()" #empleadoForm="ngForm">
+      <div class="form-tabs">
+        <button type="button" class="tab-btn active" data-tab="personal">
+          Información Personal
+        </button>
+        <button type="button" class="tab-btn" data-tab="laboral">
+          Información Laboral
+        </button>
+        <button type="button" class="tab-btn" data-tab="especialidades">
+          Especialidades
+        </button>
+      </div>
+
+      <!-- Tab: Información Personal -->
+      <div class="tab-content active" data-tab="personal">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="first_name">Nombre *</label>
+            <input type="text" 
+                   id="first_name"
+                   [(ngModel)]="empleadoEditando.usuario.first_name" 
+                   name="first_name"
+                   required
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="last_name">Apellidos *</label>
+            <input type="text" 
+                   id="last_name"
+                   [(ngModel)]="empleadoEditando.usuario.last_name" 
+                   name="last_name"
+                   required
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" 
+                   id="email"
+                   [(ngModel)]="empleadoEditando.usuario.email" 
+                   name="email"
+                   required
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="username">Usuario *</label>
+            <input type="text" 
+                   id="username"
+                   [(ngModel)]="empleadoEditando.usuario.username" 
+                   name="username"
+                   required
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="telefono">Teléfono *</label>
+            <input type="tel" 
+                   id="telefono"
+                   [(ngModel)]="empleadoEditando.telefono" 
+                   name="telefono"
+                   required
+                   class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="direccion">Dirección</label>
+          <textarea id="direccion" 
+                    [(ngModel)]="empleadoEditando.direccion" 
+                    name="direccion"
+                    rows="2"
+                    class="form-control"></textarea>
+        </div>
+      </div>
+
+      <!-- Tab: Información Laboral -->
+      <div class="tab-content" data-tab="laboral">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="rol">Rol *</label>
+            <select id="rol" 
+                    [(ngModel)]="empleadoEditando.rol" 
+                    name="rol"
+                    required
+                    class="form-control">
+              <option value="">Seleccionar rol</option>
+              <option *ngFor="let rol of roles" [value]="rol.id">
+                {{ rol.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="fecha_contratacion">Fecha de Contratación *</label>
+            <input type="date" 
+                   id="fecha_contratacion"
+                   [(ngModel)]="empleadoEditando.fecha_contratacion" 
+                   name="fecha_contratacion"
+                   required
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="salario">Salario</label>
+            <input type="number" 
+                   id="salario"
+                   [(ngModel)]="empleadoEditando.salario" 
+                   name="salario"
+                   step="0.01"
+                   min="0"
+                   class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" 
+                     [(ngModel)]="empleadoEditando.activo" 
+                     name="activo">
+              <span class="checkmark"></span>
+              Empleado Activo
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Especialidades -->
+      <div class="tab-content" data-tab="especialidades">
+        <div class="especialidades-section">
+          <div class="section-header">
+            <h4>Especialidades del Empleado</h4>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="agregarEspecialidad()">
+              <i class="fas fa-plus"></i>
+              Agregar Especialidad
+            </button>
+          </div>
+
+          <div class="especialidades-list" *ngIf="empleadoEditando.especialidades && empleadoEditando.especialidades.length > 0">
+            <div class="especialidad-item" *ngFor="let especialidad of empleadoEditando.especialidades; let i = index">
+              <input type="text" 
+                     [(ngModel)]="empleadoEditando.especialidades[i]" 
+                     [name]="'especialidad_' + i"
+                     placeholder="Nombre de la especialidad"
+                     class="form-control">
+              <button type="button" 
+                      class="btn btn-sm btn-danger" 
+                      (click)="eliminarEspecialidad(i)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-especialidades" *ngIf="!empleadoEditando.especialidades || empleadoEditando.especialidades.length === 0">
+            <p>No hay especialidades definidas para este empleado.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModalEmpleado()">
+          Cancelar
+        </button>
+        <button type="submit" 
+                class="btn btn-primary" 
+                [disabled]="!empleadoForm.valid || guardandoEmpleado">
+          <i class="fas fa-save" *ngIf="!guardandoEmpleado"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="guardandoEmpleado"></i>
+          {{ guardandoEmpleado ? 'Guardando...' : 'Guardar Empleado' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

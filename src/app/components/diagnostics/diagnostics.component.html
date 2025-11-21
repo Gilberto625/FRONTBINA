@@ -1,0 +1,258 @@
+<div class="diagnostics-container">
+  <!-- Header -->
+  <div class="diagnostics-header">
+    <h1>
+      <i class="fas fa-stethoscope"></i>
+      Diagnóstico del Sistema
+    </h1>
+    <p class="subtitle">Verificación de conectividad entre Frontend y Backend</p>
+    
+    <div class="header-actions">
+      <button class="btn btn-primary" 
+              (click)="runDiagnostics()" 
+              [disabled]="isRunning">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isRunning"></i>
+        {{ isRunning ? 'Ejecutando...' : 'Ejecutar Diagnósticos' }}
+      </button>
+      
+      <button class="btn btn-secondary" 
+              (click)="copyDiagnostics()"
+              [disabled]="!backendStatus">
+        <i class="fas fa-copy"></i>
+        Copiar Reporte
+      </button>
+      
+      <button class="btn btn-outline" 
+              (click)="downloadReport()"
+              [disabled]="!backendStatus">
+        <i class="fas fa-download"></i>
+        Descargar
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado General -->
+  <div class="overall-status" [class]="getOverallStatus().class">
+    <div class="status-icon">
+      <i [class]="getStatusIcon(getOverallStatus().status)"></i>
+    </div>
+    <div class="status-content">
+      <h3>{{ getOverallStatus().message }}</h3>
+      <p *ngIf="lastUpdate">Última actualización: {{ lastUpdate | date:'medium' }}</p>
+    </div>
+  </div>
+
+  <!-- Información del Entorno -->
+  <div class="diagnostics-section">
+    <h2>
+      <i class="fas fa-cog"></i>
+      Configuración del Entorno
+    </h2>
+    
+    <div class="info-grid">
+      <div class="info-item">
+        <label>Modo:</label>
+        <span class="value" [class]="environment.production ? 'production' : 'development'">
+          {{ environment.production ? 'Producción' : 'Desarrollo' }}
+        </span>
+      </div>
+      
+      <div class="info-item">
+        <label>API URL:</label>
+        <span class="value url">{{ environment.apiUrl }}</span>
+      </div>
+      
+      <div class="info-item">
+        <label>Versión:</label>
+        <span class="value">{{ environment.version }}</span>
+      </div>
+      
+      <div class="info-item">
+        <label>Debug:</label>
+        <span class="value">{{ environment.enableDebugMode ? 'Habilitado' : 'Deshabilitado' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado del Backend -->
+  <div class="diagnostics-section">
+    <h2>
+      <i class="fas fa-server"></i>
+      Estado del Backend
+      <button class="btn-refresh" (click)="checkConnectivity()" [disabled]="isRunning">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isRunning"></i>
+      </button>
+    </h2>
+    
+    <div class="status-card" *ngIf="backendStatus; else noBackendStatus">
+      <div class="status-header" [class]="getStatusClass(backendStatus.online)">
+        <i [class]="getStatusIcon(backendStatus.online)"></i>
+        <span>{{ backendStatus.online ? 'Conectado' : 'Desconectado' }}</span>
+      </div>
+      
+      <div class="status-details">
+        <div class="detail-item">
+          <label>Tiempo de Respuesta:</label>
+          <span [class]="getResponseTimeClass(backendStatus.responseTime)">
+            {{ formatResponseTime(backendStatus.responseTime) }}
+          </span>
+        </div>
+        
+        <div class="detail-item" *ngIf="backendStatus.version">
+          <label>Versión del Backend:</label>
+          <span>{{ backendStatus.version }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Última Verificación:</label>
+          <span>{{ backendStatus.lastCheck | date:'medium' }}</span>
+        </div>
+        
+        <div class="detail-item error" *ngIf="backendStatus.error">
+          <label>Error:</label>
+          <span>{{ backendStatus.error }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <ng-template #noBackendStatus>
+      <div class="no-data">
+        <i class="fas fa-question-circle"></i>
+        <p>Ejecuta los diagnósticos para verificar el estado del backend</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Verificación de Endpoints -->
+  <div class="diagnostics-section">
+    <h2>
+      <i class="fas fa-link"></i>
+      Endpoints Críticos
+      <button class="btn-refresh" (click)="checkEndpoints()" [disabled]="isRunning">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isRunning"></i>
+      </button>
+    </h2>
+    
+    <div class="endpoints-list" *ngIf="endpointChecks.length > 0; else noEndpoints">
+      <div class="endpoint-item" 
+           *ngFor="let endpoint of endpointChecks"
+           [class]="getStatusClass(endpoint.status)">
+        <div class="endpoint-info">
+          <i [class]="getStatusIcon(endpoint.status)"></i>
+          <span class="endpoint-path">{{ endpoint.endpoint }}</span>
+        </div>
+        
+        <div class="endpoint-details">
+          <span class="status-text">{{ endpoint.status | titlecase }}</span>
+          <span class="response-time" [class]="getResponseTimeClass(endpoint.responseTime)">
+            {{ formatResponseTime(endpoint.responseTime) }}
+          </span>
+        </div>
+        
+        <div class="endpoint-error" *ngIf="endpoint.error">
+          <small>{{ endpoint.error }}</small>
+        </div>
+      </div>
+    </div>
+    
+    <ng-template #noEndpoints>
+      <div class="no-data">
+        <i class="fas fa-question-circle"></i>
+        <p>Ejecuta los diagnósticos para verificar los endpoints</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Verificaciones Adicionales -->
+  <div class="diagnostics-section">
+    <h2>
+      <i class="fas fa-shield-alt"></i>
+      Verificaciones de Seguridad
+    </h2>
+    
+    <div class="security-checks">
+      <!-- CORS -->
+      <div class="check-item">
+        <div class="check-header">
+          <i [class]="getStatusIcon(corsStatus)" [class]="getStatusClass(corsStatus)"></i>
+          <span>Configuración CORS</span>
+        </div>
+        <div class="check-status">
+          <span *ngIf="corsStatus === true" class="status-success">Configurado correctamente</span>
+          <span *ngIf="corsStatus === false" class="status-error">Problemas de CORS detectados</span>
+          <span *ngIf="corsStatus === null" class="status-unknown">No verificado</span>
+        </div>
+      </div>
+      
+      <!-- Autenticación -->
+      <div class="check-item">
+        <div class="check-header">
+          <i [class]="getStatusIcon(authStatus)" [class]="getStatusClass(authStatus)"></i>
+          <span>Estado de Autenticación</span>
+        </div>
+        <div class="check-status">
+          <span *ngIf="authStatus === true" class="status-success">Usuario autenticado</span>
+          <span *ngIf="authStatus === false" class="status-warning">No autenticado</span>
+          <span *ngIf="authStatus === null" class="status-unknown">No verificado</span>
+        </div>
+        <button class="btn-check" (click)="checkAuth()" [disabled]="isRunning">
+          <i class="fas fa-sync-alt" [class.fa-spin]="isRunning"></i>
+          Verificar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información del Servidor -->
+  <div class="diagnostics-section" *ngIf="hasServerInfo()">
+    <h2>
+      <i class="fas fa-info-circle"></i>
+      Información del Servidor
+    </h2>
+    
+    <div class="server-info">
+      <div class="info-item" *ngFor="let item of serverInfo | keyvalue">
+        <label>{{ $any(item.key) | titlecase }}:</label>
+        <span class="value">{{ item.value }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recomendaciones -->
+  <div class="diagnostics-section recommendations" *ngIf="backendStatus && !backendStatus.online">
+    <h2>
+      <i class="fas fa-lightbulb"></i>
+      Recomendaciones
+    </h2>
+    
+    <div class="recommendation-list">
+      <div class="recommendation-item">
+        <i class="fas fa-check"></i>
+        <span>Verifica que el servidor backend esté ejecutándose en {{ environment.apiUrl }}</span>
+      </div>
+      
+      <div class="recommendation-item">
+        <i class="fas fa-check"></i>
+        <span>Confirma que no hay problemas de firewall o red</span>
+      </div>
+      
+      <div class="recommendation-item">
+        <i class="fas fa-check"></i>
+        <span>Revisa la configuración CORS en el backend Django</span>
+      </div>
+      
+      <div class="recommendation-item">
+        <i class="fas fa-check"></i>
+        <span>Verifica que las variables de entorno estén configuradas correctamente</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isRunning">
+    <div class="loading-content">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Ejecutando diagnósticos...</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+.configuracion-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  border-radius: 5px;
+}
+
+.tabs button.active {
+  background: #c9a227;
+  color: white;
+}
+
+.tab-content {
+  padding: 20px 0;
+}
+
+h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+h4 {
+  color: #555;
+  margin: 20px 0 10px;
+  font-size: 14px;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toggle-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.toggle-option span {
+  color: #333;
+}
+
+.toggle-option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.info-section {
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  color: #666;
+}
+
+.actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.btn-primary {
+  padding: 12px 30px;
+  background: #c9a227;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary:hover {
+  background: #b8922a;
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

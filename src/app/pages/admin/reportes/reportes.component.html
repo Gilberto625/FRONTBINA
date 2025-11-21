@@ -1,0 +1,302 @@
+<div class="reportes-container">
+  <div class="header-section">
+    <h1>Centro de Reportes</h1>
+    <p>Genera y gestiona reportes detallados del negocio</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Reportes disponibles -->
+    <div class="reportes-grid">
+      <div class="reporte-card" 
+           *ngFor="let reporte of reportesDisponibles"
+           (click)="seleccionarReporte(reporte)">
+        <div class="reporte-icon">
+          <i [class]="reporte.icono"></i>
+        </div>
+        <div class="reporte-info">
+          <h3>{{ reporte.nombre }}</h3>
+          <p>{{ reporte.descripcion }}</p>
+        </div>
+        <div class="reporte-action">
+          <i class="fas fa-arrow-right"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de reportes -->
+    <div class="historial-section">
+      <div class="section-header">
+        <h2>Historial de Reportes</h2>
+        <button class="btn btn-outline-primary" (click)="cargarHistorialReportes()">
+          <i class="fas fa-sync-alt"></i>
+          Actualizar
+        </button>
+      </div>
+
+      <div class="historial-table-container" *ngIf="!cargandoHistorial && historialReportes.length > 0">
+        <table class="historial-table">
+          <thead>
+            <tr>
+              <th>Reporte</th>
+              <th>Tipo</th>
+              <th>Formato</th>
+              <th>Fecha</th>
+              <th>Tamano</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reporte of historialReportes">
+              <td class="reporte-name">
+                <div class="name-info">
+                  <h4>{{ reporte.nombre }}</h4>
+                  <span class="filename">{{ reporte.nombre_archivo }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="tipo-badge">{{ reporte.tipo }}</span>
+              </td>
+              <td>
+                <span class="formato-badge" [class]="'formato-' + getColorFormato(reporte.formato)">
+                  <i [class]="getIconoFormato(reporte.formato)"></i>
+                  {{ reporte.formato.toUpperCase() }}
+                </span>
+              </td>
+              <td class="fecha-cell">
+                {{ formatearFecha(reporte.fecha_creacion) }}
+              </td>
+              <td class="tamano-cell">
+                {{ formatearTamano(reporte.tamano) }}
+              </td>
+              <td class="acciones-cell">
+                <div class="action-buttons">
+                  <button class="action-btn download" 
+                          (click)="descargarReporteHistorial(reporte)"
+                          title="Descargar">
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button class="action-btn delete" 
+                          (click)="eliminarReporteHistorial(reporte)"
+                          title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="loading-state" *ngIf="cargandoHistorial">
+        <div class="spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Cargando historial...</p>
+      </div>
+
+      <div class="empty-state" *ngIf="!cargandoHistorial && historialReportes.length === 0">
+        <div class="empty-icon">
+          <i class="fas fa-file-alt"></i>
+        </div>
+        <h3>No hay reportes generados</h3>
+        <p>Los reportes que generes aparecerán aquí para su descarga posterior.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de configuración de reporte -->
+<div class="modal-overlay" *ngIf="mostrarModalReporte" (click)="cerrarModalReporte()">
+  <div class="modal-content large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ reporteSeleccionado?.nombre }}</h2>
+      <button class="close-btn" (click)="cerrarModalReporte()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="reporte-config">
+        <!-- Configuración básica -->
+        <div class="config-section">
+          <h3>Configuración Básica</h3>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="fecha_inicio">Fecha de Inicio *</label>
+              <input type="date" 
+                     id="fecha_inicio"
+                     [(ngModel)]="filtros.fecha_inicio" 
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="fecha_fin">Fecha de Fin *</label>
+              <input type="date" 
+                     id="fecha_fin"
+                     [(ngModel)]="filtros.fecha_fin" 
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="formato">Formato de Salida</label>
+              <select id="formato" [(ngModel)]="filtros.formato" class="form-control">
+                <option value="excel">Excel (.xlsx)</option>
+                <option value="pdf">PDF (.pdf)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" 
+                       [(ngModel)]="filtros.incluir_graficos">
+                <span class="checkmark"></span>
+                Incluir Gráficos
+              </label>
+            </div>
+          </div>
+
+          <!-- Períodos rápidos -->
+          <div class="periodos-rapidos">
+            <h4>Períodos Rápidos</h4>
+            <div class="periodo-buttons">
+              <button class="periodo-btn" (click)="establecerPeriodoRapido('hoy')">Hoy</button>
+              <button class="periodo-btn" (click)="establecerPeriodoRapido('semana')">Última Semana</button>
+              <button class="periodo-btn" (click)="establecerPeriodoRapido('mes')">Último Mes</button>
+              <button class="periodo-btn" (click)="establecerPeriodoRapido('trimestre')">Último Trimestre</button>
+              <button class="periodo-btn" (click)="establecerPeriodoRapido('año')">Último Año</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros específicos -->
+        <div class="config-section" *ngIf="reporteSeleccionado?.tipo !== 'personalizado'">
+          <h3>Filtros Específicos</h3>
+          
+          <div class="form-grid">
+            <!-- Filtro por barbero -->
+            <div class="form-group" *ngIf="reporteSeleccionado?.tipo === 'citas' || reporteSeleccionado?.tipo === 'empleados'">
+              <label for="barbero">Barbero</label>
+              <select id="barbero" [(ngModel)]="filtros.barbero_id" class="form-control">
+                <option value="">Todos los barberos</option>
+                <option *ngFor="let barbero of barberos" [value]="barbero.id">
+                  {{ barbero.usuario.first_name }} {{ barbero.usuario.last_name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Filtro por servicio -->
+            <div class="form-group" *ngIf="reporteSeleccionado?.tipo === 'citas' || reporteSeleccionado?.tipo === 'ventas'">
+              <label for="servicio">Servicio</label>
+              <select id="servicio" [(ngModel)]="filtros.servicio_id" class="form-control">
+                <option value="">Todos los servicios</option>
+                <option *ngFor="let servicio of servicios" [value]="servicio.id">
+                  {{ servicio.nombre }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Filtro por categoría -->
+            <div class="form-group" *ngIf="reporteSeleccionado?.tipo === 'productos' || reporteSeleccionado?.tipo === 'ventas'">
+              <label for="categoria">Categoría</label>
+              <select id="categoria" [(ngModel)]="filtros.categoria_id" class="form-control">
+                <option value="">Todas las categorías</option>
+                <option *ngFor="let categoria of categorias" [value]="categoria.id">
+                  {{ categoria.nombre }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuración personalizada -->
+        <div class="config-section" *ngIf="reporteSeleccionado?.tipo === 'personalizado'">
+          <h3>Configuración Personalizada</h3>
+          
+          <div class="custom-config">
+            <div class="metrics-selection">
+              <h4>Métricas a Incluir</h4>
+              <div class="metrics-grid">
+                <label class="metric-checkbox">
+                  <input type="checkbox" value="ventas">
+                  <span class="checkmark"></span>
+                  Ventas Totales
+                </label>
+                <label class="metric-checkbox">
+                  <input type="checkbox" value="citas">
+                  <span class="checkmark"></span>
+                  Número de Citas
+                </label>
+                <label class="metric-checkbox">
+                  <input type="checkbox" value="clientes">
+                  <span class="checkmark"></span>
+                  Clientes Nuevos
+                </label>
+                <label class="metric-checkbox">
+                  <input type="checkbox" value="productos">
+                  <span class="checkmark"></span>
+                  Productos Vendidos
+                </label>
+                <label class="metric-checkbox">
+                  <input type="checkbox" value="empleados">
+                  <span class="checkmark"></span>
+                  Rendimiento Empleados
+                </label>
+                <label class="metric-checkbox">
+                  <input type="checkbox" value="inventario">
+                  <span class="checkmark"></span>
+                  Estado Inventario
+                </label>
+              </div>
+            </div>
+
+            <div class="grouping-options">
+              <h4>Agrupar Por</h4>
+              <div class="grouping-grid">
+                <label class="radio-option">
+                  <input type="radio" name="grouping" value="dia">
+                  <span class="radio-mark"></span>
+                  Por Día
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="grouping" value="semana">
+                  <span class="radio-mark"></span>
+                  Por Semana
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="grouping" value="mes">
+                  <span class="radio-mark"></span>
+                  Por Mes
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="grouping" value="barbero">
+                  <span class="radio-mark"></span>
+                  Por Barbero
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="footer-actions">
+        <button class="btn btn-secondary" (click)="cerrarModalReporte()">
+          Cancelar
+        </button>
+        <button class="btn btn-info" (click)="enviarReportePorEmail()">
+          <i class="fas fa-envelope"></i>
+          Enviar por Email
+        </button>
+        <button class="btn btn-primary" 
+                (click)="generarReporte()"
+                [disabled]="generandoReporte">
+          <i class="fas fa-download" *ngIf="!generandoReporte"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="generandoReporte"></i>
+          {{ generandoReporte ? 'Generando...' : 'Generar Reporte' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

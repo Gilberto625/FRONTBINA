@@ -1,0 +1,402 @@
+<!-- Header -->
+<div class="agendar-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="header-info">
+        <h1 class="page-title">
+          <i class="lucide lucide-calendar-plus"></i>
+          Agendar Cita
+        </h1>
+        <p class="page-subtitle">Reserva tu cita en 4 sencillos pasos</p>
+      </div>
+      <div class="progress-indicator">
+        <div class="step" [class.active]="pasoActual >= 1" [class.completed]="pasoActual > 1">
+          <span class="step-number">1</span>
+          <span class="step-label">Servicios</span>
+        </div>
+        <div class="step" [class.active]="pasoActual >= 2" [class.completed]="pasoActual > 2">
+          <span class="step-number">2</span>
+          <span class="step-label">Barbero</span>
+        </div>
+        <div class="step" [class.active]="pasoActual >= 3" [class.completed]="pasoActual > 3">
+          <span class="step-number">3</span>
+          <span class="step-label">Fecha y Hora</span>
+        </div>
+        <div class="step" [class.active]="pasoActual >= 4">
+          <span class="step-number">4</span>
+          <span class="step-label">Confirmación</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="container" *ngIf="isLoading">
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando información...</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="container" *ngIf="error && !isLoading">
+  <div class="alert alert-error">
+    <i class="lucide lucide-alert-circle"></i>
+    {{ error }}
+  </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="container" *ngIf="!isLoading && !error">
+  
+  <!-- PASO 1: Selección de Servicios -->
+  <div class="step-content" *ngIf="pasoActual === 1">
+    <div class="step-header">
+      <h2>Selecciona los servicios que deseas</h2>
+      <p>Puedes elegir uno o varios servicios para tu cita</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <label class="filter-label">Categoría</label>
+        <select class="input-field" [(ngModel)]="categoriaFiltro">
+          <option *ngFor="let categoria of categorias" [value]="categoria">
+            {{ categoria }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Grid de servicios -->
+    <div class="servicios-grid">
+      <div class="servicio-card" 
+           *ngFor="let servicio of serviciosFiltrados"
+           [class.selected]="isServicioSeleccionado(servicio)"
+           (click)="toggleServicio(servicio)">
+        
+        <div class="servicio-image">
+          <img [src]="servicio.imagen || 'assets/images/servicio-placeholder.jpg'" 
+               [alt]="servicio.nombre" 
+               class="servicio-img">
+          <div class="selection-indicator" *ngIf="isServicioSeleccionado(servicio)">
+            <i class="lucide lucide-check"></i>
+          </div>
+        </div>
+
+        <div class="servicio-info">
+          <h3 class="servicio-nombre">{{ servicio.nombre }}</h3>
+          <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
+          
+          <div class="servicio-meta">
+            <div class="servicio-precio">{{ formatCurrency(servicio.precio) }}</div>
+            <div class="servicio-duracion">
+              <i class="lucide lucide-clock"></i>
+              {{ formatDuration(servicio.duracion) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen de selección -->
+    <div class="selection-summary" *ngIf="serviciosSeleccionados.length > 0">
+      <h3>Servicios seleccionados ({{ serviciosSeleccionados.length }})</h3>
+      <div class="selected-services">
+        <div class="selected-service" *ngFor="let servicio of serviciosSeleccionados">
+          <span class="service-name">{{ servicio.nombre }}</span>
+          <span class="service-price">{{ formatCurrency(servicio.precio) }}</span>
+          <button class="btn-remove" (click)="toggleServicio(servicio)">
+            <i class="lucide lucide-x"></i>
+          </button>
+        </div>
+      </div>
+      <div class="summary-totals">
+        <div class="total-row">
+          <span>Duración total:</span>
+          <span>{{ formatDuration(duracionTotal) }}</span>
+        </div>
+        <div class="total-row total">
+          <span><strong>Total:</strong></span>
+          <span><strong>{{ formatCurrency(precioTotal) }}</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 2: Selección de Barbero -->
+  <div class="step-content" *ngIf="pasoActual === 2">
+    <div class="step-header">
+      <h2>Elige tu barbero preferido</h2>
+      <p>Selecciona el barbero que realizará tus servicios</p>
+    </div>
+
+    <div class="barberos-grid">
+      <div class="barbero-card" 
+           *ngFor="let barbero of barberos"
+           [class.selected]="barberoSeleccionado?.id === barbero.id"
+           (click)="seleccionarBarbero(barbero)">
+        
+        <div class="barbero-image">
+          <img [src]="barbero.foto || 'assets/images/barbero-placeholder.jpg'" 
+               [alt]="barbero.nombre + ' ' + barbero.apellido" 
+               class="barbero-img">
+          <div class="selection-indicator" *ngIf="barberoSeleccionado?.id === barbero.id">
+            <i class="lucide lucide-check"></i>
+          </div>
+        </div>
+
+        <div class="barbero-info">
+          <h3 class="barbero-nombre">{{ barbero.nombre }} {{ barbero.apellido }}</h3>
+          
+          <div class="barbero-rating">
+            <div class="stars">
+              <i class="lucide lucide-star" 
+                 *ngFor="let star of getStarArray(5)" 
+                 [class.filled]="star <= barbero.calificacion"></i>
+            </div>
+            <span class="rating-text">{{ barbero.calificacion }}/5</span>
+          </div>
+
+          <div class="barbero-especialidades">
+            <h4>Especialidades:</h4>
+            <div class="especialidades-list">
+              <span class="especialidad" *ngFor="let especialidad of barbero.especialidades">
+                {{ especialidad }}
+              </span>
+            </div>
+          </div>
+
+          <div class="barbero-status" [class.disponible]="barbero.disponible">
+            <i class="lucide lucide-circle" [class.filled]="barbero.disponible"></i>
+            <span>{{ barbero.disponible ? 'Disponible' : 'No disponible' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 3: Fecha y Hora -->
+  <div class="step-content" *ngIf="pasoActual === 3">
+    <div class="step-header">
+      <h2>Selecciona fecha y hora</h2>
+      <p>Elige el día y horario que mejor te convenga</p>
+    </div>
+
+    <div class="datetime-selection">
+      
+      <!-- Calendario de fechas -->
+      <div class="dates-section">
+        <h3>Fechas disponibles</h3>
+        <div class="dates-grid">
+          <button class="date-btn" 
+                  *ngFor="let horario of horariosDisponibles"
+                  [class.selected]="fechaSeleccionada === horario.fecha"
+                  [disabled]="horario.horas.length === 0"
+                  (click)="seleccionarFecha(horario.fecha)">
+            <div class="date-day">{{ formatDate(horario.fecha).split(',')[0] }}</div>
+            <div class="date-full">{{ formatDate(horario.fecha).split(',')[1] }}</div>
+            <div class="date-availability">{{ horario.horas.length }} horarios</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Horarios disponibles -->
+      <div class="times-section" *ngIf="fechaSeleccionada">
+        <h3>Horarios disponibles</h3>
+        <div class="times-grid">
+          <button class="time-btn" 
+                  *ngFor="let hora of horasDelDiaSeleccionado"
+                  [class.selected]="horaSeleccionada === hora"
+                  (click)="seleccionarHora(hora)">
+            {{ formatTime(hora) }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Información de la cita -->
+    <div class="appointment-info" *ngIf="fechaSeleccionada && horaSeleccionada">
+      <h3>Información de tu cita</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <i class="lucide lucide-calendar"></i>
+          <div>
+            <strong>Fecha</strong>
+            <span>{{ formatDate(fechaSeleccionada) }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="lucide lucide-clock"></i>
+          <div>
+            <strong>Hora</strong>
+            <span>{{ formatTime(horaSeleccionada) }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="lucide lucide-user"></i>
+          <div>
+            <strong>Barbero</strong>
+            <span>{{ barberoSeleccionado?.nombre }} {{ barberoSeleccionado?.apellido }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="lucide lucide-timer"></i>
+          <div>
+            <strong>Duración</strong>
+            <span>{{ formatDuration(duracionTotal) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 4: Confirmación -->
+  <div class="step-content" *ngIf="pasoActual === 4">
+    <div class="step-header">
+      <h2>Confirma tu cita</h2>
+      <p>Revisa todos los detalles antes de confirmar</p>
+    </div>
+
+    <div class="confirmation-layout">
+      
+      <!-- Resumen de la cita -->
+      <div class="appointment-summary">
+        <h3>Resumen de tu cita</h3>
+        
+        <!-- Servicios -->
+        <div class="summary-section">
+          <h4>
+            <i class="lucide lucide-scissors"></i>
+            Servicios seleccionados
+          </h4>
+          <div class="services-list">
+            <div class="service-item" *ngFor="let servicio of serviciosSeleccionados">
+              <div class="service-info">
+                <span class="service-name">{{ servicio.nombre }}</span>
+                <span class="service-duration">{{ formatDuration(servicio.duracion) }}</span>
+              </div>
+              <span class="service-price">{{ formatCurrency(servicio.precio) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barbero -->
+        <div class="summary-section">
+          <h4>
+            <i class="lucide lucide-user"></i>
+            Barbero asignado
+          </h4>
+          <div class="barbero-summary">
+            <img [src]="barberoSeleccionado?.foto || 'assets/images/barbero-placeholder.jpg'" 
+                 [alt]="barberoSeleccionado?.nombre" 
+                 class="barbero-avatar">
+            <div class="barbero-details">
+              <strong>{{ barberoSeleccionado?.nombre }} {{ barberoSeleccionado?.apellido }}</strong>
+              <div class="barbero-rating">
+                <div class="stars">
+                  <i class="lucide lucide-star" 
+                     *ngFor="let star of getStarArray(5)" 
+                     [class.filled]="star <= (barberoSeleccionado?.calificacion || 0)"></i>
+                </div>
+                <span>{{ barberoSeleccionado?.calificacion }}/5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fecha y hora -->
+        <div class="summary-section">
+          <h4>
+            <i class="lucide lucide-calendar-clock"></i>
+            Fecha y hora
+          </h4>
+          <div class="datetime-summary">
+            <div class="datetime-item">
+              <strong>{{ formatDate(fechaSeleccionada) }}</strong>
+            </div>
+            <div class="datetime-item">
+              <strong>{{ formatTime(horaSeleccionada) }}</strong>
+            </div>
+            <div class="datetime-item">
+              <span>Duración: {{ formatDuration(duracionTotal) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Totales -->
+        <div class="summary-section totals">
+          <div class="total-row">
+            <span>Subtotal:</span>
+            <span>{{ formatCurrency(precioTotal) }}</span>
+          </div>
+          <div class="total-row" *ngIf="requiereAnticipo">
+            <span>Anticipo requerido (50%):</span>
+            <span>{{ formatCurrency(montoAnticipo) }}</span>
+          </div>
+          <div class="total-row final">
+            <span><strong>Total a pagar:</strong></span>
+            <span><strong>{{ formatCurrency(requiereAnticipo ? montoAnticipo : precioTotal) }}</strong></span>
+          </div>
+        </div>
+
+        <!-- Información importante -->
+        <div class="important-info">
+          <div class="info-alert">
+            <i class="lucide lucide-info"></i>
+            <div>
+              <strong>Información importante:</strong>
+              <ul>
+                <li *ngIf="!requiereAnticipo">Esta es tu primera cita, no se requiere anticipo</li>
+                <li *ngIf="requiereAnticipo">Se requiere anticipo del 50% para confirmar la cita</li>
+                <li>Puedes cancelar con 24 horas de anticipación</li>
+                <li>Llega 5 minutos antes de tu cita</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Navegación -->
+  <div class="step-navigation">
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" 
+              (click)="pasoAnterior()"
+              [disabled]="pasoActual === 1">
+        <i class="lucide lucide-arrow-left"></i>
+        Anterior
+      </button>
+
+      <button class="btn btn-primary" 
+              *ngIf="pasoActual < totalPasos"
+              (click)="siguientePaso()"
+              [disabled]="!puedeAvanzarPaso1 && pasoActual === 1 || 
+                         !puedeAvanzarPaso2 && pasoActual === 2 || 
+                         !puedeAvanzarPaso3 && pasoActual === 3">
+        Siguiente
+        <i class="lucide lucide-arrow-right"></i>
+      </button>
+
+      <button class="btn btn-primary btn-lg" 
+              *ngIf="pasoActual === totalPasos"
+              (click)="confirmarCita()"
+              [disabled]="isProcessing">
+        <div class="spinner-sm" *ngIf="isProcessing"></div>
+        <i class="lucide lucide-check" *ngIf="!isProcessing"></i>
+        <span *ngIf="!isProcessing">Confirmar Cita</span>
+        <span *ngIf="isProcessing">Procesando...</span>
+      </button>
+    </div>
+
+    <!-- Información de progreso -->
+    <div class="progress-info">
+      <span>Paso {{ pasoActual }} de {{ totalPasos }}</span>
+    </div>
+  </div>
+
+</div>

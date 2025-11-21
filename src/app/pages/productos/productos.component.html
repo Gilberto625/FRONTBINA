@@ -1,0 +1,258 @@
+<!-- Header -->
+<div class="productos-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="page-title">
+          <i class="lucide lucide-shopping-bag"></i>
+          Productos Premium
+        </h1>
+        <p class="page-subtitle">Descubre nuestra selección de productos de calidad para el cuidado personal</p>
+      </div>
+      <div class="header-stats" *ngIf="!isLoading">
+        <span class="stat">{{ totalProductos }} productos</span>
+        <span class="stat" *ngIf="categoriaSeleccionada !== 'Todas'">en {{ categoriaSeleccionada }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="filtros-section">
+  <div class="container">
+    <div class="filtros-container">
+      
+      <!-- Búsqueda -->
+      <div class="filtro-grupo">
+        <label class="filtro-label">Buscar productos</label>
+        <div class="search-input-container">
+          <input 
+            type="text" 
+            class="input-field search-input" 
+            placeholder="Buscar por nombre, descripción o marca..."
+            [(ngModel)]="busqueda"
+            (input)="aplicarFiltros()">
+          <i class="lucide lucide-search search-icon"></i>
+        </div>
+      </div>
+
+      <!-- Categoría -->
+      <div class="filtro-grupo">
+        <label class="filtro-label">Categoría</label>
+        <select class="input-field" [(ngModel)]="categoriaSeleccionada" (change)="aplicarFiltros()">
+          <option *ngFor="let categoria of categorias" [value]="categoria">
+            {{ categoria }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Ordenar por -->
+      <div class="filtro-grupo">
+        <label class="filtro-label">Ordenar por</label>
+        <select class="input-field" [(ngModel)]="ordenPor" (change)="aplicarFiltros()">
+          <option value="nombre">Nombre A-Z</option>
+          <option value="precio-asc">Precio: Menor a Mayor</option>
+          <option value="precio-desc">Precio: Mayor a Menor</option>
+          <option value="categoria">Categoría</option>
+        </select>
+      </div>
+
+      <!-- Rango de precios -->
+      <div class="filtro-grupo precio-range">
+        <label class="filtro-label">Rango de precios</label>
+        <div class="precio-inputs">
+          <input 
+            type="number" 
+            class="input-field precio-input" 
+            placeholder="Min"
+            [(ngModel)]="precioMin"
+            (change)="aplicarFiltros()">
+          <span class="precio-separator">-</span>
+          <input 
+            type="number" 
+            class="input-field precio-input" 
+            placeholder="Max"
+            [(ngModel)]="precioMax"
+            (change)="aplicarFiltros()">
+        </div>
+      </div>
+
+      <!-- Limpiar filtros -->
+      <div class="filtro-grupo">
+        <button class="btn btn-secondary btn-sm" (click)="limpiarFiltros()">
+          <i class="lucide lucide-x"></i>
+          Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="container" *ngIf="isLoading">
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando productos...</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="container" *ngIf="error && !isLoading">
+  <div class="alert alert-error">
+    <i class="lucide lucide-alert-circle"></i>
+    {{ error }}
+  </div>
+</div>
+
+<!-- Productos -->
+<div class="container" *ngIf="!isLoading && !error">
+  
+  <!-- Sin resultados -->
+  <div class="no-results" *ngIf="productosFiltrados.length === 0">
+    <div class="no-results-icon">
+      <i class="lucide lucide-search-x"></i>
+    </div>
+    <h3>No se encontraron productos</h3>
+    <p>Intenta ajustar los filtros o buscar con otros términos</p>
+    <button class="btn btn-primary" (click)="limpiarFiltros()">
+      <i class="lucide lucide-refresh-cw"></i>
+      Ver todos los productos
+    </button>
+  </div>
+
+  <!-- Grid de productos -->
+  <div class="productos-grid" *ngIf="productosFiltrados.length > 0">
+    <div class="producto-card" *ngFor="let producto of productosPaginados">
+      
+      <!-- Imagen del producto -->
+      <div class="producto-imagen" [routerLink]="['/producto', producto.id]">
+        <img 
+          [src]="producto.imagen_principal || 'assets/images/producto-placeholder.jpg'" 
+          [alt]="producto.nombre"
+          class="producto-img"
+          loading="lazy">
+        
+        <!-- Badge de descuento -->
+        <div class="descuento-badge" *ngIf="producto.descuento > 0">
+          -{{ producto.descuento }}%
+        </div>
+        
+        <!-- Badge de stock -->
+        <div class="stock-badge" [class]="getStockClass(producto.stock)">
+          {{ getStockText(producto.stock) }}
+        </div>
+      </div>
+
+      <!-- Información del producto -->
+      <div class="producto-info">
+        <div class="producto-categoria">{{ producto.categoria }}</div>
+        <h3 class="producto-nombre" [routerLink]="['/producto', producto.id]">
+          {{ producto.nombre }}
+        </h3>
+        <p class="producto-descripcion">{{ producto.descripcion }}</p>
+        
+        <!-- Marca -->
+        <div class="producto-marca" *ngIf="producto.marca">
+          <i class="lucide lucide-tag"></i>
+          {{ producto.marca }}
+        </div>
+
+        <!-- Precios -->
+        <div class="producto-precios">
+          <span class="precio-actual">{{ formatPrice(producto.precio) }}</span>
+          <span class="precio-original" *ngIf="producto.descuento > 0">
+            {{ formatPrice(producto.precio / (1 - producto.descuento / 100)) }}
+          </span>
+        </div>
+
+        <!-- Rating (si existe) -->
+        <div class="producto-rating" *ngIf="producto.rating">
+          <div class="stars">
+            <i class="lucide lucide-star" 
+               *ngFor="let star of [1,2,3,4,5]" 
+               [class.filled]="star <= producto.rating"></i>
+          </div>
+          <span class="rating-text">({{ producto.rating }}/5)</span>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="producto-acciones">
+        <button 
+          class="btn btn-primary btn-sm agregar-carrito-btn"
+          (click)="agregarAlCarrito(producto)"
+          [disabled]="producto.stock === 0">
+          <i class="lucide lucide-shopping-cart"></i>
+          <span *ngIf="producto.stock > 0">Agregar al Carrito</span>
+          <span *ngIf="producto.stock === 0">Agotado</span>
+        </button>
+        
+        <button class="btn btn-secondary btn-sm ver-detalle-btn" [routerLink]="['/producto', producto.id]">
+          <i class="lucide lucide-eye"></i>
+          Ver Detalles
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div class="paginacion" *ngIf="totalPaginas > 1">
+    <button 
+      class="btn btn-secondary btn-sm"
+      (click)="cambiarPagina(paginaActual - 1)"
+      [disabled]="paginaActual === 1">
+      <i class="lucide lucide-chevron-left"></i>
+      Anterior
+    </button>
+
+    <div class="paginas-numeros">
+      <button 
+        *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+        class="btn btn-page"
+        [class.active]="i + 1 === paginaActual"
+        (click)="cambiarPagina(i + 1)">
+        {{ i + 1 }}
+      </button>
+    </div>
+
+    <button 
+      class="btn btn-secondary btn-sm"
+      (click)="cambiarPagina(paginaActual + 1)"
+      [disabled]="paginaActual === totalPaginas">
+      Siguiente
+      <i class="lucide lucide-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Info de paginación -->
+  <div class="paginacion-info" *ngIf="productosFiltrados.length > 0">
+    <p>
+      Mostrando {{ (paginaActual - 1) * productosPorPagina + 1 }} - 
+      {{ Math.min(paginaActual * productosPorPagina, productosFiltrados.length) }} 
+      de {{ productosFiltrados.length }} productos
+    </p>
+  </div>
+
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section" *ngIf="!isLoading">
+  <div class="container">
+    <div class="cta-content">
+      <h2>¿No encuentras lo que buscas?</h2>
+      <p>Contáctanos y te ayudaremos a encontrar el producto perfecto para ti</p>
+      <div class="cta-buttons">
+        <a href="tel:+525512345678" class="btn btn-primary">
+          <i class="lucide lucide-phone"></i>
+          Llamar Ahora
+        </a>
+        <a href="https://wa.me/525512345678" class="btn btn-secondary" target="_blank">
+          <i class="lucide lucide-message-circle"></i>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

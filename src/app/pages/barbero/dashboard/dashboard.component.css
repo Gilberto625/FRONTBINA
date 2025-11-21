@@ -1,0 +1,21 @@
+.dashboard-container { padding: 20px; }
+.dashboard-header { margin-bottom: 30px; }
+.dashboard-header h1 { color: #333; margin: 0 0 10px; }
+.dashboard-header p { color: #666; margin: 0; }
+.loading { text-align: center; padding: 40px; color: #666; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+.stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+.stat-card h3 { margin: 0 0 10px; color: #666; font-size: 13px; }
+.stat-card .value { font-size: 24px; font-weight: bold; color: #c9a227; }
+.citas-section { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.citas-section h2 { margin: 0 0 20px; color: #333; }
+.citas-list { display: flex; flex-direction: column; gap: 10px; }
+.cita-item { display: flex; align-items: center; padding: 15px; border-radius: 8px; background: #f9f9f9; border-left: 4px solid #ccc; }
+.cita-item.confirmada { border-left-color: #4CAF50; }
+.cita-item.pendiente { border-left-color: #FF9800; }
+.cita-hora { font-weight: bold; color: #c9a227; margin-right: 20px; min-width: 60px; }
+.cita-info { flex: 1; }
+.cita-info strong { display: block; }
+.cita-info span { font-size: 13px; color: #666; }
+.cita-estado { font-size: 12px; padding: 4px 10px; background: #eee; border-radius: 15px; }
+.no-citas { text-align: center; padding: 30px; color: #666; }

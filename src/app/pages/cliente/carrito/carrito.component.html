@@ -1,0 +1,352 @@
+<!-- Header -->
+<div class="carrito-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="header-info">
+        <h1 class="page-title">
+          <i class="lucide lucide-shopping-cart"></i>
+          Mi Carrito
+        </h1>
+        <p class="page-subtitle" *ngIf="carrito">
+          {{ carrito.total_items }} {{ carrito.total_items === 1 ? 'producto' : 'productos' }} en tu carrito
+        </p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="continuarComprando()">
+          <i class="lucide lucide-arrow-left"></i>
+          Continuar Comprando
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="container" *ngIf="isLoading">
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando carrito...</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="container" *ngIf="error && !isLoading">
+  <div class="alert alert-error">
+    <i class="lucide lucide-alert-circle"></i>
+    {{ error }}
+  </div>
+</div>
+
+<!-- Carrito vacío -->
+<div class="container" *ngIf="carritoVacio && !isLoading && !error">
+  <div class="empty-cart">
+    <div class="empty-icon">
+      <i class="lucide lucide-shopping-cart"></i>
+    </div>
+    <h2>Tu carrito está vacío</h2>
+    <p>¡Descubre nuestros productos premium y encuentra lo que necesitas!</p>
+    <button class="btn btn-primary btn-lg" routerLink="/productos">
+      <i class="lucide lucide-shopping-bag"></i>
+      Explorar Productos
+    </button>
+  </div>
+</div>
+
+<!-- Carrito con productos -->
+<div class="container" *ngIf="carrito && !carritoVacio && !isLoading">
+  
+  <div class="carrito-layout">
+    
+    <!-- Lista de productos -->
+    <div class="carrito-items">
+      <div class="items-header">
+        <h2>Productos en tu carrito</h2>
+        <button class="btn btn-text btn-sm" (click)="limpiarCarrito()" [disabled]="isUpdating">
+          <i class="lucide lucide-trash-2"></i>
+          Vaciar carrito
+        </button>
+      </div>
+
+      <div class="items-list">
+        <div class="cart-item" *ngFor="let item of carrito.items; trackBy: trackByItemId">
+          
+          <!-- Imagen del producto -->
+          <div class="item-image">
+            <img [src]="item.producto.imagen_principal || 'assets/images/producto-placeholder.jpg'" 
+                 [alt]="item.producto.nombre" 
+                 class="product-img">
+            <div class="discount-badge" *ngIf="item.producto.descuento > 0">
+              -{{ item.producto.descuento }}%
+            </div>
+          </div>
+
+          <!-- Información del producto -->
+          <div class="item-info">
+            <h3 class="product-name" [routerLink]="['/producto', item.producto.id]">
+              {{ item.producto.nombre }}
+            </h3>
+            <p class="product-description">{{ item.producto.descripcion }}</p>
+            <div class="product-meta">
+              <span class="product-brand" *ngIf="item.producto.marca">
+                <i class="lucide lucide-tag"></i>
+                {{ item.producto.marca }}
+              </span>
+              <span class="product-category">{{ item.producto.categoria }}</span>
+            </div>
+            
+            <!-- Notas del producto -->
+            <div class="item-notes" *ngIf="item.notas">
+              <i class="lucide lucide-message-square"></i>
+              <span>{{ item.notas }}</span>
+            </div>
+          </div>
+
+          <!-- Controles de cantidad -->
+          <div class="item-quantity">
+            <label class="quantity-label">Cantidad</label>
+            <div class="quantity-controls">
+              <button class="quantity-btn" 
+                      (click)="actualizarCantidad(item, item.cantidad - 1)"
+                      [disabled]="item.cantidad <= 1 || isUpdating">
+                <i class="lucide lucide-minus"></i>
+              </button>
+              <input type="number"
+                     class="quantity-input"
+                     [value]="item.cantidad"
+                     [min]="1"
+                     [max]="item.producto.stock"
+                     #cantidadInput
+                     (change)="actualizarCantidad(item, cantidadInput.value)"
+                     [disabled]="isUpdating">
+              <button class="quantity-btn" 
+                      (click)="actualizarCantidad(item, item.cantidad + 1)"
+                      [disabled]="item.cantidad >= item.producto.stock || isUpdating">
+                <i class="lucide lucide-plus"></i>
+              </button>
+            </div>
+            <div class="stock-info">
+              <span *ngIf="item.producto.stock > 5" class="stock-available">
+                {{ item.producto.stock }} disponibles
+              </span>
+              <span *ngIf="item.producto.stock <= 5 && item.producto.stock > 0" class="stock-low">
+                Solo {{ item.producto.stock }} disponibles
+              </span>
+            </div>
+          </div>
+
+          <!-- Precios -->
+          <div class="item-pricing">
+            <div class="unit-price">
+              <span class="current-price">{{ formatCurrency(getPrecioConDescuento(item)) }}</span>
+              <span class="original-price" *ngIf="item.producto.descuento > 0">
+                {{ formatCurrency(item.producto.precio) }}
+              </span>
+            </div>
+            <div class="subtotal">
+              <strong>{{ formatCurrency(item.subtotal) }}</strong>
+            </div>
+            <div class="savings" *ngIf="getAhorroItem(item) > 0">
+              Ahorras {{ formatCurrency(getAhorroItem(item)) }}
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="item-actions">
+            <button class="btn btn-text btn-sm" 
+                    [routerLink]="['/producto', item.producto.id]">
+              <i class="lucide lucide-eye"></i>
+              Ver producto
+            </button>
+            <button class="btn btn-danger btn-sm" 
+                    (click)="eliminarItem(item)"
+                    [disabled]="isUpdating">
+              <i class="lucide lucide-trash-2"></i>
+              Eliminar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen del pedido -->
+    <div class="order-summary">
+      <div class="summary-card">
+        <h3 class="summary-title">
+          <i class="lucide lucide-receipt"></i>
+          Resumen del pedido
+        </h3>
+
+        <!-- Cupón de descuento -->
+        <div class="coupon-section">
+          <label class="input-label">Cupón de descuento</label>
+          <div class="coupon-input">
+            <input type="text" 
+                   class="input-field" 
+                   placeholder="Ingresa tu cupón"
+                   [(ngModel)]="cuponDescuento">
+            <button class="btn btn-secondary btn-sm" (click)="aplicarCupon()">
+              Aplicar
+            </button>
+          </div>
+          <div class="coupon-suggestions">
+            <small>Prueba: DESCUENTO10, CLIENTE20, PRIMERA15</small>
+          </div>
+        </div>
+
+        <!-- Método de entrega -->
+        <div class="delivery-section">
+          <label class="input-label">Método de entrega</label>
+          <div class="delivery-options">
+            <label class="radio-option">
+              <input type="radio" 
+                     name="tipoEntrega" 
+                     value="recoger" 
+                     [(ngModel)]="tipoEntrega"
+                     (change)="calcularCostoEnvio()">
+              <span class="radio-custom"></span>
+              <div class="option-info">
+                <strong>Recoger en tienda</strong>
+                <small>Gratis - Listo en 2-4 horas</small>
+              </div>
+            </label>
+            
+            <label class="radio-option">
+              <input type="radio" 
+                     name="tipoEntrega" 
+                     value="moto" 
+                     [(ngModel)]="tipoEntrega"
+                     (change)="calcularCostoEnvio()">
+              <span class="radio-custom"></span>
+              <div class="option-info">
+                <strong>Moto mandado</strong>
+                <small>$45 - Entrega en 1-2 horas</small>
+              </div>
+            </label>
+            
+            <label class="radio-option">
+              <input type="radio" 
+                     name="tipoEntrega" 
+                     value="domicilio" 
+                     [(ngModel)]="tipoEntrega"
+                     (change)="calcularCostoEnvio()">
+              <span class="radio-custom"></span>
+              <div class="option-info">
+                <strong>Envío a domicilio</strong>
+                <small>$80 - Entrega en 1-3 días</small>
+              </div>
+            </label>
+          </div>
+
+          <!-- Dirección de entrega -->
+          <div class="address-input" *ngIf="tipoEntrega !== 'recoger'">
+            <label class="input-label">Dirección de entrega *</label>
+            <textarea class="input-field" 
+                      rows="3"
+                      placeholder="Ingresa tu dirección completa"
+                      [(ngModel)]="direccionEntrega"></textarea>
+          </div>
+        </div>
+
+        <!-- Método de pago -->
+        <div class="payment-section">
+          <label class="input-label">Método de pago</label>
+          <div class="payment-options">
+            <label class="radio-option">
+              <input type="radio" 
+                     name="metodoPago" 
+                     value="banorte" 
+                     [(ngModel)]="metodoPago">
+              <span class="radio-custom"></span>
+              <div class="option-info">
+                <strong>Tarjeta de crédito/débito</strong>
+                <small>Pago seguro con Banorte</small>
+              </div>
+            </label>
+            
+            <label class="radio-option">
+              <input type="radio" 
+                     name="metodoPago" 
+                     value="transferencia" 
+                     [(ngModel)]="metodoPago">
+              <span class="radio-custom"></span>
+              <div class="option-info">
+                <strong>Transferencia bancaria</strong>
+                <small>Validación manual</small>
+              </div>
+            </label>
+            
+            <label class="radio-option" *ngIf="tipoEntrega === 'recoger'">
+              <input type="radio" 
+                     name="metodoPago" 
+                     value="efectivo" 
+                     [(ngModel)]="metodoPago">
+              <span class="radio-custom"></span>
+              <div class="option-info">
+                <strong>Efectivo en tienda</strong>
+                <small>Paga al recoger</small>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Desglose de precios -->
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span>Subtotal ({{ carrito.total_items }} productos)</span>
+            <span>{{ formatCurrency(carrito.subtotal) }}</span>
+          </div>
+          
+          <div class="price-row" *ngIf="descuentoAplicado > 0">
+            <span>Descuento ({{ descuentoAplicado }}%)</span>
+            <span class="discount">-{{ formatCurrency(carrito.descuentos) }}</span>
+          </div>
+          
+          <div class="price-row">
+            <span>IVA (16%)</span>
+            <span>{{ formatCurrency(carrito.impuestos) }}</span>
+          </div>
+          
+          <div class="price-row" *ngIf="costoEnvio > 0">
+            <span>Envío</span>
+            <span>{{ formatCurrency(costoEnvio) }}</span>
+          </div>
+          
+          <div class="price-row total">
+            <span><strong>Total</strong></span>
+            <span><strong>{{ formatCurrency(carrito.total) }}</strong></span>
+          </div>
+        </div>
+
+        <!-- Botón de checkout -->
+        <button class="btn btn-primary btn-lg checkout-btn" 
+                (click)="procederAlCheckout()"
+                [disabled]="isProcessingCheckout || (tipoEntrega !== 'recoger' && !direccionEntrega.trim())">
+          <div class="spinner-sm" *ngIf="isProcessingCheckout"></div>
+          <i class="lucide lucide-credit-card" *ngIf="!isProcessingCheckout"></i>
+          <span *ngIf="!isProcessingCheckout">Proceder al pago</span>
+          <span *ngIf="isProcessingCheckout">Procesando...</span>
+        </button>
+
+        <!-- Información de seguridad -->
+        <div class="security-info">
+          <div class="security-item">
+            <i class="lucide lucide-shield-check"></i>
+            <span>Pago 100% seguro</span>
+          </div>
+          <div class="security-item">
+            <i class="lucide lucide-truck"></i>
+            <span>Envío gratis en compras +$500</span>
+          </div>
+          <div class="security-item">
+            <i class="lucide lucide-refresh-cw"></i>
+            <span>30 días de garantía</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

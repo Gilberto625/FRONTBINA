@@ -1,0 +1,38 @@
+<div class="agenda-container">
+  <div class="agenda-header">
+    <h2>Mi Agenda</h2>
+    <div class="fecha-nav">
+      <button (click)="cambiarFecha(-1)">&lt;</button>
+      <span>{{ formatDate(fechaSeleccionada) }}</span>
+      <button (click)="cambiarFecha(1)">&gt;</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Cargando...</div>
+
+  <div class="citas-list" *ngIf="!isLoading">
+    <div *ngIf="citasDelDia.length === 0" class="no-citas">
+      No tienes citas para este dia
+    </div>
+
+    <div *ngFor="let cita of citasDelDia" class="cita-card" [ngClass]="getEstadoClass(cita.estado)">
+      <div class="cita-hora">{{ cita.hora }}</div>
+      <div class="cita-info">
+        <h3>{{ cita.cliente }}</h3>
+        <p class="servicios">{{ cita.servicios.join(', ') }}</p>
+        <p class="telefono">Tel: {{ cita.telefono }}</p>
+        <p class="duracion">Duracion: {{ cita.duracion }} min</p>
+      </div>
+      <div class="cita-precio">{{ formatCurrency(cita.precio) }}</div>
+      <div class="cita-acciones">
+        <select [(ngModel)]="cita.estado" (change)="cambiarEstado(cita, cita.estado)">
+          <option value="pendiente">Pendiente</option>
+          <option value="confirmada">Confirmada</option>
+          <option value="en_proceso">En Proceso</option>
+          <option value="completada">Completada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+.servicios-container { padding: 20px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+h2 { color: #333; margin: 0; }
+.btn-primary { padding: 10px 20px; background: #c9a227; color: white; border: none; border-radius: 5px; cursor: pointer; }
+.loading { text-align: center; padding: 40px; color: #666; }
+.servicios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.servicio-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.servicio-card.inactivo { opacity: 0.6; }
+.servicio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.servicio-header h3 { margin: 0; color: #333; }
+.categoria { background: #f0f0f0; padding: 4px 10px; border-radius: 15px; font-size: 12px; }
+.descripcion { color: #666; font-size: 14px; margin-bottom: 15px; }
+.servicio-info { display: flex; justify-content: space-between; margin-bottom: 15px; }
+.precio { font-weight: bold; color: #c9a227; }
+.servicio-acciones { display: flex; gap: 8px; }
+.servicio-acciones button { padding: 6px 12px; border: 1px solid #ddd; background: white; border-radius: 5px; cursor: pointer; font-size: 12px; }
+.btn-danger { color: #e74c3c !important; border-color: #e74c3c !important; }
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 450px; }
+.modal h3 { margin: 0 0 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.modal-actions button { padding: 10px 20px; border-radius: 5px; cursor: pointer; }
