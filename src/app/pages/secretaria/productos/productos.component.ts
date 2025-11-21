@@ -496,4 +496,8 @@ export class ProductosGestionComponent implements OnInit {
   filtrarProductos(): void {
     this.aplicarFiltros();
   }
+
+  ajustarStock(producto: ProductoGestion, cantidad: number): void {
+    producto.stock = Math.max(0, producto.stock + cantidad);
+  }
 }

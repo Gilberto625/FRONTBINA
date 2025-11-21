@@ -57,7 +57,8 @@ export class TiemposServicioComponent implements OnInit {
   filtroEspecialidad = 'todos';
   filtros = {
     categoria: 'todas',
-    especialidad: 'todos'
+    especialidad: 'todos',
+    buscar: ''
   };
   
   // Modal edición
@@ -293,6 +294,10 @@ export class TiemposServicioComponent implements OnInit {
       console.error('Error cambiando estado:', error);
       this.showToast('Error al cambiar el estado', 'error');
     }
+  }
+
+  ajustarTiempo(servicio: ServicioBarbero, minutos: number): void {
+    servicio.duracion_personal = Math.max(5, servicio.duracion_personal + minutos);
   }
 
   async toggleEspecialidad(servicio: ServicioBarbero): Promise<void> {
