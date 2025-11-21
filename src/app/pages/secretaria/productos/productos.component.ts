@@ -79,7 +79,8 @@ export class ProductosGestionComponent implements OnInit {
     categoria: 'todas',
     stock: 'todos',
     busqueda: '',
-    estado: 'todos'
+    estado: 'todos',
+    buscar: ''
   };
   estadisticas = {
     totalProductos: 0,
