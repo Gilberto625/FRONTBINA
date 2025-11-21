@@ -23,6 +23,7 @@ interface ProductoGestion {
   created_at: string;
   updated_at: string;
   unidad_medida?: string;
+  sku?: string;
 }
 
 interface CategoriaProducto {
@@ -84,6 +85,7 @@ export class ProductosGestionComponent implements OnInit {
   };
   guardando = false;
   guardandoProducto = false;
+  motivoMovimiento = '';
 
   // Mock data
   mockCategorias: CategoriaProducto[] = [
@@ -480,6 +482,10 @@ export class ProductosGestionComponent implements OnInit {
   }
 
   get currentUser() {
-    return this.authService.getCurrentUser();
+    return this.authService.getCurrentUserValue();
+  }
+
+  filtrarProductos(): void {
+    this.aplicarFiltros();
   }
 }

@@ -16,6 +16,7 @@ interface ServicioBarbero {
   especialidad: boolean; // Si es especialidad del barbero
   nivel_dificultad: 'facil' | 'medio' | 'dificil';
   notas_personales?: string;
+  tiempo_estimado?: number;
   estadisticas?: {
     veces_realizado: number;
     tiempo_promedio: number;
