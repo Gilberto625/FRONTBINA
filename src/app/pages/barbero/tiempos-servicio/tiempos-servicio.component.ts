@@ -12,6 +12,7 @@ interface ServicioBarbero {
   duracion_base: number; // Duración estándar del servicio
   duracion_personal: number; // Duración personalizada del barbero
   precio_base: number;
+  precio?: number;
   activo: boolean;
   especialidad: boolean; // Si es especialidad del barbero
   nivel_dificultad: 'facil' | 'medio' | 'dificil';
@@ -22,7 +23,9 @@ interface ServicioBarbero {
   estadisticas?: {
     veces_realizado: number;
     tiempo_promedio: number;
+    tiempo_promedio_real?: number;
     variacion: number;
+    citas_mes?: number;
   };
 }
 
@@ -298,6 +301,27 @@ export class TiemposServicioComponent implements OnInit {
 
   ajustarTiempo(servicio: ServicioBarbero, minutos: number): void {
     servicio.duracion_personal = Math.max(5, servicio.duracion_personal + minutos);
+  }
+
+  filtrarServicios(): void {
+    // Trigger filter update
+  }
+
+  cancelarEdicion(servicio: ServicioBarbero): void {
+    servicio.editando = false;
+    servicio.nuevo_tiempo = servicio.duracion_personal;
+  }
+
+  guardarTiempo(servicio: ServicioBarbero): void {
+    if (servicio.nuevo_tiempo && servicio.nuevo_tiempo > 0) {
+      servicio.duracion_personal = servicio.nuevo_tiempo;
+    }
+    servicio.editando = false;
+  }
+
+  editarTiempo(servicio: ServicioBarbero): void {
+    servicio.editando = true;
+    servicio.nuevo_tiempo = servicio.duracion_personal;
   }
 
   async toggleEspecialidad(servicio: ServicioBarbero): Promise<void> {

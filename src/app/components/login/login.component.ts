@@ -69,28 +69,28 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  async loginWithGoogle(): Promise<void> {
+  loginWithGoogle(): void {
     this.loadingGoogle = true;
 
-    try {
-      const response = await this.authService.loginWithGoogle();
-
-      if (response && response.ok) {
-        this.showMessage('¡Inicio de sesión con Google exitoso!', 'success');
-        // Esperar un momento para que se actualice el estado
-        setTimeout(() => {
-          this.router.navigate(['/home']);
-        }, 500);
-      } else {
-        const errorMsg = response?.error || 'Error al iniciar sesión con Google';
+    this.authService.loginWithGoogle().subscribe({
+      next: (response: any) => {
+        this.loadingGoogle = false;
+        if (response && response.ok) {
+          this.showMessage('¡Inicio de sesión con Google exitoso!', 'success');
+          setTimeout(() => {
+            this.router.navigate(['/home']);
+          }, 500);
+        } else {
+          const errorMsg = response?.error || 'Error al iniciar sesión con Google';
+          this.showMessage(errorMsg, 'error');
+        }
+      },
+      error: (error: any) => {
+        this.loadingGoogle = false;
+        const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
         this.showMessage(errorMsg, 'error');
       }
-    } catch (error: any) {
-      const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
-      this.showMessage(errorMsg, 'error');
-    } finally {
-      this.loadingGoogle = false;
-    }
+    });
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {

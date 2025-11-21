@@ -170,8 +170,8 @@
         Mostrando {{ serviciosFiltrados.length }} 
         {{ serviciosFiltrados.length === 1 ? 'servicio' : 'servicios' }}
         <span *ngIf="filtroCategoria !== 'todos' || busqueda">
-          {{ filtroCategoria !== 'todos' ? 'en ' + (categorias.find(c => c.id === filtroCategoria)?.nombre || '') : '' }}
-          {{ busqueda ? 'que coinciden con "' + busqueda + '"' : '' }}
+          <span *ngIf="filtroCategoria !== 'todos'">en {{ categoriaNombre }}</span>
+          <span *ngIf="busqueda">que coinciden con "{{ busqueda }}"</span>
         </span>
       </p>
     </div>

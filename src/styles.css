@@ -1,7 +1,13 @@
 /* ===== ESTILOS GLOBALES - TONY STYLO BARBERÍA ===== */
 
-/* Importar fuente Montserrat */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+/* Fuente Montserrat - usando font-face para evitar problemas de build */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: local('Montserrat'), local('Montserrat-Regular');
+}
 
 /* Variables CSS */
 :root {

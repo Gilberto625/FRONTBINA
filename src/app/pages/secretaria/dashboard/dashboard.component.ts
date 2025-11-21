@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 
 interface CitaDelDia {
@@ -37,7 +38,7 @@ interface ResumenOperativo {
 @Component({
   selector: 'app-secretaria-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -164,7 +165,7 @@ export class SecretariaDashboardComponent implements OnInit {
     this.loadDashboardData();
   }
 
-  private async loadDashboardData(): Promise<void> {
+  async loadDashboardData(): Promise<void> {
     try {
       this.isLoading = true;
       this.error = null;
@@ -182,6 +183,10 @@ export class SecretariaDashboardComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  trackByCitaId(index: number, cita: CitaDelDia): number {
+    return cita.id;
   }
 
   get citasFiltradas(): CitaDelDia[] {

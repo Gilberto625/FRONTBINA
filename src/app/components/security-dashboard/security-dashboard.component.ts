@@ -18,9 +18,11 @@ export class SecurityDashboardComponent implements OnInit {
   loading = false;
   email: string = '';
   estadoSeguridad: EstadoSeguridad = {
-    email_2fa: true,
+    totp_enabled: false,
     totp_habilitado: false,
+    backup_codes_generated: false,
     codigos_respaldo_disponibles: 0,
+    email_2fa: true,
     tiene_preguntas_seguridad: false
   };
 
@@ -53,24 +55,19 @@ export class SecurityDashboardComponent implements OnInit {
   loadSecurityStatus(): void {
     this.loading = true;
 
-    this.authService.obtenerEstadoSeguridad(this.email).subscribe({
-      next: (estado) => {
-        this.loading = false;
-        this.estadoSeguridad = estado;
-      },
-      error: (error) => {
-        this.loading = false;
-        const errorMsg = error.error?.error || 'Error al cargar estado de seguridad';
-        this.showMessage(errorMsg, 'error');
-        // Usar valores por defecto en caso de error
-        this.estadoSeguridad = {
-          email_2fa: false,
-          totp_habilitado: false,
-          codigos_respaldo_disponibles: 0,
-          tiene_preguntas_seguridad: false
-        };
-      }
-    });
+    // Use current user data for security status
+    const user = this.authService.getCurrentUserValue();
+    this.loading = false;
+    if (user) {
+      this.estadoSeguridad = {
+        totp_enabled: user.totp_enabled || false,
+        totp_habilitado: user.totp_enabled || false,
+        backup_codes_generated: user.backup_codes_generated || false,
+        codigos_respaldo_disponibles: user.backup_codes_generated ? 10 : 0,
+        email_2fa: true,
+        tiene_preguntas_seguridad: false
+      };
+    }
   }
 
   setupTOTP(): void {

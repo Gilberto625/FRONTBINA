@@ -10,6 +10,7 @@ interface ProductoGestion {
   nombre: string;
   descripcion: string;
   categoria: string;
+  categoria_nombre?: string;
   marca: string;
   precio: number;
   precio_compra: number;
@@ -17,11 +18,13 @@ interface ProductoGestion {
   stock: number;
   stock_minimo: number;
   codigo_barras?: string;
+  imagen?: string;
   imagen_principal?: string;
   activo: boolean;
   destacado: boolean;
   created_at: string;
   updated_at: string;
+  fecha_actualizacion?: string;
   unidad_medida?: string;
   sku?: string;
   estado?: string;
@@ -84,9 +87,15 @@ export class ProductosGestionComponent implements OnInit {
   };
   estadisticas = {
     totalProductos: 0,
+    total_productos: 0,
+    productos_activos: 0,
+    productos_agotados: 0,
     stockBajo: 0,
+    stock_bajo: 0,
     sinStock: 0,
-    valorInventario: 0
+    sin_stock: 0,
+    valorInventario: 0,
+    valor_inventario: 0
   };
   guardando = false;
   guardandoProducto = false;
@@ -276,6 +285,46 @@ export class ProductosGestionComponent implements OnInit {
     if (pagina >= 1 && pagina <= this.totalPaginas) {
       this.paginaActual = pagina;
     }
+  }
+
+  exportarInventario(): void {
+    // Mock export functionality
+    console.log('Exportando inventario...');
+    alert('Funcionalidad de exportación en desarrollo');
+  }
+
+  abrirModalCategoria(): void {
+    // Mock category modal
+    console.log('Abriendo modal de categorías...');
+    alert('Gestión de categorías en desarrollo');
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = '/assets/images/producto-placeholder.jpg';
+  }
+
+  getEstadoTexto(estado?: string): string {
+    const estados: { [key: string]: string } = {
+      'activo': 'Activo',
+      'inactivo': 'Inactivo',
+      'agotado': 'Agotado'
+    };
+    return estados[estado || 'activo'] || 'Activo';
+  }
+
+  editarProducto(producto: ProductoGestion): void {
+    this.abrirModalEditarProducto(producto);
+  }
+
+  verDetalles(producto: ProductoGestion): void {
+    console.log('Ver detalles de:', producto);
+    // Could open a detail modal
+  }
+
+  toggleEstado(producto: ProductoGestion): void {
+    producto.activo = !producto.activo;
+    producto.estado = producto.activo ? 'activo' : 'inactivo';
   }
 
   // Gestión de productos
@@ -497,7 +546,37 @@ export class ProductosGestionComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-  ajustarStock(producto: ProductoGestion, cantidad: number): void {
-    producto.stock = Math.max(0, producto.stock + cantidad);
+  ajustarStock(producto: ProductoGestion, cantidadOTipo: number | string): void {
+    if (typeof cantidadOTipo === 'string') {
+      // Handle 'entrada' or 'salida' type
+      this.productoStock = producto;
+      this.tipoMovimientoStock = cantidadOTipo as 'entrada' | 'salida';
+      this.mostrarModalStock = true;
+    } else {
+      producto.stock = Math.max(0, producto.stock + cantidadOTipo);
+    }
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagenPreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  confirmarMovimientoStock(): void {
+    if (!this.productoStock || !this.cantidadMovimiento) return;
+
+    if (this.tipoMovimientoStock === 'entrada') {
+      this.productoStock.stock += this.cantidadMovimiento;
+    } else {
+      this.productoStock.stock = Math.max(0, this.productoStock.stock - this.cantidadMovimiento);
+    }
+
+    this.cerrarModalStock();
   }
 }

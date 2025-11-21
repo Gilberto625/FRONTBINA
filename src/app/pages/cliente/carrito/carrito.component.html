@@ -110,12 +110,13 @@
                       [disabled]="item.cantidad <= 1 || isUpdating">
                 <i class="lucide lucide-minus"></i>
               </button>
-              <input type="number" 
-                     class="quantity-input" 
+              <input type="number"
+                     class="quantity-input"
                      [value]="item.cantidad"
                      [min]="1"
                      [max]="item.producto.stock"
-                     (change)="actualizarCantidad(item, $event.target.value)"
+                     #cantidadInput
+                     (change)="actualizarCantidad(item, cantidadInput.value)"
                      [disabled]="isUpdating">
               <button class="quantity-btn" 
                       (click)="actualizarCantidad(item, item.cantidad + 1)"

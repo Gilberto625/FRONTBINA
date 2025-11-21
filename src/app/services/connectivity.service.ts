@@ -52,10 +52,7 @@ export class ConnectivityService {
   checkBackendHealth(): Observable<BackendStatus> {
     const startTime = Date.now();
     
-    return this.http.get(`${environment.apiUrl}/health/`, { 
-      responseType: 'json',
-      timeout: 5000 
-    }).pipe(
+    return this.http.get(`${environment.apiUrl}/health/`).pipe(
       timeout(5000),
       map((response: any) => {
         const responseTime = Date.now() - startTime;
@@ -93,7 +90,7 @@ export class ConnectivityService {
     return new Observable(observer => {
       Promise.all(checks.map(check => check.toPromise()))
         .then(results => {
-          observer.next(results);
+          observer.next(results.filter((r): r is EndpointCheck => r !== undefined));
           observer.complete();
         })
         .catch(error => {
@@ -108,9 +105,7 @@ export class ConnectivityService {
   private checkSingleEndpoint(endpoint: string): Observable<EndpointCheck> {
     const startTime = Date.now();
     
-    return this.http.get(`${environment.apiUrl}${endpoint}`, {
-      timeout: 3000
-    }).pipe(
+    return this.http.get(`${environment.apiUrl}${endpoint}`).pipe(
       map(() => ({
         endpoint,
         status: 'online' as const,
@@ -149,9 +144,8 @@ export class ConnectivityService {
   ping(): Observable<number> {
     const startTime = Date.now();
     
-    return this.http.get(`${environment.apiUrl}/ping/`, { 
-      responseType: 'text',
-      timeout: 2000 
+    return this.http.get(`${environment.apiUrl}/ping/`, {
+      responseType: 'text' as const
     }).pipe(
       map(() => Date.now() - startTime),
       catchError(() => new Observable<number>(observer => {
@@ -284,11 +278,11 @@ export class ConnectivityService {
         this.getServerInfo().toPromise().catch(() => ({}))
       ]).then(([backend, endpoints, cors, authentication, serverInfo]) => {
         observer.next({
-          backend,
-          endpoints,
-          cors,
-          authentication,
-          serverInfo
+          backend: backend as BackendStatus,
+          endpoints: (endpoints || []) as EndpointCheck[],
+          cors: (cors || false) as boolean,
+          authentication: (authentication || false) as boolean,
+          serverInfo: serverInfo || {}
         });
         observer.complete();
       });

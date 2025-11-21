@@ -100,7 +100,7 @@ export class ClienteDashboardComponent implements OnInit {
   }
 
   get currentUser() {
-    return this.authService.getCurrentUser();
+    return this.authService.getCurrentUserValue();
   }
 
   get userName(): string {

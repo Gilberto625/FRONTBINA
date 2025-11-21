@@ -29,7 +29,8 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
+    const user = this.authService.getCurrentUserValue();
+    this.currentUser = user ? { email: user.email, nombre: user.nombre, apellido: user.apellido, telefono: user.telefono, rol: user.rol, id: user.id } : null;
     
     if (!this.currentUser) {
       this.router.navigate(['/login']);

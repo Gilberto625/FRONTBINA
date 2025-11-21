@@ -212,7 +212,7 @@
     
     <div class="server-info">
       <div class="info-item" *ngFor="let item of serverInfo | keyvalue">
-        <label>{{ item.key | titlecase }}:</label>
+        <label>{{ $any(item.key) | titlecase }}:</label>
         <span class="value">{{ item.value }}</span>
       </div>
     </div>

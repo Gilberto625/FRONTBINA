@@ -147,9 +147,7 @@ export class CuentasNegocioService {
    * Eliminar cuenta bancaria
    */
   eliminarCuentaNegocio(id: number, motivo: string): Observable<any> {
-    return this.api.delete(`/configuracion/cuentas-negocio/${id}/eliminar/`, {
-      motivo
-    });
+    return this.api.delete(`/configuracion/cuentas-negocio/${id}/eliminar/?motivo=${encodeURIComponent(motivo)}`);
   }
 
   /**

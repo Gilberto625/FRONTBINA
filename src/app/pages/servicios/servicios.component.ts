@@ -36,7 +36,7 @@ export class ServiciosComponent implements OnInit {
     this.loadServicios();
   }
 
-  private async loadServicios(): Promise<void> {
+  async loadServicios(): Promise<void> {
     try {
       this.isLoading = true;
       this.error = null;
@@ -61,6 +61,11 @@ export class ServiciosComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     this.busqueda = target.value.toLowerCase();
     this.aplicarFiltros();
+  }
+
+  get categoriaNombre(): string {
+    const cat = this.categorias.find(c => c.id === this.filtroCategoria);
+    return cat ? cat.nombre : '';
   }
 
   private aplicarFiltros(): void {

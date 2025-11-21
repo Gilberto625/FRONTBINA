@@ -34,7 +34,7 @@
       </div>
 
       <div class="action-buttons">
-        <button class="btn btn-success" (click)="abrirModalProducto()">
+        <button class="btn btn-success" (click)="abrirModalNuevoProducto()">
           <i class="fas fa-plus"></i>
           Nuevo Producto
         </button>
@@ -113,7 +113,7 @@
               </div>
               <div class="product-details">
                 <h4>{{ producto.nombre }}</h4>
-                <p>{{ producto.descripcion | slice:0:50 }}{{ producto.descripcion?.length > 50 ? '...' : '' }}</p>
+                <p>{{ producto.descripcion | slice:0:50 }}{{ producto.descripcion.length > 50 ? '...' : '' }}</p>
                 <span class="product-sku">SKU: {{ producto.sku }}</span>
               </div>
             </td>
@@ -192,7 +192,7 @@
       </div>
       <h3>No hay productos</h3>
       <p>No se encontraron productos que coincidan con los filtros aplicados.</p>
-      <button class="btn btn-primary" (click)="abrirModalProducto()">
+      <button class="btn btn-primary" (click)="abrirModalNuevoProducto()">
         <i class="fas fa-plus"></i>
         Agregar Primer Producto
       </button>
@@ -225,7 +225,7 @@
 <div class="modal-overlay" *ngIf="mostrarModalProducto" (click)="cerrarModalProducto()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>{{ productoEditando?.id ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+      <h2>{{ productoActual?.id ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
       <button class="close-btn" (click)="cerrarModalProducto()">
         <i class="fas fa-times"></i>
       </button>
@@ -237,7 +237,7 @@
           <label for="nombre">Nombre del Producto *</label>
           <input type="text" 
                  id="nombre"
-                 [(ngModel)]="productoEditando.nombre" 
+                 [(ngModel)]="productoActual.nombre" 
                  name="nombre"
                  required
                  class="form-control">
@@ -247,7 +247,7 @@
           <label for="sku">SKU *</label>
           <input type="text" 
                  id="sku"
-                 [(ngModel)]="productoEditando.sku" 
+                 [(ngModel)]="productoActual.sku" 
                  name="sku"
                  required
                  class="form-control">
@@ -256,7 +256,7 @@
         <div class="form-group">
           <label for="categoria">Categoría *</label>
           <select id="categoria" 
-                  [(ngModel)]="productoEditando.categoria" 
+                  [(ngModel)]="productoActual.categoria" 
                   name="categoria"
                   required
                   class="form-control">
@@ -271,7 +271,7 @@
           <label for="precio">Precio de Venta *</label>
           <input type="number" 
                  id="precio"
-                 [(ngModel)]="productoEditando.precio" 
+                 [(ngModel)]="productoActual.precio" 
                  name="precio"
                  step="0.01"
                  min="0"
@@ -283,7 +283,7 @@
           <label for="precio_costo">Precio de Costo</label>
           <input type="number" 
                  id="precio_costo"
-                 [(ngModel)]="productoEditando.precio_costo" 
+                 [(ngModel)]="productoActual.precio_costo" 
                  name="precio_costo"
                  step="0.01"
                  min="0"
@@ -294,7 +294,7 @@
           <label for="stock">Stock Inicial *</label>
           <input type="number" 
                  id="stock"
-                 [(ngModel)]="productoEditando.stock" 
+                 [(ngModel)]="productoActual.stock" 
                  name="stock"
                  min="0"
                  required
@@ -305,7 +305,7 @@
           <label for="stock_minimo">Stock Mínimo</label>
           <input type="number" 
                  id="stock_minimo"
-                 [(ngModel)]="productoEditando.stock_minimo" 
+                 [(ngModel)]="productoActual.stock_minimo" 
                  name="stock_minimo"
                  min="0"
                  class="form-control">
@@ -314,7 +314,7 @@
         <div class="form-group">
           <label for="unidad_medida">Unidad de Medida</label>
           <select id="unidad_medida" 
-                  [(ngModel)]="productoEditando.unidad_medida" 
+                  [(ngModel)]="productoActual.unidad_medida" 
                   name="unidad_medida"
                   class="form-control">
             <option value="pieza">Pieza</option>
@@ -329,7 +329,7 @@
       <div class="form-group full-width">
         <label for="descripcion">Descripción</label>
         <textarea id="descripcion" 
-                  [(ngModel)]="productoEditando.descripcion" 
+                  [(ngModel)]="productoActual.descripcion" 
                   name="descripcion"
                   rows="3"
                   class="form-control"></textarea>

@@ -63,7 +63,7 @@ export class SetupTotpComponent implements OnInit {
 
     // Nota: Este endpoint no está implementado en el backend aún
     this.authService.configurarTOTP(this.email).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.loading = false;
 
         // El QR viene en base64
@@ -71,7 +71,7 @@ export class SetupTotpComponent implements OnInit {
         this.secretKey = response.secret;
         this.currentStep = 1; // Iniciar en el primer paso
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading = false;
         // Si el endpoint no existe, mostrar mensaje informativo
         console.warn('Endpoint de TOTP no disponible');
@@ -95,7 +95,7 @@ export class SetupTotpComponent implements OnInit {
 
     // Nota: Este endpoint no está implementado en el backend aún
     this.authService.habilitarTOTP(this.email, codigo).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.loading = false;
 
         if (response.ok) {
@@ -107,7 +107,7 @@ export class SetupTotpComponent implements OnInit {
           }, 500);
         }
       },
-      error: (error) => {
+      error: (error: any) => {
         this.loading = false;
         // Si el endpoint no existe, mostrar mensaje informativo
         console.warn('Endpoint de habilitar TOTP no disponible');

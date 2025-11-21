@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./productos.component.css']
 })
 export class ProductosComponent implements OnInit {
+  Math = Math; // Expose Math to template
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   categorias: string[] = [];
@@ -47,8 +48,8 @@ export class ProductosComponent implements OnInit {
       this.isLoading = true;
       this.error = null;
 
-      const productos = await this.productosService.getProductos().toPromise();
-      this.productos = productos || [];
+      const response = await this.productosService.getProductos().toPromise();
+      this.productos = Array.isArray(response) ? response : (response as any)?.results || [];
       this.productosFiltrados = [...this.productos];
       
       // Extraer categorías únicas

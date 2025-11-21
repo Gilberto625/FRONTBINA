@@ -19,6 +19,7 @@ interface EstadisticasBarbero {
   citasHoy: number;
   citasCompletadas: number;
   ingresosDia: number;
+  gananciasHoy: number;
   tiempoPromedio: number;
   clientesAtendidos: number;
   calificacionPromedio: number;
@@ -43,7 +44,8 @@ export class BarberoDashboardComponent implements OnInit {
   citasHoy: CitaBarbero[] = [];
   estadisticas: EstadisticasBarbero | null = null;
   servicios: ServicioBarbero[] = [];
-  
+  userName = '';
+
   isLoading = true;
   error: string | null = null;
 
@@ -96,6 +98,7 @@ export class BarberoDashboardComponent implements OnInit {
     citasHoy: 8,
     citasCompletadas: 5,
     ingresosDia: 1250,
+    gananciasHoy: 1250,
     tiempoPromedio: 42,
     clientesAtendidos: 5,
     calificacionPromedio: 4.8

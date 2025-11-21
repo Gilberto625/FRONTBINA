@@ -111,15 +111,20 @@ export class CarritoComponent implements OnInit {
     }
   }
 
-  async actualizarCantidad(item: ItemCarrito, nuevaCantidad: number): Promise<void> {
-    if (nuevaCantidad < 1 || nuevaCantidad > item.producto.stock) return;
+  trackByItemId(index: number, item: ItemCarrito): number {
+    return item.id || index;
+  }
+
+  async actualizarCantidad(item: ItemCarrito, nuevaCantidad: string | number): Promise<void> {
+    const cantidad = typeof nuevaCantidad === 'string' ? parseInt(nuevaCantidad, 10) : nuevaCantidad;
+    if (isNaN(cantidad) || cantidad < 1 || cantidad > item.producto.stock) return;
 
     try {
       this.isUpdating = true;
       
       // Actualizar localmente por ahora
-      item.cantidad = nuevaCantidad;
-      item.subtotal = item.precio_unitario * nuevaCantidad;
+      item.cantidad = cantidad;
+      item.subtotal = item.precio_unitario * cantidad;
       this.recalcularTotales();
       
       this.showToast('Cantidad actualizada', 'success');

@@ -67,7 +67,7 @@ export class ProductoDetalleComponent implements OnInit {
       this.error = null;
 
       const producto = await this.productosService.getProducto(parseInt(id)).toPromise();
-      this.producto = producto;
+      this.producto = producto || null;
       
       if (this.producto) {
         // Cargar productos relacionados
@@ -194,7 +194,7 @@ export class ProductoDetalleComponent implements OnInit {
       imagenes.push(...this.producto.imagenes_adicionales);
     }
     
-    return imagenes.filter(img => img);
+    return imagenes.filter((img): img is string => !!img);
   }
 
   get imagenActual(): string {

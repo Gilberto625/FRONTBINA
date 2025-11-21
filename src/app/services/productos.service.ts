@@ -235,8 +235,8 @@ export class ProductosService {
   /**
    * Obtener pedidos del usuario
    */
-  getMisPedidos(): Observable<Pedido[]> {
-    return this.api.get<Pedido[]>('/ventas/mis-pedidos/');
+  getMisPedidos(params?: any): Observable<any> {
+    return this.api.get<any>('/ventas/mis-pedidos/', params);
   }
 
   /**

@@ -371,6 +371,25 @@ export class AuthService {
     return localStorage.getItem('access_token');
   }
 
+  getAccessToken(): string | null {
+    return this.getToken();
+  }
+
+  verifyLogin2FA(token: string, code: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/usuarios/verify-login-2fa/`, {
+      token,
+      code
+    }).pipe(
+      tap(response => {
+        if (response.access) {
+          this.setTokens(response.access, response.refresh);
+          this.setCurrentUser(response.user);
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   // Alias para compatibilidad
   getCsrfToken(): Observable<any> {
     return new Observable(observer => {
@@ -407,6 +426,23 @@ export class AuthService {
   loginWithGoogle(): Observable<any> {
     // Placeholder para login con Google
     return throwError(() => 'Google login no implementado');
+  }
+
+  configurarTOTP(email: string): Observable<{ qr_code: string; secret: string }> {
+    return this.setupTOTP();
+  }
+
+  habilitarTOTP(email: string, code: string): Observable<any> {
+    return this.confirmTOTP(code).pipe(
+      map(response => ({ ok: true, ...response }))
+    );
+  }
+
+  verificarOTPRegistro(token: string, codigo: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/usuarios/verify-registration-otp/`, {
+      token,
+      otp: codigo
+    }).pipe(catchError(this.handleError.bind(this)));
   }
 
   actualizarContrasenaOTP(tokenOrEmail: string, passwordOrOtp: string, newPassword?: string): Observable<any> {

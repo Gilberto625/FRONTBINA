@@ -77,8 +77,8 @@
           <div class="user-menu">
             <button class="user-menu-trigger" (click)="toggleMenu()">
               <div class="user-avatar">
-                <img *ngIf="currentUser?.foto_perfil" 
-                     [src]="currentUser.foto_perfil" 
+                <img *ngIf="currentUser?.foto_perfil"
+                     [src]="currentUser?.foto_perfil" 
                      [alt]="userName"
                      class="avatar-image">
                 <div *ngIf="!currentUser?.foto_perfil" class="avatar-placeholder">
@@ -180,8 +180,8 @@
     <!-- User Info (Mobile) -->
     <div class="mobile-user-info" *ngIf="isAuthenticated">
       <div class="user-avatar">
-        <img *ngIf="currentUser?.foto_perfil" 
-             [src]="currentUser.foto_perfil" 
+        <img *ngIf="currentUser?.foto_perfil"
+             [src]="currentUser?.foto_perfil"
              [alt]="userName"
              class="avatar-image">
         <div *ngIf="!currentUser?.foto_perfil" class="avatar-placeholder">

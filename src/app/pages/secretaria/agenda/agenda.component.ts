@@ -49,13 +49,20 @@ interface Servicio {
 })
 export class AgendaComponent implements OnInit {
   citas: CitaAgenda[] = [];
+  citasFiltradas: CitaAgenda[] = [];
   barberos: Barbero[] = [];
   servicios: Servicio[] = [];
-  
+
+  // Filtros
+  filtros = {
+    barbero: '',
+    fecha: ''
+  };
+
   // Vista actual
   vistaActual: 'dia' | 'semana' = 'dia';
   fechaSeleccionada = new Date();
-  
+
   // Estados
   isLoading = true;
   error: string | null = null;
@@ -384,6 +391,28 @@ export class AgendaComponent implements OnInit {
     setTimeout(() => {
       toast.remove();
     }, 3000);
+  }
+
+  filtrarCitas(): void {
+    this.citasFiltradas = this.citas.filter(cita => {
+      if (this.filtros.barbero && cita.barbero_id.toString() !== this.filtros.barbero) {
+        return false;
+      }
+      if (this.filtros.fecha && cita.fecha !== this.filtros.fecha) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  confirmarCita(cita: CitaAgenda): void {
+    this.cambiarEstadoCita(cita, 'confirmada');
+  }
+
+  cancelarCita(cita: CitaAgenda): void {
+    if (confirm(`¿Cancelar la cita de ${cita.cliente}?`)) {
+      this.cambiarEstadoCita(cita, 'cancelada');
+    }
   }
 
   // Utilidades
