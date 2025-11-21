@@ -94,7 +94,7 @@ export const routes: Routes = [
       },
       {
         path: 'agenda',
-        loadComponent: () => import('./pages/barbero/agenda/agenda.component').then(m => m.AgendaComponent)
+        loadComponent: () => import('./pages/barbero/agenda/agenda.component').then(m => m.BarberoAgendaComponent)
       },
       {
         path: 'tiempos-servicio',
@@ -115,7 +115,7 @@ export const routes: Routes = [
       },
       {
         path: 'agenda',
-        loadComponent: () => import('./pages/secretaria/agenda/agenda.component').then(m => m.AgendaGeneralComponent)
+        loadComponent: () => import('./pages/secretaria/agenda/agenda.component').then(m => m.AgendaComponent)
       },
       {
         path: 'productos',
