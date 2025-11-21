@@ -119,7 +119,7 @@ export const routes: Routes = [
       },
       {
         path: 'productos',
-        loadComponent: () => import('./pages/secretaria/productos/productos.component').then(m => m.GestionProductosComponent)
+        loadComponent: () => import('./pages/secretaria/productos/productos.component').then(m => m.ProductosGestionComponent)
       },
       {
         path: 'ventas',
