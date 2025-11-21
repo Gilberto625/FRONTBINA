@@ -18,6 +18,7 @@ interface ServicioBarbero {
   notas_personales?: string;
   tiempo_estimado?: number;
   nuevo_tiempo?: number;
+  editando?: boolean;
   estadisticas?: {
     veces_realizado: number;
     tiempo_promedio: number;

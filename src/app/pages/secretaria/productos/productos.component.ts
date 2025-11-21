@@ -24,6 +24,7 @@ interface ProductoGestion {
   updated_at: string;
   unidad_medida?: string;
   sku?: string;
+  estado?: string;
 }
 
 interface CategoriaProducto {
@@ -77,7 +78,8 @@ export class ProductosGestionComponent implements OnInit {
   filtros = {
     categoria: 'todas',
     stock: 'todos',
-    busqueda: ''
+    busqueda: '',
+    estado: 'todos'
   };
   estadisticas = {
     totalProductos: 0,
