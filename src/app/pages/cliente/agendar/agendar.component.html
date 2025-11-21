@@ -207,7 +207,7 @@
         <h3>Horarios disponibles</h3>
         <div class="times-grid">
           <button class="time-btn" 
-                  *ngFor="let hora of horariosDisponibles.find(h => h.fecha === fechaSeleccionada)?.horas"
+                  *ngFor="let hora of horasDelDiaSeleccionado"
                   [class.selected]="horaSeleccionada === hora"
                   (click)="seleccionarHora(hora)">
             {{ formatTime(hora) }}

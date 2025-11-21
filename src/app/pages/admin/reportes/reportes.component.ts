@@ -353,7 +353,7 @@ export class ReportesComponent implements OnInit {
     });
   }
 
-  formatearTamaño(bytes: number): string {
+  formatearTamano(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     
     const k = 1024;

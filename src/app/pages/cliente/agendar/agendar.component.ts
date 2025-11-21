@@ -53,7 +53,12 @@ export class AgendarComponent implements OnInit {
   servicios: Servicio[] = [];
   barberos: Barbero[] = [];
   horariosDisponibles: HorarioDisponible[] = [];
-  
+
+  get horasDelDiaSeleccionado(): string[] {
+    const horario = this.horariosDisponibles.find(h => h.fecha === this.fechaSeleccionada);
+    return horario?.horas || [];
+  }
+
   // Estados
   isLoading = false;
   error: string | null = null;
