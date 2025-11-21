@@ -148,7 +148,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get currentUser() {
-    return this.authService.getCurrentUser();
+    return this.authService.getCurrentUserValue();
   }
 
   get userName(): string {

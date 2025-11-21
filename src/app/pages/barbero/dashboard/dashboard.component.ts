@@ -247,7 +247,7 @@ export class BarberoDashboardComponent implements OnInit {
   }
 
   get currentUser() {
-    return this.authService.getCurrentUser();
+    return this.authService.getCurrentUserValue();
   }
 
   get barberoName(): string {
