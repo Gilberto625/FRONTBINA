@@ -102,7 +102,7 @@ export class Verify2faComponent implements OnInit {
         if (response.ok) {
           this.showMessage('Nuevo código enviado a tu correo. Expira en 10 minutos.', 'success');
         } else {
-          this.showMessage(response.message || 'Código reenviado', 'info');
+          this.showMessage(response.mensaje || 'Código reenviado', 'info');
         }
         this.metodoSeleccionado = 'email';
         this.updateFormValidation();

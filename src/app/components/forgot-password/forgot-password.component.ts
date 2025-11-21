@@ -64,8 +64,8 @@ export class ForgotPasswordComponent implements OnInit {
     this.authService.solicitarRecuperacionOTP(email).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok && response.tempToken) {
-          this.tempToken = response.tempToken;
+        if (response.ok && response.data?.tempToken) {
+          this.tempToken = response.data.tempToken;
           this.step = 'verify-otp';
           this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
         } else {

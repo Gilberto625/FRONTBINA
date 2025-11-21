@@ -52,8 +52,8 @@ export class BackupCodesComponent implements OnInit {
       next: (response) => {
         this.loading = false;
 
-        if (response.backup_codes) {
-          this.backupCodes = response.backup_codes;
+        if (response.data?.backup_codes) {
+          this.backupCodes = response.data.backup_codes;
           this.showMessage('Códigos de respaldo generados exitosamente', 'success');
         } else {
           this.showMessage('Error al generar códigos de respaldo', 'error');

@@ -199,9 +199,9 @@ export class RegisterComponent implements OnInit {
             setTimeout(() => {
               this.router.navigate(['/verify-2fa'], {
                 state: {
-                  tempToken: response.tempToken,
+                  tempToken: response.data?.tempToken,
                   type: 'register',
-                  destination: response.destino || cleanedData.correo
+                  destination: response.data?.destino || cleanedData.correo
                 }
               });
             }, 500);

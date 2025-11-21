@@ -67,8 +67,8 @@ export class SetupTotpComponent implements OnInit {
         this.loading = false;
 
         // El QR viene en base64
-        this.qrCodeUrl = this.sanitizer.bypassSecurityTrustUrl(response.qr_code);
-        this.secretKey = response.secret;
+        this.qrCodeUrl = this.sanitizer.bypassSecurityTrustUrl(response.data?.qr_code);
+        this.secretKey = response.data?.secret;
         this.currentStep = 1; // Iniciar en el primer paso
       },
       error: (error: any) => {
