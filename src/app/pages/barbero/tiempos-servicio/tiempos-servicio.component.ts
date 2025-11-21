@@ -60,6 +60,7 @@ export class TiemposServicioComponent implements OnInit {
   servicioEditar: ServicioBarbero | null = null;
   duracionTemporal = 0;
   notasTemporal = '';
+  guardando = false;
 
   // Mock data
   mockServicios: ServicioBarbero[] = [
