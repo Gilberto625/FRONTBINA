@@ -388,14 +388,7 @@ export class ProductosService {
     return this.api.get(`/ventas/validar-cupon/${codigo}/`);
   }
 
-  // Métodos para Mis Pedidos
-  getMisPedidos(params?: any): Observable<any> {
-    return this.api.get('/ventas/mis-pedidos/', params);
-  }
-
-  cancelarPedido(pedidoId: number): Observable<any> {
-    return this.api.post(`/ventas/pedidos/${pedidoId}/cancelar/`, {});
-  }
+  // Métodos para Mis Pedidos - ya definidos arriba
 
   descargarFactura(pedidoId: number): Observable<Blob> {
     return this.api.getBlob(`/ventas/pedidos/${pedidoId}/factura/`);
