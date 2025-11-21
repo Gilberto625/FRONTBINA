@@ -47,12 +47,14 @@ export class DiagnosticsComponent implements OnInit {
     
     try {
       const diagnostics = await this.connectivityService.runDiagnostics().toPromise();
-      
-      this.backendStatus = diagnostics.backend;
-      this.endpointChecks = diagnostics.endpoints;
-      this.corsStatus = diagnostics.cors;
-      this.authStatus = diagnostics.authentication;
-      this.serverInfo = diagnostics.serverInfo;
+
+      if (diagnostics) {
+        this.backendStatus = diagnostics.backend;
+        this.endpointChecks = diagnostics.endpoints;
+        this.corsStatus = diagnostics.cors;
+        this.authStatus = diagnostics.authentication;
+        this.serverInfo = diagnostics.serverInfo;
+      }
       
     } catch (error) {
       console.error('Error ejecutando diagnósticos:', error);
@@ -69,7 +71,7 @@ export class DiagnosticsComponent implements OnInit {
     this.isRunning = true;
     
     try {
-      this.backendStatus = await this.connectivityService.checkBackendHealth().toPromise();
+      this.backendStatus = await this.connectivityService.checkBackendHealth().toPromise() ?? null;
     } catch (error) {
       console.error('Error verificando conectividad:', error);
       this.backendStatus = error as BackendStatus;
@@ -85,7 +87,7 @@ export class DiagnosticsComponent implements OnInit {
     this.isRunning = true;
     
     try {
-      this.endpointChecks = await this.connectivityService.checkEndpoints().toPromise();
+      this.endpointChecks = await this.connectivityService.checkEndpoints().toPromise() ?? [];
     } catch (error) {
       console.error('Error verificando endpoints:', error);
     } finally {
@@ -100,7 +102,7 @@ export class DiagnosticsComponent implements OnInit {
     this.isRunning = true;
     
     try {
-      this.authStatus = await this.connectivityService.checkAuthentication().toPromise();
+      this.authStatus = await this.connectivityService.checkAuthentication().toPromise() ?? null;
     } catch (error) {
       console.error('Error verificando autenticación:', error);
       this.authStatus = false;
@@ -112,7 +114,7 @@ export class DiagnosticsComponent implements OnInit {
   /**
    * Obtener clase CSS para el estado
    */
-  getStatusClass(status: string | boolean): string {
+  getStatusClass(status: string | boolean | null): string {
     if (status === true || status === 'online') {
       return 'status-success';
     } else if (status === false || status === 'offline') {
@@ -127,7 +129,7 @@ export class DiagnosticsComponent implements OnInit {
   /**
    * Obtener icono para el estado
    */
-  getStatusIcon(status: string | boolean): string {
+  getStatusIcon(status: string | boolean | null): string {
     if (status === true || status === 'online') {
       return 'fas fa-check-circle';
     } else if (status === false || status === 'offline') {
@@ -219,6 +221,14 @@ export class DiagnosticsComponent implements OnInit {
   /**
    * Obtener resumen del estado general
    */
+  hasServerInfo(): boolean {
+    return this.serverInfo && Object.keys(this.serverInfo).length > 0;
+  }
+
+  getServerInfoKeys(): string[] {
+    return this.serverInfo ? Object.keys(this.serverInfo) : [];
+  }
+
   getOverallStatus(): { status: string, message: string, class: string } {
     if (!this.backendStatus) {
       return {

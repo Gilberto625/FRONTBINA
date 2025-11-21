@@ -204,7 +204,7 @@
   </div>
 
   <!-- Información del Servidor -->
-  <div class="diagnostics-section" *ngIf="serverInfo && Object.keys(serverInfo).length > 0">
+  <div class="diagnostics-section" *ngIf="hasServerInfo()">
     <h2>
       <i class="fas fa-info-circle"></i>
       Información del Servidor

@@ -27,7 +27,7 @@ export class BackupCodesComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener email del usuario actual
-    const currentUser = this.authService.getCurrentUser();
+    const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser) {
       this.showMessage('Debes iniciar sesión primero', 'error');
       setTimeout(() => {
@@ -52,8 +52,8 @@ export class BackupCodesComponent implements OnInit {
       next: (response) => {
         this.loading = false;
 
-        if (response.ok && response.codigos) {
-          this.backupCodes = response.codigos;
+        if (response.backup_codes) {
+          this.backupCodes = response.backup_codes;
           this.showMessage('Códigos de respaldo generados exitosamente', 'success');
         } else {
           this.showMessage('Error al generar códigos de respaldo', 'error');
