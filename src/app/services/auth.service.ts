@@ -46,6 +46,11 @@ export interface RegisterData {
   fecha_nacimiento?: string;
 }
 
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -349,6 +354,24 @@ export class AuthService {
 
   cambiarContrasena(email: string, currentPassword: string, newPassword: string): Observable<any> {
     return this.changePassword(currentPassword, newPassword);
+  }
+
+  // Alias para recuperación de contraseña
+  solicitarRecuperacionOTP(email: string): Observable<any> {
+    return this.requestPasswordReset(email);
+  }
+
+  verificarOTPRecuperacion(email: string, otp: string): Observable<any> {
+    return this.verifyOTPReset(email, otp);
+  }
+
+  reenviarOTPRecuperacion(email: string): Observable<any> {
+    return this.resendOTPReset(email);
+  }
+
+  loginWithGoogle(): Observable<any> {
+    // Placeholder para login con Google
+    return throwError(() => 'Google login no implementado');
   }
 
   refreshToken(): Observable<{ access: string }> {
