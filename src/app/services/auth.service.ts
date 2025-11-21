@@ -35,6 +35,7 @@ export interface LoginResponse {
   user: User;
   requires_2fa?: boolean;
   message?: string;
+  ok?: boolean;
 }
 
 export interface RegisterData {
@@ -44,6 +45,14 @@ export interface RegisterData {
   password: string;
   telefono?: string;
   fecha_nacimiento?: string;
+  // Campos adicionales para compatibilidad
+  apellidopaterno?: string;
+  apellidomaterno?: string;
+  username?: string;
+  correo?: string;
+  contrasena?: string;
+  preguntasecreta?: string;
+  respuestasecreta?: string;
 }
 
 export interface LoginData {
@@ -58,10 +67,12 @@ export interface Usuario {
   apellido: string;
   telefono?: string;
   rol?: string;
+  username?: string;
 }
 
 export interface EstadoSeguridad {
   totp_enabled: boolean;
+  totp_habilitado: boolean;
   backup_codes_generated: boolean;
   last_login?: string;
 }
