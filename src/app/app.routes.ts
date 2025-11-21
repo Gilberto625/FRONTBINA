@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from './components/landing/landing.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
-import { AuthGuard } from './guards/auth.guard';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   // Rutas públicas
@@ -13,28 +13,28 @@ export const routes: Routes = [
   // Rutas protegidas - Cliente
   {
     path: 'cliente',
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/cliente/cliente.routes').then(m => m.clienteRoutes)
   },
   
   // Rutas protegidas - Barbero
   {
     path: 'barbero',
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/barbero/barbero.routes').then(m => m.barberoRoutes)
   },
   
   // Rutas protegidas - Secretaria
   {
     path: 'secretaria',
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/secretaria/secretaria.routes').then(m => m.secretariaRoutes)
   },
   
   // Rutas protegidas - Admin
   {
     path: 'admin',
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/admin/admin.routes').then(m => m.adminRoutes)
   },
   

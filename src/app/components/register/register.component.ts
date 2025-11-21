@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService, RegisterData } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -38,9 +38,6 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener CSRF token al iniciar
-    this.authService.getCsrfToken().subscribe();
-
     // Crear formulario reactivo con validaciones mejoradas
     this.registerForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
@@ -66,7 +63,7 @@ export class RegisterComponent implements OnInit {
    */
   passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    
+
     if (!value) {
       return null;
     }
@@ -77,7 +74,7 @@ export class RegisterComponent implements OnInit {
 
     const passwordValid = hasUpperCase && hasLowerCase && hasNumber;
 
-    return passwordValid ? null : { 
+    return passwordValid ? null : {
       passwordStrength: {
         hasUpperCase,
         hasLowerCase,
@@ -91,7 +88,7 @@ export class RegisterComponent implements OnInit {
    */
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    
+
     if (!value) {
       return null; // El required se encarga de esto
     }
@@ -166,58 +163,48 @@ export class RegisterComponent implements OnInit {
 
     this.loading = true;
 
-    // Obtener CSRF token antes de registrar
-    this.authService.getCsrfToken().subscribe({
-      next: () => {
-        // Preparar datos sin el campo confirmarContrasena y trimear valores
-        const { confirmarContrasena, ...registerData } = this.registerForm.value;
-        
-        // Limpiar espacios en blanco de los campos de texto
-        const cleanedData = {
-          nombre: registerData.nombre.trim(),
-          apellidopaterno: registerData.apellidopaterno.trim(),
-          apellidomaterno: registerData.apellidomaterno.trim(),
-          username: registerData.username.trim(),
-          correo: registerData.correo.trim(),
-          contrasena: registerData.contrasena,
-          telefono: registerData.telefono.trim(),
-          preguntasecreta: registerData.preguntasecreta,
-          respuestasecreta: registerData.respuestasecreta.trim()
-        };
+    // Preparar datos sin el campo confirmarContrasena y trimear valores
+    const { confirmarContrasena, ...registerData } = this.registerForm.value;
 
-        console.log('Datos de registro:', cleanedData);
+    // Limpiar espacios en blanco de los campos de texto
+    const cleanedData = {
+      nombre: registerData.nombre.trim(),
+      apellidopaterno: registerData.apellidopaterno.trim(),
+      apellidomaterno: registerData.apellidomaterno.trim(),
+      username: registerData.username.trim(),
+      correo: registerData.correo.trim(),
+      contrasena: registerData.contrasena,
+      telefono: registerData.telefono.trim(),
+      preguntasecreta: registerData.preguntasecreta,
+      respuestasecreta: registerData.respuestasecreta.trim()
+    };
 
-        this.authService.register(cleanedData as RegisterData).subscribe({
-          next: (response) => {
-            this.loading = false;
-            this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
+    console.log('Datos de registro:', cleanedData);
 
-            // Guardar el correo en localStorage para poder reenviar código
-            localStorage.setItem('registerEmail', cleanedData.correo);
-
-            // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
-            setTimeout(() => {
-              this.router.navigate(['/verify-2fa'], {
-                state: {
-                  tempToken: response.tempToken,
-                  type: 'register',
-                  destination: response.destino || cleanedData.correo
-                }
-              });
-            }, 500);
-          },
-          error: (error) => {
-            this.loading = false;
-            console.error('Error completo:', error);
-            const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
-            this.showMessage(errorMsg, 'error');
-          }
-        });
-      },
-      error: (csrfError) => {
+    this.authService.register(cleanedData).subscribe({
+      next: (response: any) => {
         this.loading = false;
-        console.error('Error obteniendo CSRF token:', csrfError);
-        this.showMessage('Error de conexión con el servidor. Por favor, intenta de nuevo.', 'error');
+        this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
+
+        // Guardar el correo en localStorage para poder reenviar código
+        localStorage.setItem('registerEmail', cleanedData.correo);
+
+        // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/verify-2fa'], {
+            state: {
+              tempToken: response.tempToken,
+              type: 'register',
+              destination: response.destino || cleanedData.correo
+            }
+          });
+        }, 500);
+      },
+      error: (error: any) => {
+        this.loading = false;
+        console.error('Error completo:', error);
+        const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
@@ -232,4 +219,3 @@ export class RegisterComponent implements OnInit {
     }
   }
 }
-

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService, LoginData } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -29,9 +29,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
-
     // Crear formulario
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -46,15 +43,13 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    const loginData: LoginData = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
-    this.authService.login(loginData).subscribe({
+    this.authService.login(email, password).subscribe({
       next: (response) => {
         this.loading = false;
 
         if (response.ok) {
-          // Login directo sin 2FA (modificado según requerimiento)
-          // El servicio ya guarda el usuario en el pipe tap
           this.showMessage('¡Inicio de sesión exitoso!', 'success');
           setTimeout(() => {
             this.router.navigate(['/home']);
@@ -70,27 +65,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithGoogle(): void {
-    this.loadingGoogle = true;
-
-    this.authService.loginWithGoogle().subscribe({
-      next: (response: any) => {
-        this.loadingGoogle = false;
-        if (response && response.ok) {
-          this.showMessage('¡Inicio de sesión con Google exitoso!', 'success');
-          setTimeout(() => {
-            this.router.navigate(['/home']);
-          }, 500);
-        } else {
-          const errorMsg = response?.error || 'Error al iniciar sesión con Google';
-          this.showMessage(errorMsg, 'error');
-        }
-      },
-      error: (error: any) => {
-        this.loadingGoogle = false;
-        const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
-        this.showMessage(errorMsg, 'error');
-      }
-    });
+    this.showMessage('Login con Google no disponible actualmente', 'info');
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
