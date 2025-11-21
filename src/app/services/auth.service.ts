@@ -76,6 +76,7 @@ export interface EstadoSeguridad {
   backup_codes_generated: boolean;
   codigos_respaldo_disponibles: number;
   last_login?: string;
+  email_2fa?: boolean;
 }
 
 @Injectable({
@@ -395,6 +396,10 @@ export class AuthService {
   }
 
   reenviarOTPRecuperacion(email: string): Observable<any> {
+    return this.resendOTPReset(email);
+  }
+
+  reenviarOTP(email: string): Observable<any> {
     return this.resendOTPReset(email);
   }
 
