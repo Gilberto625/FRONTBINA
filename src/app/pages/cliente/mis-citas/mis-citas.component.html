@@ -1,0 +1,358 @@
+<!-- Header -->
+<div class="mis-citas-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="header-info">
+        <h1 class="page-title">
+          <i class="lucide lucide-calendar-days"></i>
+          Mis Citas
+        </h1>
+        <p class="page-subtitle">Historial completo de tus citas en Tony Stylo</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" routerLink="/cliente/agendar">
+          <i class="lucide lucide-calendar-plus"></i>
+          Agendar Nueva Cita
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="container" *ngIf="isLoading">
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando historial de citas...</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="container" *ngIf="error && !isLoading">
+  <div class="alert alert-error">
+    <i class="lucide lucide-alert-circle"></i>
+    {{ error }}
+  </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="container" *ngIf="!isLoading && !error">
+  
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <div class="filtros-container">
+      
+      <div class="filtro-grupo">
+        <label class="filtro-label">Estado</label>
+        <select class="input-field" [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+          <option value="todas">Todas las citas</option>
+          <option value="completada">Completadas</option>
+          <option value="confirmada">Confirmadas</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="cancelada">Canceladas</option>
+          <option value="no_asistio">No asistió</option>
+        </select>
+      </div>
+
+      <div class="filtro-grupo">
+        <label class="filtro-label">Período</label>
+        <select class="input-field" [(ngModel)]="filtroFecha" (change)="aplicarFiltros()">
+          <option value="todas">Todas las fechas</option>
+          <option value="proximas">Próximas citas</option>
+          <option value="pasadas">Citas pasadas</option>
+          <option value="mes">Último mes</option>
+        </select>
+      </div>
+
+      <div class="filtro-grupo">
+        <label class="filtro-label">Barbero</label>
+        <select class="input-field" [(ngModel)]="filtroBarbero" (change)="aplicarFiltros()">
+          <option value="todos">Todos los barberos</option>
+          <option *ngFor="let barbero of barberos" [value]="barbero">
+            {{ barbero }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-grupo">
+        <button class="btn btn-secondary btn-sm" (click)="filtroEstado='todas'; filtroFecha='todas'; filtroBarbero='todos'; aplicarFiltros()">
+          <i class="lucide lucide-x"></i>
+          Limpiar Filtros
+        </button>
+      </div>
+
+    </div>
+    
+    <div class="resultados-info" *ngIf="citasFiltradas.length > 0">
+      <span>{{ citasFiltradas.length }} {{ citasFiltradas.length === 1 ? 'cita encontrada' : 'citas encontradas' }}</span>
+    </div>
+  </div>
+
+  <!-- Lista de citas -->
+  <div class="citas-list" *ngIf="citasPaginadas.length > 0">
+    <div class="cita-card" 
+         *ngFor="let cita of citasPaginadas"
+         [class]="getEstadoClass(cita.estado)">
+      
+      <!-- Header de la cita -->
+      <div class="cita-header">
+        <div class="cita-fecha">
+          <div class="fecha-principal">{{ formatDate(cita.fecha) }}</div>
+          <div class="hora-duracion">
+            {{ formatTime(cita.hora) }} • {{ formatDuration(cita.duracion) }}
+          </div>
+        </div>
+        <div class="cita-estado">
+          <div class="estado-badge" [class]="getEstadoClass(cita.estado)">
+            <i class="lucide" [class]="'lucide-' + getEstadoIcon(cita.estado)"></i>
+            <span>{{ getEstadoText(cita.estado) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la cita -->
+      <div class="cita-content">
+        
+        <!-- Barbero -->
+        <div class="cita-barbero">
+          <div class="barbero-avatar">
+            <img [src]="cita.barbero_foto || 'assets/images/barbero-placeholder.jpg'" 
+                 [alt]="cita.barbero" 
+                 class="barbero-img">
+          </div>
+          <div class="barbero-info">
+            <h4 class="barbero-nombre">{{ cita.barbero }}</h4>
+            <div class="barbero-label">Barbero asignado</div>
+          </div>
+        </div>
+
+        <!-- Servicios -->
+        <div class="cita-servicios">
+          <h4 class="servicios-title">
+            <i class="lucide lucide-scissors"></i>
+            Servicios realizados
+          </h4>
+          <div class="servicios-lista">
+            <span class="servicio-tag" *ngFor="let servicio of cita.servicios">
+              {{ servicio }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Precio -->
+        <div class="cita-precio">
+          <div class="precio-label">Total pagado</div>
+          <div class="precio-valor">{{ formatCurrency(cita.precio) }}</div>
+        </div>
+
+      </div>
+
+      <!-- Calificación -->
+      <div class="cita-calificacion" *ngIf="cita.calificacion">
+        <h4 class="calificacion-title">Tu calificación</h4>
+        <div class="calificacion-estrellas">
+          <div class="stars">
+            <i class="lucide lucide-star" 
+               *ngFor="let star of getStarArray(5)" 
+               [class.filled]="star <= cita.calificacion"></i>
+          </div>
+          <span class="calificacion-numero">{{ cita.calificacion }}/5</span>
+        </div>
+        <p class="calificacion-comentario" *ngIf="cita.comentario">
+          "{{ cita.comentario }}"
+        </p>
+      </div>
+
+      <!-- Acciones -->
+      <div class="cita-acciones">
+        
+        <button class="btn btn-primary btn-sm" 
+                *ngIf="cita.puede_reprogramar"
+                (click)="reprogramarCita(cita)">
+          <i class="lucide lucide-calendar"></i>
+          Reprogramar
+        </button>
+        
+        <button class="btn btn-warning btn-sm" 
+                *ngIf="cita.puede_cancelar"
+                (click)="abrirModalCancelacion(cita)">
+          <i class="lucide lucide-x"></i>
+          Cancelar
+        </button>
+        
+        <button class="btn btn-success btn-sm" 
+                *ngIf="cita.puede_calificar"
+                (click)="abrirModalCalificacion(cita)">
+          <i class="lucide lucide-star"></i>
+          Calificar
+        </button>
+        
+        <button class="btn btn-secondary btn-sm" 
+                routerLink="/cliente/agendar">
+          <i class="lucide lucide-repeat"></i>
+          Repetir Cita
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Sin citas -->
+  <div class="no-citas" *ngIf="citasPaginadas.length === 0 && citasFiltradas.length === 0">
+    <div class="no-citas-icon">
+      <i class="lucide lucide-calendar-x"></i>
+    </div>
+    <h3>No tienes citas registradas</h3>
+    <p>¡Agenda tu primera cita y disfruta de nuestros servicios premium!</p>
+    <button class="btn btn-primary btn-lg" routerLink="/cliente/agendar">
+      <i class="lucide lucide-calendar-plus"></i>
+      Agendar Mi Primera Cita
+    </button>
+  </div>
+
+  <!-- Sin resultados de filtro -->
+  <div class="no-resultados" *ngIf="citasPaginadas.length === 0 && citasFiltradas.length === 0 && citas.length > 0">
+    <div class="no-resultados-icon">
+      <i class="lucide lucide-search-x"></i>
+    </div>
+    <h3>No se encontraron citas</h3>
+    <p>Intenta ajustar los filtros para encontrar las citas que buscas</p>
+    <button class="btn btn-secondary" (click)="filtroEstado='todas'; filtroFecha='todas'; filtroBarbero='todos'; aplicarFiltros()">
+      <i class="lucide lucide-refresh-cw"></i>
+      Limpiar Filtros
+    </button>
+  </div>
+
+  <!-- Paginación -->
+  <div class="paginacion" *ngIf="totalPaginas > 1">
+    <button class="btn btn-secondary btn-sm"
+            (click)="cambiarPagina(paginaActual - 1)"
+            [disabled]="paginaActual === 1">
+      <i class="lucide lucide-chevron-left"></i>
+      Anterior
+    </button>
+
+    <div class="paginas-numeros">
+      <button *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+              class="btn btn-page"
+              [class.active]="i + 1 === paginaActual"
+              (click)="cambiarPagina(i + 1)">
+        {{ i + 1 }}
+      </button>
+    </div>
+
+    <button class="btn btn-secondary btn-sm"
+            (click)="cambiarPagina(paginaActual + 1)"
+            [disabled]="paginaActual === totalPaginas">
+      Siguiente
+      <i class="lucide lucide-chevron-right"></i>
+    </button>
+  </div>
+
+</div>
+
+<!-- Modal de Cancelación -->
+<div class="modal-overlay" *ngIf="mostrarModalCancelacion" (click)="cerrarModalCancelacion()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Cancelar Cita</h3>
+      <button class="btn-close" (click)="cerrarModalCancelacion()">
+        <i class="lucide lucide-x"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="cita-info-modal" *ngIf="citaCancelar">
+        <p><strong>Fecha:</strong> {{ formatDate(citaCancelar.fecha) }}</p>
+        <p><strong>Hora:</strong> {{ formatTime(citaCancelar.hora) }}</p>
+        <p><strong>Barbero:</strong> {{ citaCancelar.barbero }}</p>
+        <p><strong>Servicios:</strong> {{ citaCancelar.servicios.join(', ') }}</p>
+      </div>
+      
+      <div class="form-group">
+        <label class="input-label">Motivo de cancelación *</label>
+        <textarea class="input-field" 
+                  rows="4"
+                  placeholder="Por favor, indica el motivo de la cancelación..."
+                  [(ngModel)]="motivoCancelacion"></textarea>
+      </div>
+      
+      <div class="cancelacion-info">
+        <div class="info-alert">
+          <i class="lucide lucide-info"></i>
+          <div>
+            <strong>Política de cancelación:</strong>
+            <ul>
+              <li>Cancelaciones con más de 24h: Sin penalización</li>
+              <li>Cancelaciones con menos de 24h: Se requiere anticipo en próximas citas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModalCancelacion()">
+        Mantener Cita
+      </button>
+      <button class="btn btn-danger" 
+              (click)="cancelarCita()"
+              [disabled]="!motivoCancelacion.trim()">
+        <i class="lucide lucide-x"></i>
+        Confirmar Cancelación
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Calificación -->
+<div class="modal-overlay" *ngIf="mostrarModalCalificacion" (click)="cerrarModalCalificacion()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Calificar Servicio</h3>
+      <button class="btn-close" (click)="cerrarModalCalificacion()">
+        <i class="lucide lucide-x"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="cita-info-modal" *ngIf="citaCalificar">
+        <p><strong>Fecha:</strong> {{ formatDate(citaCalificar.fecha) }}</p>
+        <p><strong>Barbero:</strong> {{ citaCalificar.barbero }}</p>
+        <p><strong>Servicios:</strong> {{ citaCalificar.servicios.join(', ') }}</p>
+      </div>
+      
+      <div class="form-group">
+        <label class="input-label">Calificación</label>
+        <div class="rating-selector">
+          <button *ngFor="let star of getStarArray(5)"
+                  class="star-btn"
+                  [class.selected]="star <= calificacionNueva"
+                  (click)="setCalificacion(star)">
+            <i class="lucide lucide-star"></i>
+          </button>
+        </div>
+        <div class="rating-text">{{ calificacionNueva }}/5 estrellas</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="input-label">Comentario (opcional)</label>
+        <textarea class="input-field" 
+                  rows="4"
+                  placeholder="Comparte tu experiencia con otros clientes..."
+                  [(ngModel)]="comentarioNuevo"></textarea>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModalCalificacion()">
+        Cancelar
+      </button>
+      <button class="btn btn-primary" (click)="guardarCalificacion()">
+        <i class="lucide lucide-star"></i>
+        Guardar Calificación
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,423 @@
+/* === Componente Verify 2FA - Usa variables globales de styles.css === */
+
+.verify-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: 16px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.verify-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  box-sizing: border-box;
+  border: 2px solid var(--color-primary-dark);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.icon-wrapper {
+  margin-bottom: 16px;
+}
+
+.header-icon {
+  font-size: 48px;
+  display: block;
+  margin: 0 auto;
+}
+
+.card-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 8px 0;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  color: var(--color-gray-dark);
+  margin: 0;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.card-body {
+  padding: 0;
+}
+
+.method-selector-wrapper {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  border: 2px solid var(--color-border);
+}
+
+.method-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 12px 0;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.method-toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.method-toggle {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: var(--color-background);
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.method-toggle:hover {
+  border-color: var(--color-primary-gold);
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.method-toggle.active {
+  background-color: var(--color-primary-gold);
+  border-color: var(--color-primary-gold);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.method-icon {
+  font-size: 18px;
+}
+
+.method-text {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.info-section {
+  margin-bottom: 24px;
+}
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-primary-gold);
+  margin-bottom: 12px;
+}
+
+.info-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-primary);
+  margin: 0 0 6px 0;
+  line-height: 1.5;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.info-email {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.warning-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background-color: rgba(212, 175, 55, 0.12);
+  border-radius: 8px;
+  border: 2px solid rgba(212, 175, 55, 0.25);
+}
+
+.warning-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.warning-text {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1.4;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.verify-form {
+  margin-bottom: 24px;
+}
+
+.form-row {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-family: 'Montserrat', sans-serif;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  color: var(--color-primary);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  text-align: center;
+  letter-spacing: 6px;
+  font-weight: 600;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.input-field::placeholder {
+  letter-spacing: 3px;
+  font-weight: 400;
+  color: var(--color-gray-dark);
+}
+
+.input-field.input-error {
+  border-color: var(--color-error);
+}
+
+.input-feedback {
+  font-size: 12px;
+  margin-top: 6px;
+  color: var(--color-gray-dark);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.input-feedback.error {
+  color: var(--color-error);
+}
+
+.alternative-actions {
+  margin-bottom: 16px;
+}
+
+.btn-alt {
+  background-color: rgba(212, 175, 55, 0.08);
+  color: var(--color-primary);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  font-size: 13px;
+  padding: 10px 14px;
+  min-height: 44px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-alt:hover:not(:disabled) {
+  background-color: rgba(212, 175, 55, 0.15);
+  border-color: var(--color-primary-gold);
+}
+
+.resend-button {
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  border: none;
+  font-size: 14px;
+  padding: 12px 24px;
+  min-height: 48px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  box-shadow: var(--shadow-gold-sm);
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-base);
+  letter-spacing: 0.5px;
+}
+
+.resend-button:hover:not(:disabled) {
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
+  transform: translateY(-2px);
+}
+
+.resend-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.resend-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
+}
+
+.resend-button:disabled {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.btn-alt:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  margin-top: 16px;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-primary {
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
+}
+
+.btn-primary:disabled {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(26, 26, 26, 0.3);
+  border-top: 2px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.back-link-wrapper {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.back-link {
+  color: var(--color-primary-gold);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .verify-container {
+    padding: 12px;
+  }
+
+  .verify-card {
+    padding: 24px;
+  }
+
+  .card-title {
+    font-size: 24px;
+  }
+
+  .input-field {
+    font-size: 16px;
+    letter-spacing: 4px;
+    padding: 10px 14px;
+  }
+}
