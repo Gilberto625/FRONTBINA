@@ -32,7 +32,7 @@ export class SecurityDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener email del usuario actual
-    const currentUser = this.authService.getCurrentUser();
+    const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser) {
       this.showMessage('Debes iniciar sesión primero', 'error');
       setTimeout(() => {
