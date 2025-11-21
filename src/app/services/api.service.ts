@@ -130,6 +130,18 @@ export class ApiService {
   }
 
   /**
+   * POST request que devuelve Blob
+   */
+  postBlob(endpoint: string, data: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}${endpoint}`, data, {
+      headers: this.getHeaders(),
+      responseType: 'blob'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
    * Upload de archivos
    */
   uploadFile<T>(endpoint: string, file: File, additionalData?: any): Observable<T> {

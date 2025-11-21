@@ -66,6 +66,15 @@ export class ProductosGestionComponent implements OnInit {
   nuevoStock = 0;
   motivoAjuste = '';
 
+  // Propiedades adicionales
+  productoEditando: ProductoGestion | null = null;
+  tipoMovimientoStock: 'entrada' | 'salida' = 'entrada';
+  filtros = {
+    categoria: 'todas',
+    stock: 'todos',
+    busqueda: ''
+  };
+
   // Mock data
   mockCategorias: CategoriaProducto[] = [
     { id: 1, nombre: 'Cuidado Capilar', descripcion: 'Productos para el cabello', activa: true },

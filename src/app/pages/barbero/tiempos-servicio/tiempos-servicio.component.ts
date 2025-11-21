@@ -16,6 +16,10 @@ interface ServicioBarbero {
   especialidad: boolean; // Si es especialidad del barbero
   nivel_dificultad: 'facil' | 'medio' | 'dificil';
   notas_personales?: string;
+  estadisticas?: {
+    veces_realizado: number;
+    tiempo_promedio: number;
+  };
 }
 
 interface EstadisticaServicio {
@@ -45,6 +49,10 @@ export class TiemposServicioComponent implements OnInit {
   // Filtros
   filtroCategoria = 'todas';
   filtroEspecialidad = 'todos';
+  filtros = {
+    categoria: 'todas',
+    especialidad: 'todos'
+  };
   
   // Modal edición
   mostrarModalEdicion = false;
