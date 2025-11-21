@@ -156,7 +156,7 @@ export const routes: Routes = [
       },
       {
         path: 'configuracion',
-        loadComponent: () => import('./pages/admin/configuracion/configuracion.component').then(m => m.AdminConfiguracionComponent)
+        loadComponent: () => import('./pages/admin/configuracion/configuracion.component').then(m => m.ConfiguracionComponent)
       },
       {
         path: 'cuentas-bancarias',

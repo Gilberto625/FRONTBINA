@@ -335,6 +335,22 @@ export class AuthService {
     return localStorage.getItem('access_token');
   }
 
+  // Alias para compatibilidad
+  getCsrfToken(): Observable<any> {
+    return new Observable(observer => {
+      observer.next(null);
+      observer.complete();
+    });
+  }
+
+  generarCodigosRespaldo(email: string): Observable<{ backup_codes: string[] }> {
+    return this.generateBackupCodes();
+  }
+
+  cambiarContrasena(email: string, currentPassword: string, newPassword: string): Observable<any> {
+    return this.changePassword(currentPassword, newPassword);
+  }
+
   refreshToken(): Observable<{ access: string }> {
     const refreshToken = localStorage.getItem('refresh_token');
     if (!refreshToken) {
