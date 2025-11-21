@@ -17,6 +17,7 @@ interface ServicioBarbero {
   nivel_dificultad: 'facil' | 'medio' | 'dificil';
   notas_personales?: string;
   tiempo_estimado?: number;
+  nuevo_tiempo?: number;
   estadisticas?: {
     veces_realizado: number;
     tiempo_promedio: number;
