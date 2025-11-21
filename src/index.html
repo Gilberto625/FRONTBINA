@@ -6,6 +6,16 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Using system fonts to avoid build issues with external font loading -->
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 300 700;
+      font-display: swap;
+      src: local('Inter'), local('Arial'), local('sans-serif');
+    }
+  </style>
 </head>
 <body>
   <app-root></app-root>

@@ -1,0 +1,64 @@
+<div class="servicios-container">
+  <div class="header">
+    <h2>Gestion de Servicios</h2>
+    <button class="btn-primary" (click)="abrirModal()">+ Nuevo Servicio</button>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Cargando...</div>
+
+  <div class="servicios-grid" *ngIf="!isLoading">
+    <div *ngFor="let servicio of servicios" class="servicio-card" [class.inactivo]="!servicio.activo">
+      <div class="servicio-header">
+        <h3>{{ servicio.nombre }}</h3>
+        <span class="categoria">{{ servicio.categoria }}</span>
+      </div>
+      <p class="descripcion">{{ servicio.descripcion }}</p>
+      <div class="servicio-info">
+        <span>{{ servicio.duracion }} min</span>
+        <span class="precio">{{ formatCurrency(servicio.precio) }}</span>
+      </div>
+      <div class="servicio-acciones">
+        <button (click)="abrirModal(servicio)">Editar</button>
+        <button (click)="toggleActivo(servicio)">{{ servicio.activo ? 'Desactivar' : 'Activar' }}</button>
+        <button class="btn-danger" (click)="eliminarServicio(servicio.id)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>{{ editando ? 'Editar' : 'Nuevo' }} Servicio</h3>
+      <form (ngSubmit)="guardarServicio()">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="servicioActual.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label>Descripcion</label>
+          <textarea [(ngModel)]="servicioActual.descripcion" name="descripcion"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duracion (min)</label>
+            <input type="number" [(ngModel)]="servicioActual.duracion" name="duracion" min="5">
+          </div>
+          <div class="form-group">
+            <label>Precio</label>
+            <input type="number" [(ngModel)]="servicioActual.precio" name="precio" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <select [(ngModel)]="servicioActual.categoria" name="categoria">
+            <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

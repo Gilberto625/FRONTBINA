@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthService, RegisterData } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-register',
@@ -16,13 +11,7 @@ import { AuthService, RegisterData } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule
+    RouterModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -30,78 +19,203 @@ import { AuthService, RegisterData } from '../../services/auth.service';
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   loading = false;
+  hidePassword = true;
+  hideConfirmPassword = true;
+
+  // Requisitos de contraseña
+  passwordRequirements = {
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasNumber: false
+  };
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
-    // Obtener CSRF token al iniciar
-    this.authService.getCsrfToken().subscribe();
-
-    // Crear formulario reactivo con validaciones
+    // Crear formulario reactivo con validaciones mejoradas
     this.registerForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(2)]],
-      apellidopaterno: ['', [Validators.required, Validators.minLength(2)]],
-      apellidomaterno: ['', [Validators.required, Validators.minLength(2)]],
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      correo: ['', [Validators.required, Validators.email]],
-      contrasena: ['', [Validators.required, Validators.minLength(8)]],
+      nombre: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
+      apellidopaterno: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
+      apellidomaterno: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
+      username: ['', [Validators.required, Validators.minLength(4), this.noWhitespaceValidator]],
+      correo: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
+      contrasena: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
       confirmarContrasena: ['', [Validators.required]],
       telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       preguntasecreta: ['', [Validators.required]],
-      respuestasecreta: ['', [Validators.required]]
+      respuestasecreta: ['', [Validators.required, this.noWhitespaceValidator]]
+    });
+
+    // Escuchar cambios en la contraseña para actualizar indicadores visuales
+    this.registerForm.get('contrasena')?.valueChanges.subscribe(password => {
+      this.checkPasswordRequirements(password);
     });
   }
 
+  /**
+   * Validador personalizado: verifica que la contraseña tenga mayúscula, minúscula y número
+   */
+  passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+
+    if (!value) {
+      return null;
+    }
+
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumber;
+
+    return passwordValid ? null : {
+      passwordStrength: {
+        hasUpperCase,
+        hasLowerCase,
+        hasNumber
+      }
+    };
+  }
+
+  /**
+   * Validador personalizado: verifica que el campo no esté vacío ni solo contenga espacios
+   */
+  noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+
+    if (!value) {
+      return null; // El required se encarga de esto
+    }
+
+    const isWhitespace = (value || '').trim().length === 0;
+    return isWhitespace ? { whitespace: true } : null;
+  }
+
+  /**
+   * Actualiza los indicadores visuales de requisitos de contraseña
+   */
+  checkPasswordRequirements(password: string): void {
+    this.passwordRequirements.minLength = password.length >= 8;
+    this.passwordRequirements.hasUpperCase = /[A-Z]/.test(password);
+    this.passwordRequirements.hasLowerCase = /[a-z]/.test(password);
+    this.passwordRequirements.hasNumber = /[0-9]/.test(password);
+  }
+
+  /**
+   * Verifica si todos los requisitos de contraseña se cumplen
+   */
+  get allRequirementsMet(): boolean {
+    return Object.values(this.passwordRequirements).every(req => req);
+  }
+
+  /**
+   * Toggle para mostrar/ocultar contraseña
+   */
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  /**
+   * Toggle para mostrar/ocultar confirmación de contraseña
+   */
+  toggleConfirmPasswordVisibility(): void {
+    this.hideConfirmPassword = !this.hideConfirmPassword;
+  }
+
   onSubmit(): void {
+    // Marcar todos los campos como touched para mostrar errores
+    Object.keys(this.registerForm.controls).forEach(key => {
+      this.registerForm.get(key)?.markAsTouched();
+    });
+
+    // Validar que el formulario sea válido
     if (this.registerForm.invalid) {
-      this.showMessage('Por favor completa todos los campos correctamente');
+      this.showMessage('Por favor completa todos los campos correctamente', 'error');
       return;
     }
 
     // Validar que las contraseñas coincidan
     if (this.registerForm.value.contrasena !== this.registerForm.value.confirmarContrasena) {
-      this.showMessage('Las contraseñas no coinciden');
+      this.showMessage('Las contraseñas no coinciden', 'error');
       return;
+    }
+
+    // Validar que la contraseña cumpla con todos los requisitos
+    if (!this.allRequirementsMet) {
+      this.showMessage('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número', 'error');
+      return;
+    }
+
+    // Validar que no haya campos con solo espacios en blanco
+    const formValues = this.registerForm.value;
+    for (const key in formValues) {
+      if (typeof formValues[key] === 'string' && formValues[key].trim() === '') {
+        this.showMessage('No se permiten campos vacíos o solo con espacios', 'error');
+        return;
+      }
     }
 
     this.loading = true;
 
-    // Preparar datos sin el campo confirmarContrasena
+    // Preparar datos sin el campo confirmarContrasena y trimear valores
     const { confirmarContrasena, ...registerData } = this.registerForm.value;
 
-    this.authService.register(registerData as RegisterData).subscribe({
-      next: (response) => {
-        this.loading = false;
-        this.showMessage('Código 2FA enviado a tu correo');
+    // Limpiar espacios en blanco de los campos de texto
+    const cleanedData = {
+      nombre: registerData.nombre.trim(),
+      apellidopaterno: registerData.apellidopaterno.trim(),
+      apellidomaterno: registerData.apellidomaterno.trim(),
+      username: registerData.username.trim(),
+      correo: registerData.correo.trim(),
+      contrasena: registerData.contrasena,
+      telefono: registerData.telefono.trim(),
+      preguntasecreta: registerData.preguntasecreta,
+      respuestasecreta: registerData.respuestasecreta.trim()
+    };
 
-        // Navegar a la página de verificación 2FA con el tempToken
-        this.router.navigate(['/verify-2fa'], {
-          state: {
-            tempToken: response.tempToken,
-            type: 'register',
-            destination: response.destino
-          }
-        });
-      },
-      error: (error) => {
+    console.log('Datos de registro:', cleanedData);
+
+    this.authService.register(cleanedData).subscribe({
+      next: (response: any) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al registrar usuario';
-        this.showMessage(errorMsg);
+        this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
+
+        // Guardar el correo en localStorage para poder reenviar código
+        localStorage.setItem('registerEmail', cleanedData.correo);
+
+        // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/verify-2fa'], {
+            state: {
+              tempToken: response.tempToken,
+              type: 'register',
+              destination: response.destino || cleanedData.correo
+            }
+          });
+        }, 500);
+      },
+      error: (error: any) => {
+        this.loading = false;
+        console.error('Error completo:', error);
+        const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }
-

@@ -1,31 +1,43 @@
 import { Routes } from '@angular/router';
+import { LandingComponent } from './components/landing/landing.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+  // Rutas públicas
+  { path: '', component: LandingComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  
+  // Rutas protegidas - Cliente
   {
-    path: '',
-    redirectTo: '/login',
-    pathMatch: 'full'
+    path: 'cliente',
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/cliente/cliente.routes').then(m => m.clienteRoutes)
   },
+  
+  // Rutas protegidas - Barbero
   {
-    path: 'register',
-    loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent)
+    path: 'barbero',
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/barbero/barbero.routes').then(m => m.barberoRoutes)
   },
+  
+  // Rutas protegidas - Secretaria
   {
-    path: 'login',
-    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
+    path: 'secretaria',
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/secretaria/secretaria.routes').then(m => m.secretariaRoutes)
   },
+  
+  // Rutas protegidas - Admin
   {
-    path: 'verify-2fa',
-    loadComponent: () => import('./components/verify2fa/verify2fa.component').then(m => m.Verify2faComponent)
+    path: 'admin',
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/admin/admin.routes').then(m => m.adminRoutes)
   },
-  {
-    path: 'home',
-    loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent),
-    canActivate: [authGuard]  // Ruta protegida
-  },
-  {
-    path: '**',
-    redirectTo: '/login'
-  }
+  
+  // Redirección por defecto
+  { path: '**', redirectTo: '' }
 ];

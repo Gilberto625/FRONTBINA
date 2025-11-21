@@ -1,45 +1,133 @@
 <div class="verify-container">
-  <mat-card class="verify-card">
-    <mat-card-header>
-      <mat-card-title>Verificación 2FA</mat-card-title>
-      <mat-card-subtitle>
+  <div class="verify-card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="icon-wrapper">
+        <span class="header-icon">🔐</span>
+      </div>
+      <h1 class="card-title">Verificación 2FA</h1>
+      <p class="card-subtitle">
         {{ type === 'register' ? 'Confirma tu registro' : 'Confirma tu identidad' }}
-      </mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <p class="info-text">
-        Hemos enviado un código de 6 dígitos a: <strong>{{ destination }}</strong>
       </p>
-      <p class="warning-text">
-        El código expira en 5 minutos
-      </p>
+    </div>
 
-      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Código de 6 dígitos</mat-label>
-            <input matInput formControlName="codigo" placeholder="123456" maxlength="6" autocomplete="off">
-            <mat-error *ngIf="verifyForm.get('codigo')?.hasError('required')">
-              El código es obligatorio
-            </mat-error>
-            <mat-error *ngIf="verifyForm.get('codigo')?.hasError('pattern')">
-              Debe ser un código de 6 dígitos
-            </mat-error>
-          </mat-form-field>
+    <!-- Content -->
+    <div class="card-body">
+      <!-- Selector de método (solo para login con múltiples métodos) -->
+      <div class="method-selector-wrapper" *ngIf="type === 'login' && metodosDisponibles.length > 1">
+        <p class="method-label">Selecciona el método de verificación:</p>
+        <div class="method-toggle-group">
+          <button
+            *ngFor="let metodo of metodosDisponibles"
+            type="button"
+            [class.active]="metodoSeleccionado === metodo"
+            (click)="onMetodoChangeFromButton(metodo)"
+            class="method-toggle">
+            <span class="method-icon">
+              {{ metodo === 'email' ? '📧' : metodo === 'totp' ? '📱' : '🔑' }}
+            </span>
+            <span class="method-text">
+              {{ metodo === 'email' ? 'Email' : metodo === 'totp' ? 'Autenticador' : 'Código de respaldo' }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="info-section">
+        <div class="info-box">
+          <span class="info-icon">ℹ️</span>
+          <div class="info-content">
+            <ng-container *ngIf="metodoSeleccionado === 'email'">
+              <p class="info-text">Hemos enviado un código de 6 dígitos a:</p>
+              <p class="info-email">{{ destination }}</p>
+            </ng-container>
+            <ng-container *ngIf="metodoSeleccionado === 'totp'">
+              <p class="info-text">Ingresa el código de 6 dígitos {{ metodoTexto }}</p>
+            </ng-container>
+            <ng-container *ngIf="metodoSeleccionado === 'backup'">
+              <p class="info-text">Ingresa uno de tus códigos de respaldo (8 dígitos)</p>
+            </ng-container>
+          </div>
         </div>
 
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="submit-button">
-            <span *ngIf="!loading">Verificar Código</span>
-            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        <!-- Warning Box -->
+        <div class="warning-box" *ngIf="metodoSeleccionado === 'email' || metodoSeleccionado === 'totp'">
+          <span class="warning-icon">⏰</span>
+          <span class="warning-text">El código expira en 5 minutos</span>
+        </div>
+
+        <div class="warning-box" *ngIf="metodoSeleccionado === 'backup'">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">Cada código de respaldo solo puede usarse una vez</span>
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="verify-form">
+        <div class="form-row">
+          <label for="codigo" class="input-label">Código de {{ codigoLength }} dígitos</label>
+          <div class="input-wrapper">
+            <input
+              id="codigo"
+              type="text"
+              formControlName="codigo"
+              [placeholder]="codigoPlaceholder"
+              [maxlength]="codigoLength"
+              autocomplete="off"
+              class="input-field code-input-field"
+              [class.input-error]="verifyForm.get('codigo')?.invalid && verifyForm.get('codigo')?.touched"
+            />
+            <div class="input-feedback error" *ngIf="verifyForm.get('codigo')?.hasError('required') && verifyForm.get('codigo')?.touched">
+              El código es obligatorio
+            </div>
+            <div class="input-feedback error" *ngIf="verifyForm.get('codigo')?.hasError('pattern') && verifyForm.get('codigo')?.touched">
+              Debe ser un código de {{ codigoLength }} dígitos
+            </div>
+          </div>
+        </div>
+
+        <!-- Alternative Actions -->
+        <div class="alternative-actions">
+          <!-- Botón para solicitar código por email (si tiene TOTP habilitado) -->
+          <button
+            *ngIf="type === 'login' && metodosDisponibles.includes('totp') && metodoSeleccionado !== 'email'"
+            type="button"
+            (click)="solicitarCodigoPorEmail()"
+            [disabled]="loading"
+            class="btn btn-alt alt-action-button">
+            <span>📧 ¿No tienes acceso al autenticador? Recibe un código por email</span>
+          </button>
+
+          <!-- Botón para reenviar código OTP (para registro con SendGrid) -->
+          <button
+            *ngIf="type === 'register' && metodoSeleccionado === 'email'"
+            type="button"
+            (click)="reenviarCodigoOTP()"
+            [disabled]="loading"
+            class="btn btn-primary resend-button">
+            <span>🔄 Reenviar código OTP</span>
           </button>
         </div>
 
-        <div class="back-link">
-          <a routerLink="/login">← Volver al inicio de sesión</a>
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary submit-button"
+            [disabled]="loading || verifyForm.invalid">
+            <span *ngIf="!loading">Verificar Código</span>
+            <span *ngIf="loading" class="spinner"></span>
+          </button>
         </div>
       </form>
-    </mat-card-content>
-  </mat-card>
+
+      <!-- Back Link -->
+      <div class="back-link-wrapper">
+        <a routerLink="/login" class="back-link">
+          ← Volver al inicio de sesión
+        </a>
+      </div>
+    </div>
+  </div>
 </div>

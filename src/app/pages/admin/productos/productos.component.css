@@ -1,0 +1,25 @@
+.productos-container { padding: 20px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+h2 { color: #333; margin: 0; }
+.btn-primary { padding: 10px 20px; background: #c9a227; color: white; border: none; border-radius: 5px; cursor: pointer; }
+.loading { text-align: center; padding: 40px; color: #666; }
+.productos-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.productos-table th, .productos-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+.productos-table th { background: #f9f9f9; font-weight: 600; }
+.productos-table td small { display: block; color: #666; font-size: 12px; }
+.productos-table tr.inactivo { opacity: 0.5; }
+.stock-bajo { color: #e74c3c; font-weight: bold; }
+.badge { padding: 4px 10px; border-radius: 15px; font-size: 12px; background: #eee; }
+.badge.activo { background: #d4edda; color: #155724; }
+.acciones { display: flex; gap: 8px; }
+.acciones button { padding: 6px 12px; border: 1px solid #ddd; background: white; border-radius: 5px; cursor: pointer; font-size: 12px; }
+.btn-danger { color: #e74c3c !important; border-color: #e74c3c !important; }
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 450px; }
+.modal h3 { margin: 0 0 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }

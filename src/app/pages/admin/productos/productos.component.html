@@ -1,0 +1,73 @@
+<div class="productos-container">
+  <div class="header">
+    <h2>Gestion de Productos</h2>
+    <button class="btn-primary" (click)="abrirModal()">+ Nuevo Producto</button>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Cargando...</div>
+
+  <table class="productos-table" *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Categoria</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productos" [class.inactivo]="!producto.activo">
+        <td>
+          <strong>{{ producto.nombre }}</strong>
+          <small>{{ producto.descripcion }}</small>
+        </td>
+        <td>{{ producto.categoria }}</td>
+        <td>{{ formatCurrency(producto.precio) }}</td>
+        <td [class.stock-bajo]="producto.stock < 10">{{ producto.stock }}</td>
+        <td><span class="badge" [class.activo]="producto.activo">{{ producto.activo ? 'Activo' : 'Inactivo' }}</span></td>
+        <td class="acciones">
+          <button (click)="abrirModal(producto)">Editar</button>
+          <button class="btn-danger" (click)="eliminarProducto(producto.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>{{ editando ? 'Editar' : 'Nuevo' }} Producto</h3>
+      <form (ngSubmit)="guardarProducto()">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="productoActual.nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label>Descripcion</label>
+          <textarea [(ngModel)]="productoActual.descripcion" name="descripcion"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio</label>
+            <input type="number" [(ngModel)]="productoActual.precio" name="precio" min="0">
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input type="number" [(ngModel)]="productoActual.stock" name="stock" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <select [(ngModel)]="productoActual.categoria" name="categoria">
+            <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
