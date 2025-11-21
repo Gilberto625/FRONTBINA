@@ -22,6 +22,23 @@ export interface AuthState {
   token: string | null;
 }
 
+export interface RegisterData {
+  nombre: string;
+  apellidopaterno: string;
+  apellidomaterno: string;
+  username: string;
+  correo: string;
+  contrasena: string;
+  telefono: string;
+  preguntasecreta: string;
+  respuestasecreta: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -83,19 +100,16 @@ export class AuthService {
   // ================================
 
   /**
+   * Obtener CSRF token
+   */
+  getCsrfToken(): Observable<ApiResponse> {
+    return this.apiService.get('/api/usuarios/csrf/');
+  }
+
+  /**
    * Registrar nuevo usuario
    */
-  register(userData: {
-    nombre: string;
-    apellidopaterno: string;
-    apellidomaterno: string;
-    username: string;
-    correo: string;
-    contrasena: string;
-    telefono: string;
-    preguntasecreta: string;
-    respuestasecreta: string;
-  }): Observable<ApiResponse> {
+  register(userData: RegisterData): Observable<ApiResponse> {
     return this.apiService.register(userData);
   }
 
