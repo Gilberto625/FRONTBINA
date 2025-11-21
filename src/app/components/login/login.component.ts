@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     const loginData: LoginData = this.loginForm.value;
 
-    this.authService.login(loginData).subscribe({
+    this.authService.login(loginData.email, loginData.password).subscribe({
       next: (response) => {
         this.loading = false;
 
@@ -71,8 +71,11 @@ export class LoginComponent implements OnInit {
 
   loginWithGoogle(): void {
     this.loadingGoogle = true;
-
-    this.authService.loginWithGoogle().subscribe({
+    
+    // TODO: Implementar obtención del idToken de Google
+    const idToken = 'dummy-token'; // Placeholder
+    
+    this.authService.googleLogin(idToken).subscribe({
       next: (response: any) => {
         this.loadingGoogle = false;
         if (response && response.ok) {
