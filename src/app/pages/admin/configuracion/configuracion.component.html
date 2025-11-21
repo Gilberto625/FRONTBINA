@@ -1,0 +1,469 @@
+<div class="configuracion-container">
+  <div class="header-section">
+    <h1>Configuración del Sistema</h1>
+    <p>Administra las configuraciones generales de la barbería</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Tabs de navegación -->
+    <div class="config-tabs">
+      <button class="tab-btn" 
+              [class.active]="tabActiva === 'general'"
+              (click)="cambiarTab('general')">
+        <i class="fas fa-cog"></i>
+        General
+      </button>
+      <button class="tab-btn" 
+              [class.active]="tabActiva === 'citas'"
+              (click)="cambiarTab('citas')">
+        <i class="fas fa-calendar"></i>
+        Citas
+      </button>
+      <button class="tab-btn" 
+              [class.active]="tabActiva === 'pagos'"
+              (click)="cambiarTab('pagos')">
+        <i class="fas fa-credit-card"></i>
+        Pagos
+      </button>
+      <button class="tab-btn" 
+              [class.active]="tabActiva === 'notificaciones'"
+              (click)="cambiarTab('notificaciones')">
+        <i class="fas fa-bell"></i>
+        Notificaciones
+      </button>
+    </div>
+
+    <!-- Contenido de las tabs -->
+    <div class="tab-content">
+      <!-- Tab: Configuración General -->
+      <div class="config-section" *ngIf="tabActiva === 'general'">
+        <div class="section-header">
+          <h2>Información del Negocio</h2>
+          <p>Configura los datos básicos de la barbería</p>
+        </div>
+
+        <form class="config-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nombre_negocio">Nombre del Negocio *</label>
+              <input type="text" 
+                     id="nombre_negocio"
+                     [(ngModel)]="configuracionGeneral.nombre_negocio" 
+                     name="nombre_negocio"
+                     class="form-control"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="telefono">Teléfono *</label>
+              <input type="tel" 
+                     id="telefono"
+                     [(ngModel)]="configuracionGeneral.telefono" 
+                     name="telefono"
+                     class="form-control"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" 
+                     id="email"
+                     [(ngModel)]="configuracionGeneral.email" 
+                     name="email"
+                     class="form-control"
+                     required>
+            </div>
+
+            <div class="form-group">
+              <label for="sitio_web">Sitio Web</label>
+              <input type="url" 
+                     id="sitio_web"
+                     [(ngModel)]="configuracionGeneral.sitio_web" 
+                     name="sitio_web"
+                     class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="direccion">Dirección</label>
+            <textarea id="direccion" 
+                      [(ngModel)]="configuracionGeneral.direccion" 
+                      name="direccion"
+                      rows="2"
+                      class="form-control"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="descripcion">Descripción del Negocio</label>
+            <textarea id="descripcion" 
+                      [(ngModel)]="configuracionGeneral.descripcion" 
+                      name="descripcion"
+                      rows="3"
+                      class="form-control"></textarea>
+          </div>
+        </form>
+
+        <!-- Horarios de atención -->
+        <div class="horarios-section">
+          <h3>Horarios de Atención</h3>
+          <div class="horarios-grid">
+            <div class="horario-item" *ngFor="let dia of diasSemana">
+              <div class="dia-header">
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         [checked]="configuracionGeneral.horario_atencion[dia.key].abierto"
+                         (change)="toggleDiaAbierto(dia.key)">
+                  <span class="checkmark"></span>
+                  {{ dia.nombre }}
+                </label>
+                <button type="button" 
+                        class="btn-copy" 
+                        (click)="copiarHorario(dia.key)"
+                        title="Copiar a todos los días">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              
+              <div class="horario-inputs" 
+                   *ngIf="configuracionGeneral.horario_atencion[dia.key].abierto">
+                <div class="time-group">
+                  <label>Apertura:</label>
+                  <input type="time" 
+                         [(ngModel)]="configuracionGeneral.horario_atencion[dia.key].inicio"
+                         class="form-control">
+                </div>
+                <div class="time-group">
+                  <label>Cierre:</label>
+                  <input type="time" 
+                         [(ngModel)]="configuracionGeneral.horario_atencion[dia.key].fin"
+                         class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Configuración de Citas -->
+      <div class="config-section" *ngIf="tabActiva === 'citas'">
+        <div class="section-header">
+          <h2>Reglas de Citas</h2>
+          <p>Configura las políticas de agendado y cancelación</p>
+        </div>
+
+        <form class="config-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="anticipacion_alta">Anticipación Alta Demanda (días)</label>
+              <input type="number" 
+                     id="anticipacion_alta"
+                     [(ngModel)]="configuracionCitas.anticipacion_minima_alta_demanda" 
+                     name="anticipacion_alta"
+                     min="1"
+                     max="30"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="anticipacion_baja">Anticipación Baja Demanda (días)</label>
+              <input type="number" 
+                     id="anticipacion_baja"
+                     [(ngModel)]="configuracionCitas.anticipacion_minima_baja_demanda" 
+                     name="anticipacion_baja"
+                     min="1"
+                     max="30"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="cancelacion_alta">Cancelación Alta Demanda (días)</label>
+              <input type="number" 
+                     id="cancelacion_alta"
+                     [(ngModel)]="configuracionCitas.cancelacion_minima_alta_demanda" 
+                     name="cancelacion_alta"
+                     min="1"
+                     max="30"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="cancelacion_baja">Cancelación Baja Demanda (días)</label>
+              <input type="number" 
+                     id="cancelacion_baja"
+                     [(ngModel)]="configuracionCitas.cancelacion_minima_baja_demanda" 
+                     name="cancelacion_baja"
+                     min="1"
+                     max="30"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="duracion_default">Duración por Defecto (minutos)</label>
+              <input type="number" 
+                     id="duracion_default"
+                     [(ngModel)]="configuracionCitas.duracion_cita_default" 
+                     name="duracion_default"
+                     min="15"
+                     max="300"
+                     step="15"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="tiempo_espera">Tiempo Máximo de Espera (minutos)</label>
+              <input type="number" 
+                     id="tiempo_espera"
+                     [(ngModel)]="configuracionCitas.tiempo_espera_maximo" 
+                     name="tiempo_espera"
+                     min="5"
+                     max="60"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="porcentaje_anticipo">Porcentaje de Anticipo (%)</label>
+              <input type="number" 
+                     id="porcentaje_anticipo"
+                     [(ngModel)]="configuracionCitas.porcentaje_anticipo" 
+                     name="porcentaje_anticipo"
+                     min="0"
+                     max="100"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="citas_penalizacion">Citas con Penalización</label>
+              <input type="number" 
+                     id="citas_penalizacion"
+                     [(ngModel)]="configuracionCitas.citas_penalizacion" 
+                     name="citas_penalizacion"
+                     min="1"
+                     max="50"
+                     class="form-control">
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" 
+                     [(ngModel)]="configuracionCitas.permitir_citas_simultaneas">
+              <span class="checkmark"></span>
+              Permitir citas simultáneas
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" 
+                     [(ngModel)]="configuracionCitas.recordatorio_24h">
+              <span class="checkmark"></span>
+              Recordatorio 24 horas antes
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" 
+                     [(ngModel)]="configuracionCitas.recordatorio_1_5h">
+              <span class="checkmark"></span>
+              Recordatorio 1.5 horas antes
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" 
+                     [(ngModel)]="configuracionCitas.anticipo_primera_cita">
+              <span class="checkmark"></span>
+              Anticipo en primera cita
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tab: Configuración de Pagos -->
+      <div class="config-section" *ngIf="tabActiva === 'pagos'">
+        <div class="section-header">
+          <h2>Métodos de Pago</h2>
+          <p>Configura los métodos de pago disponibles</p>
+        </div>
+
+        <form class="config-form">
+          <div class="metodos-pago-section">
+            <h3>Métodos Activos</h3>
+            <div class="metodos-grid">
+              <div class="metodo-item" *ngFor="let metodo of metodosPagoDisponibles">
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         [checked]="isMetodoPagoActivo(metodo.key)"
+                         (change)="toggleMetodoPago(metodo.key)">
+                  <span class="checkmark"></span>
+                  {{ metodo.nombre }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="comision_tarjeta">Comisión Tarjeta (%)</label>
+              <input type="number" 
+                     id="comision_tarjeta"
+                     [(ngModel)]="configuracionPagos.comision_tarjeta" 
+                     name="comision_tarjeta"
+                     min="0"
+                     max="10"
+                     step="0.1"
+                     class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="porcentaje_iva">Porcentaje IVA (%)</label>
+              <input type="number" 
+                     id="porcentaje_iva"
+                     [(ngModel)]="configuracionPagos.porcentaje_iva" 
+                     name="porcentaje_iva"
+                     min="0"
+                     max="30"
+                     step="0.1"
+                     class="form-control">
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" 
+                     [(ngModel)]="configuracionPagos.iva_incluido">
+              <span class="checkmark"></span>
+              IVA incluido en precios
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tab: Configuración de Notificaciones -->
+      <div class="config-section" *ngIf="tabActiva === 'notificaciones'">
+        <div class="section-header">
+          <h2>Canales de Notificación</h2>
+          <p>Configura los métodos de comunicación con clientes</p>
+        </div>
+
+        <form class="config-form">
+          <div class="notificaciones-grid">
+            <div class="notificacion-item">
+              <div class="notif-header">
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         [(ngModel)]="configuracionNotificaciones.email_activo">
+                  <span class="checkmark"></span>
+                  <i class="fas fa-envelope"></i>
+                  Email
+                </label>
+                <button type="button" 
+                        class="btn btn-sm btn-outline-primary"
+                        (click)="probarNotificacion('email')"
+                        [disabled]="!configuracionNotificaciones.email_activo">
+                  Probar
+                </button>
+              </div>
+              <p class="notif-description">Envío de confirmaciones y recordatorios por correo electrónico</p>
+            </div>
+
+            <div class="notificacion-item">
+              <div class="notif-header">
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         [(ngModel)]="configuracionNotificaciones.sms_activo">
+                  <span class="checkmark"></span>
+                  <i class="fas fa-sms"></i>
+                  SMS
+                </label>
+                <button type="button" 
+                        class="btn btn-sm btn-outline-primary"
+                        (click)="probarNotificacion('sms')"
+                        [disabled]="!configuracionNotificaciones.sms_activo">
+                  Probar
+                </button>
+              </div>
+              <p class="notif-description">Mensajes de texto para recordatorios urgentes</p>
+            </div>
+
+            <div class="notificacion-item">
+              <div class="notif-header">
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         [(ngModel)]="configuracionNotificaciones.whatsapp_activo">
+                  <span class="checkmark"></span>
+                  <i class="fab fa-whatsapp"></i>
+                  WhatsApp
+                </label>
+                <button type="button" 
+                        class="btn btn-sm btn-outline-primary"
+                        (click)="probarNotificacion('whatsapp')"
+                        [disabled]="!configuracionNotificaciones.whatsapp_activo">
+                  Probar
+                </button>
+              </div>
+              <p class="notif-description">Mensajes por WhatsApp Business</p>
+            </div>
+
+            <div class="notificacion-item">
+              <div class="notif-header">
+                <label class="checkbox-label">
+                  <input type="checkbox" 
+                         [(ngModel)]="configuracionNotificaciones.push_activo">
+                  <span class="checkmark"></span>
+                  <i class="fas fa-mobile-alt"></i>
+                  Push
+                </label>
+                <button type="button" 
+                        class="btn btn-sm btn-outline-primary"
+                        (click)="probarNotificacion('push')"
+                        [disabled]="!configuracionNotificaciones.push_activo">
+                  Probar
+                </button>
+              </div>
+              <p class="notif-description">Notificaciones push en la aplicación móvil</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="config-actions">
+      <div class="actions-left">
+        <button class="btn btn-outline-secondary" (click)="resetearConfiguracion()">
+          <i class="fas fa-undo"></i>
+          Resetear
+        </button>
+        <button class="btn btn-outline-info" (click)="exportarConfiguracion()">
+          <i class="fas fa-download"></i>
+          Exportar
+        </button>
+        <label class="btn btn-outline-warning">
+          <i class="fas fa-upload"></i>
+          Importar
+          <input type="file" 
+                 (change)="importarConfiguracion($event)"
+                 accept=".json"
+                 style="display: none;">
+        </label>
+      </div>
+      
+      <div class="actions-right">
+        <button class="btn btn-primary" 
+                (click)="guardarConfiguracion()"
+                [disabled]="guardando || !validarConfiguracion()">
+          <i class="fas fa-save" *ngIf="!guardando"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
+          {{ guardando ? 'Guardando...' : 'Guardar Configuración' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="cargando">
+    <div class="loading-content">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Cargando configuración...</p>
+    </div>
+  </div>
+</div>

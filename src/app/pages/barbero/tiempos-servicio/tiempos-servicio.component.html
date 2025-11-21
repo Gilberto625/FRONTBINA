@@ -1,0 +1,180 @@
+<div class="tiempos-servicio-container">
+  <div class="header-section">
+    <h1>Gestión de Tiempos de Servicio</h1>
+    <p>Define y actualiza los tiempos estimados para cada servicio que realizas</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Filtros y búsqueda -->
+    <div class="filters-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="filtros.buscar" 
+          (input)="filtrarServicios()"
+          placeholder="Buscar servicio..."
+          class="search-input">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      
+      <div class="filter-buttons">
+        <button 
+          class="filter-btn"
+          [class.active]="filtros.categoria === 'todos'"
+          (click)="filtrarPorCategoria('todos')">
+          Todos
+        </button>
+        <button 
+          class="filter-btn"
+          [class.active]="filtros.categoria === 'corte'"
+          (click)="filtrarPorCategoria('corte')">
+          Cortes
+        </button>
+        <button 
+          class="filter-btn"
+          [class.active]="filtros.categoria === 'barba'"
+          (click)="filtrarPorCategoria('barba')">
+          Barba
+        </button>
+        <button 
+          class="filter-btn"
+          [class.active]="filtros.categoria === 'combo'"
+          (click)="filtrarPorCategoria('combo')">
+          Combos
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de servicios -->
+    <div class="servicios-grid" *ngIf="!cargando && serviciosFiltrados.length > 0">
+      <div class="servicio-card" *ngFor="let servicio of serviciosFiltrados">
+        <div class="servicio-header">
+          <div class="servicio-info">
+            <h3>{{ servicio.nombre }}</h3>
+            <span class="categoria-badge" [class]="'categoria-' + servicio.categoria">
+              {{ servicio.categoria | titlecase }}
+            </span>
+          </div>
+          <div class="servicio-precio">
+            ${{ servicio.precio }}
+          </div>
+        </div>
+
+        <div class="servicio-descripcion" *ngIf="servicio.descripcion">
+          <p>{{ servicio.descripcion }}</p>
+        </div>
+
+        <div class="tiempo-actual" *ngIf="servicio.tiempo_estimado">
+          <div class="tiempo-info">
+            <i class="fas fa-clock"></i>
+            <span>Tiempo actual: {{ servicio.tiempo_estimado }} minutos</span>
+          </div>
+        </div>
+
+        <div class="tiempo-form" *ngIf="servicio.editando">
+          <div class="form-group">
+            <label>Nuevo tiempo estimado (minutos):</label>
+            <div class="tiempo-input-group">
+              <button 
+                type="button" 
+                class="tiempo-btn minus"
+                (click)="ajustarTiempo(servicio, -5)">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input 
+                type="number" 
+                [(ngModel)]="servicio.nuevo_tiempo"
+                min="5"
+                max="300"
+                step="5"
+                class="tiempo-input">
+              <button 
+                type="button" 
+                class="tiempo-btn plus"
+                (click)="ajustarTiempo(servicio, 5)">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              class="btn btn-secondary"
+              (click)="cancelarEdicion(servicio)">
+              Cancelar
+            </button>
+            <button 
+              class="btn btn-primary"
+              (click)="guardarTiempo(servicio)"
+              [disabled]="guardando">
+              <i class="fas fa-save" *ngIf="!guardando"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
+              {{ guardando ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="servicio-actions" *ngIf="!servicio.editando">
+          <button 
+            class="btn btn-outline-primary"
+            (click)="editarTiempo(servicio)">
+            <i class="fas fa-edit"></i>
+            {{ servicio.tiempo_estimado ? 'Modificar Tiempo' : 'Definir Tiempo' }}
+          </button>
+        </div>
+
+        <!-- Estadísticas del servicio -->
+        <div class="servicio-stats" *ngIf="servicio.estadisticas">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Citas este mes:</span>
+              <span class="stat-value">{{ servicio.estadisticas.citas_mes }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Tiempo promedio real:</span>
+              <span class="stat-value">{{ servicio.estadisticas.tiempo_promedio_real }} min</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Variación:</span>
+              <span class="stat-value" 
+                    [class.positive]="servicio.estadisticas.variacion > 0"
+                    [class.negative]="servicio.estadisticas.variacion < 0">
+                {{ servicio.estadisticas.variacion > 0 ? '+' : '' }}{{ servicio.estadisticas.variacion }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de carga -->
+    <div class="loading-state" *ngIf="cargando">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Cargando servicios...</p>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="!cargando && serviciosFiltrados.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <h3>No hay servicios disponibles</h3>
+      <p>No se encontraron servicios que coincidan con los filtros aplicados.</p>
+    </div>
+
+    <!-- Consejos y ayuda -->
+    <div class="help-section">
+      <div class="help-card">
+        <h4><i class="fas fa-lightbulb"></i> Consejos para definir tiempos</h4>
+        <ul>
+          <li>Considera el tiempo de preparación y limpieza</li>
+          <li>Incluye tiempo para conversar con el cliente</li>
+          <li>Ajusta según tu experiencia y velocidad</li>
+          <li>Revisa las estadísticas para optimizar los tiempos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

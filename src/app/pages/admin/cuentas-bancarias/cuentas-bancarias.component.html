@@ -1,0 +1,508 @@
+<!-- Header -->
+<div class="admin-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="header-info">
+        <h1 class="page-title">
+          <i class="lucide lucide-building-2"></i>
+          Gestión de Cuentas Bancarias
+        </h1>
+        <p class="page-subtitle">Administra las cuentas bancarias de la barbería para recibir pagos</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="abrirModalCrear()" [disabled]="isLoading">
+          <i class="lucide lucide-plus"></i>
+          Nueva Cuenta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mensajes -->
+<div class="container" *ngIf="error || successMessage">
+  <div class="alert alert-error" *ngIf="error">
+    <i class="lucide lucide-alert-circle"></i>
+    {{ error }}
+  </div>
+  <div class="alert alert-success" *ngIf="successMessage">
+    <i class="lucide lucide-check-circle"></i>
+    {{ successMessage }}
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="container" *ngIf="isLoading">
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando cuentas bancarias...</p>
+  </div>
+</div>
+
+<!-- Contenido Principal -->
+<div class="container" *ngIf="!isLoading">
+  
+  <!-- Estadísticas -->
+  <div class="stats-section" *ngIf="estadisticas">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="lucide lucide-credit-card"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estadisticas.total_cuentas }}</h3>
+          <p>Total de Cuentas</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon active">
+          <i class="lucide lucide-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estadisticas.cuentas_activas }}</h3>
+          <p>Cuentas Activas</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon money">
+          <i class="lucide lucide-dollar-sign"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ formatCurrency(estadisticas.monto_recibido_mes_actual) }}</h3>
+          <p>Recibido Este Mes</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon transactions">
+          <i class="lucide lucide-trending-up"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ estadisticas.transacciones_mes_actual }}</h3>
+          <p>Transacciones del Mes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cuenta Principal -->
+  <div class="section" *ngIf="cuentaPrincipal">
+    <div class="section-header">
+      <h2>
+        <i class="lucide lucide-star"></i>
+        Cuenta Principal
+      </h2>
+      <p>Esta es la cuenta que recibe todos los pagos de la barbería</p>
+    </div>
+    
+    <div class="cuenta-principal-card">
+      <div class="cuenta-header">
+        <div class="cuenta-info">
+          <h3>{{ cuentaPrincipal.nombre_cuenta }}</h3>
+          <p class="banco">{{ cuentaPrincipal.banco }}</p>
+          <div class="cuenta-badges">
+            <span class="badge badge-principal">Principal</span>
+            <span class="badge" [class]="getEstadoClass(cuentaPrincipal.estado)">
+              {{ getEstadoText(cuentaPrincipal.estado) }}
+            </span>
+            <span class="badge badge-banorte" *ngIf="cuentaPrincipal.configuracion_banorte_completa">
+              <i class="lucide lucide-shield-check"></i>
+              Banorte Configurado
+            </span>
+          </div>
+        </div>
+        <div class="cuenta-actions">
+          <button class="btn btn-secondary btn-sm" (click)="abrirModalEditar(cuentaPrincipal)">
+            <i class="lucide lucide-edit"></i>
+            Editar
+          </button>
+          <button class="btn btn-info btn-sm" (click)="probarConexion(cuentaPrincipal)" 
+                  [disabled]="isTesting" *ngIf="cuentaPrincipal.configuracion_banorte_completa">
+            <i class="lucide lucide-wifi" *ngIf="!isTesting"></i>
+            <div class="spinner-sm" *ngIf="isTesting"></div>
+            Probar Conexión
+          </button>
+        </div>
+      </div>
+      
+      <div class="cuenta-details">
+        <div class="detail-row">
+          <span class="label">Número de Cuenta:</span>
+          <span class="value">{{ cuentaPrincipal.numero_cuenta_enmascarado }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">CLABE:</span>
+          <span class="value">{{ cuentaPrincipal.clabe_enmascarada }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Titular:</span>
+          <span class="value">{{ cuentaPrincipal.nombre_titular }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Total Recibido:</span>
+          <span class="value money">{{ formatCurrency(cuentaPrincipal.monto_total_recibido) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Transacciones:</span>
+          <span class="value">{{ cuentaPrincipal.total_transacciones }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cuentas Secundarias -->
+  <div class="section" *ngIf="cuentasSecundarias.length > 0">
+    <div class="section-header">
+      <h2>
+        <i class="lucide lucide-credit-card"></i>
+        Cuentas Adicionales
+      </h2>
+      <p>Cuentas de respaldo y alternativas</p>
+    </div>
+    
+    <div class="cuentas-grid">
+      <div class="cuenta-card" *ngFor="let cuenta of cuentasSecundarias">
+        <div class="cuenta-card-header">
+          <div class="cuenta-card-info">
+            <h4>{{ cuenta.nombre_cuenta }}</h4>
+            <p>{{ cuenta.banco }}</p>
+          </div>
+          <div class="cuenta-card-badges">
+            <span class="badge" [class]="getEstadoClass(cuenta.estado)">
+              {{ getEstadoText(cuenta.estado) }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="cuenta-card-body">
+          <div class="cuenta-card-detail">
+            <span class="label">Cuenta:</span>
+            <span class="value">{{ cuenta.numero_cuenta_enmascarado }}</span>
+          </div>
+          <div class="cuenta-card-detail">
+            <span class="label">Titular:</span>
+            <span class="value">{{ cuenta.nombre_titular }}</span>
+          </div>
+          <div class="cuenta-card-detail">
+            <span class="label">Recibido:</span>
+            <span class="value">{{ formatCurrency(cuenta.monto_total_recibido) }}</span>
+          </div>
+        </div>
+        
+        <div class="cuenta-card-actions">
+          <button class="btn btn-text btn-sm" (click)="marcarComoPrincipal(cuenta)" 
+                  *ngIf="cuenta.estado === 'activa'">
+            <i class="lucide lucide-star"></i>
+            Hacer Principal
+          </button>
+          <button class="btn btn-secondary btn-sm" (click)="abrirModalEditar(cuenta)">
+            <i class="lucide lucide-edit"></i>
+            Editar
+          </button>
+          <button class="btn btn-warning btn-sm" (click)="cambiarEstado(cuenta, cuenta.estado === 'activa' ? 'inactiva' : 'activa')">
+            <i class="lucide lucide-power" *ngIf="cuenta.estado === 'activa'"></i>
+            <i class="lucide lucide-play" *ngIf="cuenta.estado !== 'activa'"></i>
+            {{ cuenta.estado === 'activa' ? 'Desactivar' : 'Activar' }}
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="abrirModalEliminar(cuenta)">
+            <i class="lucide lucide-trash"></i>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin cuentas -->
+  <div class="empty-state" *ngIf="cuentas.length === 0">
+    <div class="empty-icon">
+      <i class="lucide lucide-credit-card"></i>
+    </div>
+    <h3>No hay cuentas bancarias configuradas</h3>
+    <p>Agrega la primera cuenta bancaria de la barbería para comenzar a recibir pagos</p>
+    <button class="btn btn-primary" (click)="abrirModalCrear()">
+      <i class="lucide lucide-plus"></i>
+      Crear Primera Cuenta
+    </button>
+  </div>
+</div>
+
+<!-- Modal Crear Cuenta -->
+<div class="modal-overlay" *ngIf="showCrearModal" (click)="cerrarModales()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <i class="lucide lucide-plus"></i>
+        Nueva Cuenta Bancaria
+      </h3>
+      <button class="close-btn" (click)="cerrarModales()">
+        <i class="lucide lucide-x"></i>
+      </button>
+    </div>
+    
+    <form [formGroup]="crearForm" (ngSubmit)="crearCuenta()" class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Nombre de la Cuenta *</label>
+          <input type="text" class="input-field" formControlName="nombre_cuenta" 
+                 placeholder="Ej: Cuenta Principal Barbería">
+          <div class="input-error-message" *ngIf="crearForm.get('nombre_cuenta')?.touched && crearForm.get('nombre_cuenta')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            El nombre de la cuenta es requerido
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Banco *</label>
+          <select class="input-field" formControlName="banco">
+            <option value="">Seleccionar banco</option>
+            <option *ngFor="let banco of bancosDisponibles" [value]="banco.nombre">
+              {{ banco.nombre }}
+            </option>
+          </select>
+          <div class="input-error-message" *ngIf="crearForm.get('banco')?.touched && crearForm.get('banco')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            Selecciona un banco
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Número de Cuenta *</label>
+          <input type="text" class="input-field" formControlName="numero_cuenta" 
+                 placeholder="10-18 dígitos">
+          <div class="input-error-message" *ngIf="crearForm.get('numero_cuenta')?.touched && crearForm.get('numero_cuenta')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            Número de cuenta inválido (10-18 dígitos)
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="input-label">CLABE *</label>
+          <input type="text" class="input-field" formControlName="clabe" 
+                 placeholder="18 dígitos">
+          <div class="input-error-message" *ngIf="crearForm.get('clabe')?.touched && crearForm.get('clabe')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            CLABE debe tener exactamente 18 dígitos
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Nombre del Titular *</label>
+          <input type="text" class="input-field" formControlName="nombre_titular" 
+                 placeholder="Nombre completo del titular">
+          <div class="input-error-message" *ngIf="crearForm.get('nombre_titular')?.touched && crearForm.get('nombre_titular')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            El nombre del titular es requerido
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Sucursal</label>
+          <input type="text" class="input-field" formControlName="sucursal" 
+                 placeholder="Nombre o código de sucursal">
+        </div>
+      </div>
+
+      <!-- Configuración Banorte -->
+      <div class="form-section">
+        <h4>Configuración Banorte (Opcional)</h4>
+        <p class="form-section-description">Para procesar pagos en línea</p>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="input-label">Merchant ID</label>
+            <input type="text" class="input-field" formControlName="merchant_id_banorte" 
+                   placeholder="ID del comercio en Banorte">
+          </div>
+          
+          <div class="form-group">
+            <label class="input-label">Terminal ID</label>
+            <input type="text" class="input-field" formControlName="terminal_id_banorte" 
+                   placeholder="ID de terminal">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="es_principal">
+            <span class="checkmark"></span>
+            Marcar como cuenta principal
+          </label>
+          <p class="form-help">La cuenta principal recibe todos los pagos automáticamente</p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Notas Internas</label>
+          <textarea class="input-field" formControlName="notas_internas" rows="3"
+                    placeholder="Notas adicionales sobre esta cuenta"></textarea>
+        </div>
+      </div>
+    </form>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cerrarModales()" [disabled]="isCreating">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" (click)="crearCuenta()" [disabled]="isCreating || crearForm.invalid">
+        <div class="spinner-sm" *ngIf="isCreating"></div>
+        <i class="lucide lucide-plus" *ngIf="!isCreating"></i>
+        {{ isCreating ? 'Creando...' : 'Crear Cuenta' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Cuenta -->
+<div class="modal-overlay" *ngIf="showEditarModal" (click)="cerrarModales()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <i class="lucide lucide-edit"></i>
+        Editar Cuenta: {{ cuentaSeleccionada?.nombre_cuenta }}
+      </h3>
+      <button class="close-btn" (click)="cerrarModales()">
+        <i class="lucide lucide-x"></i>
+      </button>
+    </div>
+    
+    <form [formGroup]="editarForm" (ngSubmit)="editarCuenta()" class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Nombre de la Cuenta *</label>
+          <input type="text" class="input-field" formControlName="nombre_cuenta">
+          <div class="input-error-message" *ngIf="editarForm.get('nombre_cuenta')?.touched && editarForm.get('nombre_cuenta')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            El nombre de la cuenta es requerido
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Número de Cuenta *</label>
+          <input type="text" class="input-field" formControlName="numero_cuenta">
+          <div class="input-error-message" *ngIf="editarForm.get('numero_cuenta')?.touched && editarForm.get('numero_cuenta')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            Número de cuenta inválido
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="input-label">CLABE *</label>
+          <input type="text" class="input-field" formControlName="clabe">
+          <div class="input-error-message" *ngIf="editarForm.get('clabe')?.touched && editarForm.get('clabe')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            CLABE debe tener exactamente 18 dígitos
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Nombre del Titular *</label>
+          <input type="text" class="input-field" formControlName="nombre_titular">
+          <div class="input-error-message" *ngIf="editarForm.get('nombre_titular')?.touched && editarForm.get('nombre_titular')?.errors">
+            <i class="lucide lucide-alert-circle"></i>
+            El nombre del titular es requerido
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Sucursal</label>
+          <input type="text" class="input-field" formControlName="sucursal">
+        </div>
+      </div>
+
+      <!-- Configuración Banorte -->
+      <div class="form-section">
+        <h4>Configuración Banorte</h4>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="input-label">Merchant ID</label>
+            <input type="text" class="input-field" formControlName="merchant_id_banorte">
+          </div>
+          
+          <div class="form-group">
+            <label class="input-label">Terminal ID</label>
+            <input type="text" class="input-field" formControlName="terminal_id_banorte">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Notas Internas</label>
+          <textarea class="input-field" formControlName="notas_internas" rows="3"></textarea>
+        </div>
+      </div>
+    </form>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cerrarModales()" [disabled]="isUpdating">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" (click)="editarCuenta()" [disabled]="isUpdating || editarForm.invalid">
+        <div class="spinner-sm" *ngIf="isUpdating"></div>
+        <i class="lucide lucide-save" *ngIf="!isUpdating"></i>
+        {{ isUpdating ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar Cuenta -->
+<div class="modal-overlay" *ngIf="showEliminarModal" (click)="cerrarModales()">
+  <div class="modal-content modal-danger" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>
+        <i class="lucide lucide-trash"></i>
+        Eliminar Cuenta Bancaria
+      </h3>
+      <button class="close-btn" (click)="cerrarModales()">
+        <i class="lucide lucide-x"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="warning-message">
+        <i class="lucide lucide-alert-triangle"></i>
+        <p>¿Estás seguro de que deseas eliminar la cuenta <strong>"{{ cuentaSeleccionada?.nombre_cuenta }}"</strong>?</p>
+        <p>Esta acción no se puede deshacer.</p>
+      </div>
+      
+      <div class="form-group">
+        <label class="input-label">Motivo de eliminación *</label>
+        <textarea class="input-field" #motivoEliminar rows="3" 
+                  placeholder="Explica por qué se elimina esta cuenta"></textarea>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cerrarModales()" [disabled]="isDeleting">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-danger" (click)="eliminarCuenta(motivoEliminar.value)" [disabled]="isDeleting">
+        <div class="spinner-sm" *ngIf="isDeleting"></div>
+        <i class="lucide lucide-trash" *ngIf="!isDeleting"></i>
+        {{ isDeleting ? 'Eliminando...' : 'Eliminar Cuenta' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/frontend-angular/browser",
+  "devCommand": "ng serve",
+  "installCommand": "npm install",
+  "framework": "angular",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "env": {
+    "NODE_VERSION": "18.x"
+  }
+}
+

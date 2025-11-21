@@ -1,0 +1,282 @@
+<div class="mis-pedidos-container">
+  <div class="header-section">
+    <h1>Mis Pedidos</h1>
+    <p>Gestiona y consulta el historial de tus compras</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Filtros -->
+    <div class="filtros-section">
+      <div class="filtros-grid">
+        <div class="filtro-item">
+          <label for="buscar">Buscar:</label>
+          <input type="text" 
+                 id="buscar"
+                 [(ngModel)]="filtros.buscar" 
+                 placeholder="Número de pedido o producto..."
+                 class="form-control">
+        </div>
+
+        <div class="filtro-item">
+          <label for="estado">Estado:</label>
+          <select id="estado" [(ngModel)]="filtros.estado" class="form-control">
+            <option *ngFor="let estado of estadosDisponibles" [value]="estado.valor">
+              {{ estado.texto }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filtro-item">
+          <label for="fecha_inicio">Desde:</label>
+          <input type="date" 
+                 id="fecha_inicio"
+                 [(ngModel)]="filtros.fecha_inicio" 
+                 class="form-control">
+        </div>
+
+        <div class="filtro-item">
+          <label for="fecha_fin">Hasta:</label>
+          <input type="date" 
+                 id="fecha_fin"
+                 [(ngModel)]="filtros.fecha_fin" 
+                 class="form-control">
+        </div>
+      </div>
+
+      <div class="filtros-acciones">
+        <button class="btn btn-primary" (click)="aplicarFiltros()">
+          <i class="fas fa-search"></i>
+          Buscar
+        </button>
+        <button class="btn btn-secondary" (click)="limpiarFiltros()">
+          <i class="fas fa-times"></i>
+          Limpiar
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de pedidos -->
+    <div class="pedidos-lista" *ngIf="!cargando && pedidosFiltrados.length > 0">
+      <div class="pedido-card" *ngFor="let pedido of pedidosFiltrados">
+        <div class="pedido-header">
+          <div class="pedido-info">
+            <h3>Pedido #{{ pedido.numero_pedido }}</h3>
+            <p class="fecha">{{ formatearFecha(pedido.fecha_pedido) }}</p>
+          </div>
+          <div class="pedido-estado">
+            <span class="estado-badge" [class]="'estado-' + getEstadoColor(pedido.estado)">
+              {{ getEstadoTexto(pedido.estado) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="pedido-resumen">
+          <div class="resumen-grid">
+            <div class="resumen-item">
+              <i class="fas fa-box"></i>
+              <span>{{ calcularTotalItems(pedido) }} productos</span>
+            </div>
+            <div class="resumen-item">
+              <i class="fas fa-dollar-sign"></i>
+              <span>${{ pedido.total | number:'1.2-2' }}</span>
+            </div>
+            <div class="resumen-item">
+              <i class="fas fa-credit-card"></i>
+              <span>{{ getMetodoPagoTexto(pedido.metodo_pago) }}</span>
+            </div>
+            <div class="resumen-item">
+              <i class="fas fa-truck"></i>
+              <span>{{ getMetodoEntregaTexto(pedido.metodo_entrega) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pedido-productos">
+          <div class="productos-preview">
+            <div class="producto-item" *ngFor="let item of pedido.items.slice(0, 3)">
+              <img [src]="item.producto.imagen || '/assets/images/producto-default.jpg'" 
+                   [alt]="item.producto.nombre"
+                   (error)="onImageError($event)"
+                   class="producto-imagen">
+              <div class="producto-info">
+                <h4>{{ item.producto.nombre }}</h4>
+                <p>Cantidad: {{ item.cantidad }}</p>
+                <span class="precio">${{ item.subtotal | number:'1.2-2' }}</span>
+              </div>
+            </div>
+            <div class="mas-productos" *ngIf="pedido.items.length > 3">
+              <span>+{{ pedido.items.length - 3 }} más</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pedido-acciones">
+          <button class="btn btn-outline-primary" (click)="verDetalles(pedido)">
+            <i class="fas fa-eye"></i>
+            Ver Detalles
+          </button>
+          <button class="btn btn-outline-success" (click)="reordenar(pedido)">
+            <i class="fas fa-redo"></i>
+            Reordenar
+          </button>
+          <button class="btn btn-outline-info" (click)="descargarFactura(pedido)">
+            <i class="fas fa-download"></i>
+            Factura
+          </button>
+          <button class="btn btn-outline-danger" 
+                  (click)="cancelarPedido(pedido)"
+                  *ngIf="puedeSerCancelado(pedido)">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de carga -->
+    <div class="loading-state" *ngIf="cargando">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Cargando pedidos...</p>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="!cargando && pedidosFiltrados.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-shopping-bag"></i>
+      </div>
+      <h3>No tienes pedidos</h3>
+      <p>Cuando realices compras, aparecerán aquí para que puedas hacer seguimiento.</p>
+      <a href="/productos" class="btn btn-primary">
+        <i class="fas fa-shopping-cart"></i>
+        Ir a Comprar
+      </a>
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination-container" *ngIf="totalPaginas > 1">
+      <nav class="pagination">
+        <button class="page-btn" 
+                [disabled]="paginaActual === 1" 
+                (click)="cambiarPagina(paginaActual - 1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <span class="page-info">
+          Página {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+        
+        <button class="page-btn" 
+                [disabled]="paginaActual === totalPaginas" 
+                (click)="cambiarPagina(paginaActual + 1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de detalles del pedido -->
+<div class="modal-overlay" *ngIf="mostrarModalDetalles" (click)="cerrarModalDetalles()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Detalles del Pedido #{{ pedidoSeleccionado?.numero_pedido }}</h2>
+      <button class="close-btn" (click)="cerrarModalDetalles()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body" *ngIf="pedidoSeleccionado">
+      <!-- Información del pedido -->
+      <div class="pedido-info-detalle">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Fecha del Pedido:</label>
+            <span>{{ formatearFecha(pedidoSeleccionado.fecha_pedido) }}</span>
+          </div>
+          <div class="info-item">
+            <label>Estado:</label>
+            <span class="estado-badge" [class]="'estado-' + getEstadoColor(pedidoSeleccionado.estado)">
+              {{ getEstadoTexto(pedidoSeleccionado.estado) }}
+            </span>
+          </div>
+          <div class="info-item">
+            <label>Método de Pago:</label>
+            <span>{{ getMetodoPagoTexto(pedidoSeleccionado.metodo_pago) }}</span>
+          </div>
+          <div class="info-item">
+            <label>Método de Entrega:</label>
+            <span>{{ getMetodoEntregaTexto(pedidoSeleccionado.metodo_entrega) }}</span>
+          </div>
+          <div class="info-item" *ngIf="pedidoSeleccionado.direccion_entrega">
+            <label>Dirección de Entrega:</label>
+            <span>{{ pedidoSeleccionado.direccion_entrega }}</span>
+          </div>
+          <div class="info-item" *ngIf="pedidoSeleccionado.fecha_entrega_estimada">
+            <label>Entrega Estimada:</label>
+            <span>{{ formatearFecha(pedidoSeleccionado.fecha_entrega_estimada) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Productos del pedido -->
+      <div class="productos-detalle">
+        <h3>Productos</h3>
+        <div class="productos-tabla">
+          <div class="producto-detalle-item" *ngFor="let item of pedidoSeleccionado.items">
+            <div class="producto-imagen-detalle">
+              <img [src]="item.producto.imagen || '/assets/images/producto-default.jpg'" 
+                   [alt]="item.producto.nombre"
+                   (error)="onImageError($event)">
+            </div>
+            <div class="producto-info-detalle">
+              <h4>{{ item.producto.nombre }}</h4>
+              <p>Precio unitario: ${{ item.precio_unitario | number:'1.2-2' }}</p>
+              <p>Cantidad: {{ item.cantidad }}</p>
+            </div>
+            <div class="producto-total">
+              <span class="subtotal">${{ item.subtotal | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="total-pedido">
+          <div class="total-item">
+            <span class="total-label">Total del Pedido:</span>
+            <span class="total-valor">${{ pedidoSeleccionado.total | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seguimiento del pedido -->
+      <div class="seguimiento-pedido" *ngIf="pedidoSeleccionado.seguimiento && pedidoSeleccionado.seguimiento.length > 0">
+        <h3>Seguimiento del Pedido</h3>
+        <div class="timeline">
+          <div class="timeline-item" *ngFor="let seguimiento of pedidoSeleccionado.seguimiento">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <h4>{{ seguimiento.estado }}</h4>
+              <p>{{ seguimiento.descripcion }}</p>
+              <span class="timeline-fecha">{{ formatearFecha(seguimiento.fecha) }}</span>
+              <span class="timeline-ubicacion" *ngIf="seguimiento.ubicacion">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ seguimiento.ubicacion }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cerrarModalDetalles()">
+        Cerrar
+      </button>
+      <button class="btn btn-primary" (click)="descargarFactura(pedidoSeleccionado!)">
+        <i class="fas fa-download"></i>
+        Descargar Factura
+      </button>
+    </div>
+  </div>
+</div>
