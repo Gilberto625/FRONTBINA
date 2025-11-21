@@ -245,6 +245,11 @@ export class TiemposServicioComponent implements OnInit {
     return this.servicios.filter(s => !s.activo);
   }
 
+  filtrarPorCategoria(categoria: string): void {
+    this.filtroCategoria = categoria;
+    this.filtros.categoria = categoria;
+  }
+
   abrirModalEdicion(servicio: ServicioBarbero): void {
     this.servicioEditar = servicio;
     this.duracionTemporal = servicio.duracion_personal;

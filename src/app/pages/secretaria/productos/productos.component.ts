@@ -83,6 +83,7 @@ export class ProductosGestionComponent implements OnInit {
     valorInventario: 0
   };
   guardando = false;
+  guardandoProducto = false;
 
   // Mock data
   mockCategorias: CategoriaProducto[] = [
