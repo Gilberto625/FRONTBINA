@@ -3,8 +3,8 @@
 ## 🔗 Configuración de Conexión
 
 ### URL del Backend
-- **Desarrollo:** `https://backendbina-1.onrender.com/api/usuarios`
-- **Producción:** `https://backendbina-1.onrender.com/api/usuarios`
+- **Desarrollo:** `http://localhost:8000/api/usuarios`
+- **Producción:** `https://stylo-barber-backend.onrender.com/api/usuarios`
 - ✅ Configurado correctamente en `environment.ts` y `environment.prod.ts`
 
 ### CORS y CSRF

@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProductService, Product } from '../../services/product.service';
 import { ModalService } from '../../services/modal.service';
+import { TestConnectionComponent } from '../test-connection/test-connection.component';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    TestConnectionComponent
   ],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css'

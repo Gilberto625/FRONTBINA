@@ -1,272 +1,261 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface ApiResponse<T = any> {
-  success: boolean;
+  ok: boolean;
+  mensaje?: string;
   data?: T;
-  message?: string;
   error?: string;
-  errors?: any;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl.replace('/api/usuarios', ''); // Base URL sin el path específico
+  private csrfToken: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.initializeCsrf();
+  }
 
   /**
-   * Obtener headers con token de autenticación
+   * Inicializar CSRF token
+   */
+  private async initializeCsrf(): Promise<void> {
+    try {
+      const response = await this.http.get<{csrfToken: string}>(`${this.baseUrl}/api/usuarios/csrf/`).toPromise();
+      this.csrfToken = response?.csrfToken || null;
+    } catch (error) {
+      console.error('Error obteniendo CSRF token:', error);
+    }
+  }
+
+  /**
+   * Obtener headers con CSRF token
    */
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('access_token');
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+    if (this.csrfToken) {
+      headers = headers.set('X-CSRFToken', this.csrfToken);
     }
 
     return headers;
   }
 
   /**
-   * Manejar errores de HTTP
+   * Manejar errores HTTP
    */
-  private handleError(error: any): Observable<never> {
-    console.error('API Error:', error);
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Error desconocido';
     
-    let errorMessage = 'Ha ocurrido un error inesperado';
-    
-    if (error.error) {
-      if (typeof error.error === 'string') {
-        errorMessage = error.error;
-      } else if (error.error.message) {
-        errorMessage = error.error.message;
-      } else if (error.error.error) {
-        errorMessage = error.error.error;
-      }
-    } else if (error.message) {
-      errorMessage = error.message;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = error.error?.mensaje || error.error?.error || `Error ${error.status}: ${error.message}`;
     }
 
-    return throwError(() => ({
-      success: false,
-      error: errorMessage,
-      status: error.status
-    }));
+    console.error('API Error:', errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 
-  /**
-   * GET request
-   */
-  get<T>(endpoint: string, params?: any): Observable<T> {
-    let httpParams = new HttpParams();
-    
-    if (params) {
-      Object.keys(params).forEach(key => {
-        if (params[key] !== null && params[key] !== undefined) {
-          httpParams = httpParams.set(key, params[key].toString());
-        }
-      });
-    }
+  // ================================
+  // MÉTODOS GENÉRICOS
+  // ================================
 
-    return this.http.get<T>(`${this.baseUrl}${endpoint}`, {
+  /**
+   * GET request genérico
+   */
+  get<T>(endpoint: string): Observable<ApiResponse<T>> {
+    return this.http.get<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, {
       headers: this.getHeaders(),
-      params: httpParams
+      withCredentials: true
     }).pipe(
+      retry(1),
       catchError(this.handleError)
     );
   }
 
   /**
-   * POST request
+   * POST request genérico
    */
-  post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}${endpoint}`, data, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  /**
-   * PUT request
-   */
-  put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}${endpoint}`, data, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  /**
-   * PATCH request
-   */
-  patch<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.patch<T>(`${this.baseUrl}${endpoint}`, data, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  /**
-   * DELETE request
-   */
-  delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}${endpoint}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  /**
-   * POST request que devuelve Blob
-   */
-  postBlob(endpoint: string, data: any): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}${endpoint}`, data, {
+  post<T>(endpoint: string, data: any): Observable<ApiResponse<T>> {
+    return this.http.post<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, data, {
       headers: this.getHeaders(),
-      responseType: 'blob'
+      withCredentials: true
     }).pipe(
       catchError(this.handleError)
     );
   }
 
   /**
-   * Upload de archivos
+   * PUT request genérico
    */
-  uploadFile<T>(endpoint: string, file: File, additionalData?: any): Observable<T> {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    if (additionalData) {
-      Object.keys(additionalData).forEach(key => {
-        formData.append(key, additionalData[key]);
-      });
-    }
-
-    const token = localStorage.getItem('access_token');
-    let headers = new HttpHeaders();
-    
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return this.http.post<T>(`${this.baseUrl}${endpoint}`, formData, {
-      headers
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  /**
-   * Descargar archivo
-   */
-  downloadFile(endpoint: string, filename?: string): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}${endpoint}`, {
+  put<T>(endpoint: string, data: any): Observable<ApiResponse<T>> {
+    return this.http.put<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, data, {
       headers: this.getHeaders(),
-      responseType: 'blob'
+      withCredentials: true
     }).pipe(
-      map(blob => {
-        if (filename) {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = filename;
-          link.click();
-          window.URL.revokeObjectURL(url);
-        }
-        return blob;
-      }),
       catchError(this.handleError)
     );
   }
 
   /**
-   * Verificar si el usuario está autenticado
+   * DELETE request genérico
    */
-  isAuthenticated(): boolean {
-    const token = localStorage.getItem('access_token');
-    if (!token) return false;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp > currentTime;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Obtener información del usuario del token
-   */
-  getUserFromToken(): any {
-    const token = localStorage.getItem('access_token');
-    if (!token) return null;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
-   * Limpiar tokens de autenticación
-   */
-  clearTokens(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_data');
-  }
-
-  /**
-   * Descargar archivo como Blob
-   */
-  getBlob(endpoint: string, params?: any): Observable<Blob> {
-    let httpParams = new HttpParams();
-    
-    if (params) {
-      Object.keys(params).forEach(key => {
-        if (params[key] !== null && params[key] !== undefined) {
-          httpParams = httpParams.set(key, params[key].toString());
-        }
-      });
-    }
-
-    return this.http.get(`${this.baseUrl}${endpoint}`, {
+  delete<T>(endpoint: string): Observable<ApiResponse<T>> {
+    return this.http.delete<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, {
       headers: this.getHeaders(),
-      params: httpParams,
-      responseType: 'blob'
+      withCredentials: true
     }).pipe(
       catchError(this.handleError)
     );
   }
 
+  // ================================
+  // ENDPOINTS ESPECÍFICOS
+  // ================================
+
+  // --- AUTENTICACIÓN ---
+  register(userData: any): Observable<ApiResponse> {
+    return this.post('/api/usuarios/register/', userData);
+  }
+
+  verifyRegistration2FA(tempToken: string, codigo: string): Observable<ApiResponse> {
+    return this.post('/api/usuarios/register/2fa/verificar/', { tempToken, codigo });
+  }
+
+  login(email: string, password: string): Observable<ApiResponse> {
+    return this.post('/api/usuarios/login/', { email, password });
+  }
+
+  verifyLogin2FA(tempToken: string, codigo: string): Observable<ApiResponse> {
+    return this.post('/api/usuarios/login/2fa/verificar/', { tempToken, codigo });
+  }
+
+  googleLogin(idToken: string): Observable<ApiResponse> {
+    return this.post('/api/usuarios/login/google/', { idToken });
+  }
+
+  // --- SERVICIOS ---
+  getServicios(): Observable<ApiResponse> {
+    return this.get('/api/citas/servicios/');
+  }
+
+  // --- PRODUCTOS ---
+  getProductos(): Observable<ApiResponse> {
+    return this.get('/api/productos/');
+  }
+
+  getProductoById(id: number): Observable<ApiResponse> {
+    return this.get(`/api/productos/${id}/`);
+  }
+
+  // --- CITAS ---
+  getBarberos(): Observable<ApiResponse> {
+    return this.get('/api/citas/barberos/');
+  }
+
+  getDisponibilidadBarbero(barberoId: number, fecha?: string): Observable<ApiResponse> {
+    const endpoint = fecha 
+      ? `/api/citas/barberos/${barberoId}/disponibilidad/?fecha=${fecha}`
+      : `/api/citas/barberos/${barberoId}/disponibilidad/`;
+    return this.get(endpoint);
+  }
+
+  agendarCita(citaData: any): Observable<ApiResponse> {
+    return this.post('/api/citas/agendar/', citaData);
+  }
+
+  getCitasCliente(clienteId: number): Observable<ApiResponse> {
+    return this.get(`/api/citas/cliente/${clienteId}/`);
+  }
+
+  // --- VENTAS ---
+  getMetodosPago(): Observable<ApiResponse> {
+    return this.get('/api/ventas/metodos-pago/');
+  }
+
+  procesarPago(pagoData: any): Observable<ApiResponse> {
+    return this.post('/api/ventas/procesar-pago/', pagoData);
+  }
+
+  // --- CARRITO ---
+  getCarrito(): Observable<ApiResponse> {
+    return this.get('/api/ventas/carrito/');
+  }
+
+  agregarAlCarrito(productoId: number, cantidad: number): Observable<ApiResponse> {
+    return this.post('/api/ventas/carrito/agregar/', { producto_id: productoId, cantidad });
+  }
+
+  actualizarCarrito(itemId: number, cantidad: number): Observable<ApiResponse> {
+    return this.put(`/api/ventas/carrito/item/${itemId}/`, { cantidad });
+  }
+
+  eliminarDelCarrito(itemId: number): Observable<ApiResponse> {
+    return this.delete(`/api/ventas/carrito/item/${itemId}/`);
+  }
+
+  // --- EMPLEADOS (para barberos) ---
+  getMisTiempos(): Observable<ApiResponse> {
+    return this.get('/api/empleados/mis-tiempos/');
+  }
+
+  // --- CONFIGURACIÓN ---
+  getConfiguracion(): Observable<ApiResponse> {
+    return this.get('/api/configuracion/general/');
+  }
+
+  // --- REPORTES (para admin) ---
+  getReporteVentas(fechaInicio?: string, fechaFin?: string): Observable<ApiResponse> {
+    let endpoint = '/api/reportes/ventas/';
+    if (fechaInicio && fechaFin) {
+      endpoint += `?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}`;
+    }
+    return this.get(endpoint);
+  }
+
+  getReporteCitas(fechaInicio?: string, fechaFin?: string): Observable<ApiResponse> {
+    let endpoint = '/api/reportes/citas/';
+    if (fechaInicio && fechaFin) {
+      endpoint += `?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}`;
+    }
+    return this.get(endpoint);
+  }
+
+  // --- NOTIFICACIONES ---
+  getNotificaciones(): Observable<ApiResponse> {
+    return this.get('/api/notificaciones/');
+  }
+
+  marcarNotificacionLeida(notificacionId: number): Observable<ApiResponse> {
+    return this.put(`/api/notificaciones/${notificacionId}/marcar-leida/`, {});
+  }
+
+  // ================================
+  // UTILIDADES
+  // ================================
+
   /**
-   * Obtener URL completa del endpoint
+   * Refrescar CSRF token
    */
-  getFullUrl(endpoint: string): string {
-    return `${this.baseUrl}${endpoint}`;
+  async refreshCsrfToken(): Promise<void> {
+    await this.initializeCsrf();
   }
 
   /**
-   * Verificar conectividad con el backend
+   * Verificar si el backend está disponible
    */
-  ping(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/ping/`).pipe(
-      catchError(this.handleError)
-    );
+  checkBackendHealth(): Observable<ApiResponse> {
+    return this.get('/api/usuarios/csrf/');
   }
 }

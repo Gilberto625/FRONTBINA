@@ -13,7 +13,7 @@ Este proyecto Angular está configurado para desplegarse en Vercel. Las variable
 ```typescript
 export const environment = {
   production: true,
-  apiUrl: 'https://backendbina-1.onrender.com/api/usuarios',
+  apiUrl: 'https://stylo-barber-backend.onrender.com/api/usuarios',
   
   firebase: {
     apiKey: "AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ",
@@ -81,8 +81,8 @@ El archivo `vercel.json` ya está configurado:
 
 ## 🔗 URLs Importantes
 
-- **Backend:** https://backendbina-1.onrender.com
-- **API Base:** https://backendbina-1.onrender.com/api/usuarios
+- **Backend:** https://stylo-barber-backend.onrender.com
+- **API Base:** https://stylo-barber-backend.onrender.com/api/usuarios
 - **Vercel Dashboard:** https://vercel.com/dashboard
 - **Firebase Console:** https://console.firebase.google.com/
 

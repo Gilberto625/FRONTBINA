@@ -1,13 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://stylo-barber-backend.onrender.com/api',
-  backendUrl: 'https://stylo-barber-backend.onrender.com',
-  appName: 'Tony Stylo Barbería',
-  version: '1.0.0',
-  // Configuraciones de producción
-  enableDebugMode: false,
-  logLevel: 'error',
-
+  apiUrl: 'https://stylo-barber-backend.onrender.com/api/usuarios',
+  
   firebase: {
     apiKey: "AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ",
     authDomain: "auth-backend-tu-nombre.firebaseapp.com",

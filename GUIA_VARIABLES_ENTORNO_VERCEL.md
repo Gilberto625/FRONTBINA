@@ -18,7 +18,7 @@ Los archivos `environment.ts` y `environment.prod.ts` ya están configurados. So
 ```typescript
 export const environment = {
   production: true,
-  apiUrl: 'https://backendbina-1.onrender.com/api/usuarios',
+  apiUrl: 'https://stylo-barber-backend.onrender.com/api/usuarios',
   
   firebase: {
     apiKey: "AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ",
@@ -46,7 +46,7 @@ const path = require('path');
 const envFile = path.join(__dirname, '../src/environments/environment.prod.ts');
 const envContent = `export const environment = {
   production: true,
-  apiUrl: '${process.env.API_URL || 'https://backendbina-1.onrender.com/api/usuarios'}',
+  apiUrl: '${process.env.API_URL || 'https://stylo-barber-backend.onrender.com/api/usuarios'}',
   
   firebase: {
     apiKey: "${process.env.FIREBASE_API_KEY || ''}",
@@ -80,7 +80,7 @@ console.log('✅ Environment file updated');
 4. Agrega las siguientes variables:
 
 ```
-API_URL=https://backendbina-1.onrender.com/api/usuarios
+API_URL=https://stylo-barber-backend.onrender.com/api/usuarios
 FIREBASE_API_KEY=AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ
 FIREBASE_AUTH_DOMAIN=auth-backend-tu-nombre.firebaseapp.com
 FIREBASE_PROJECT_ID=auth-backend-tu-nombre
