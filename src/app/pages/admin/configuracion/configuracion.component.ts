@@ -349,3 +349,4 @@ export class ConfiguracionComponent implements OnInit {
     return titles[tab] || 'Configuración';
   }
 }
+

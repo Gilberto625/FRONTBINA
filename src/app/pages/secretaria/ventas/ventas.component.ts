@@ -436,3 +436,4 @@ export class GestionVentasComponent implements OnInit {
     event.target.src = '/assets/images/producto-default.jpg';
   }
 }
+

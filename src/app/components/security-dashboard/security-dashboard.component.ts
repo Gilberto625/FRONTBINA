@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService, EstadoSeguridad } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { ModalService } from '../../services/modal.service';
+
+interface EstadoSeguridad {
+  email_2fa: boolean;
+  totp_habilitado: boolean;
+  codigos_respaldo_disponibles: number;
+  tiene_preguntas_seguridad: boolean;
+}
 
 @Component({
   selector: 'app-security-dashboard',
@@ -31,8 +38,8 @@ export class SecurityDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener email del usuario actual
-    const currentUser = this.authService.getCurrentUser();
+    // Obtener usuario actual
+    const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser) {
       this.showMessage('Debes iniciar sesión primero', 'error');
       setTimeout(() => {
@@ -43,28 +50,32 @@ export class SecurityDashboardComponent implements OnInit {
 
     this.email = currentUser.email;
 
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
-
-    // Cargar estado de seguridad
+    // Cargar estado de seguridad desde el usuario actual
     this.loadSecurityStatus();
   }
 
   loadSecurityStatus(): void {
     this.loading = true;
 
-    this.authService.obtenerEstadoSeguridad(this.email).subscribe({
-      next: (estado) => {
+    // Obtener el perfil actualizado del usuario
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
         this.loading = false;
-        this.estadoSeguridad = estado;
+        
+        // Construir estado de seguridad basado en el usuario
+        this.estadoSeguridad = {
+          email_2fa: true, // Siempre habilitado por defecto
+          totp_habilitado: user.totp_enabled || false,
+          codigos_respaldo_disponibles: user.backup_codes_generated ? 10 : 0,
+          tiene_preguntas_seguridad: false
+        };
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al cargar estado de seguridad';
         this.showMessage(errorMsg, 'error');
         // Usar valores por defecto en caso de error
         this.estadoSeguridad = {
-          email_2fa: false,
+          email_2fa: true,
           totp_habilitado: false,
           codigos_respaldo_disponibles: 0,
           tiene_preguntas_seguridad: false

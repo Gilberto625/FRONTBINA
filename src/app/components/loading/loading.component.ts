@@ -28,3 +28,4 @@ export class LoadingComponent implements OnInit, OnDestroy {
     }
   }
 }
+

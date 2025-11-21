@@ -35,7 +35,7 @@ export class SetupTotpComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener email del usuario actual
-    const currentUser = this.authService.getCurrentUser();
+    const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser) {
       this.showMessage('Debes iniciar sesión primero', 'error');
       setTimeout(() => {
@@ -45,9 +45,6 @@ export class SetupTotpComponent implements OnInit {
     }
 
     this.email = currentUser.email;
-
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
 
     // Crear formulario de verificación
     this.verifyForm = this.fb.group({
@@ -61,22 +58,19 @@ export class SetupTotpComponent implements OnInit {
   configureTOTP(): void {
     this.loading = true;
 
-    // Nota: Este endpoint no está implementado en el backend aún
-    this.authService.configurarTOTP(this.email).subscribe({
+    // Configurar TOTP usando el método correcto
+    this.authService.setupTOTP().subscribe({
       next: (response) => {
         this.loading = false;
 
-        // El QR viene en base64
+        // El QR viene en formato data URL
         this.qrCodeUrl = this.sanitizer.bypassSecurityTrustUrl(response.qr_code);
         this.secretKey = response.secret;
-        this.currentStep = 1; // Iniciar en el primer paso
+        this.currentStep = 1;
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        // Si el endpoint no existe, mostrar mensaje informativo
-        console.warn('Endpoint de TOTP no disponible');
-        this.showMessage('La configuración de TOTP no está disponible en este momento. Esta funcionalidad estará disponible próximamente.', 'warning');
-        // Redirigir de vuelta a seguridad después de cerrar el modal
+        this.showMessage(errorMsg, 'error');
         setTimeout(() => {
           this.router.navigate(['/security']);
         }, 2000);
@@ -93,29 +87,23 @@ export class SetupTotpComponent implements OnInit {
     this.loading = true;
     const codigo = this.verifyForm.value.codigo;
 
-    // Nota: Este endpoint no está implementado en el backend aún
-    this.authService.habilitarTOTP(this.email, codigo).subscribe({
+    // Confirmar TOTP con el código ingresado
+    this.authService.confirmTOTP(codigo).subscribe({
       next: (response) => {
         this.loading = false;
+        this.showMessage('TOTP habilitado exitosamente. Guarda tus códigos de respaldo.', 'success');
 
-        if (response.ok) {
-          this.showMessage('TOTP habilitado exitosamente', 'success');
+        // Guardar los códigos de respaldo
+        localStorage.setItem('backup_codes', JSON.stringify(response.backup_codes));
 
-          // Redirigir al dashboard de seguridad después de cerrar el modal
-          setTimeout(() => {
-            this.router.navigate(['/security']);
-          }, 500);
-        }
-      },
-      error: (error) => {
-        this.loading = false;
-        // Si el endpoint no existe, mostrar mensaje informativo
-        console.warn('Endpoint de habilitar TOTP no disponible');
-        this.showMessage('La habilitación de TOTP no está disponible en este momento. Esta funcionalidad estará disponible próximamente.', 'warning');
-        // Redirigir de vuelta a seguridad después de cerrar el modal
+        // Redirigir a backup-codes para mostrar los códigos
         setTimeout(() => {
-          this.router.navigate(['/security']);
-        }, 2000);
+          this.router.navigate(['/backup-codes']);
+        }, 500);
+      },
+      error: (errorMsg) => {
+        this.loading = false;
+        this.showMessage(errorMsg, 'error');
       }
     });
   }

@@ -332,3 +332,4 @@ El sistema está completamente preparado para:
 ### 🎊 **¡PROYECTO EXITOSAMENTE COMPLETADO!**
 
 *El frontend Angular de la barbería TonyStyleo está listo para transformar la experiencia digital de la barbería y sus clientes.*
+

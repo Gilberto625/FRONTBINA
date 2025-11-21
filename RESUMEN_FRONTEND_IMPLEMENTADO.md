@@ -303,3 +303,4 @@ Una vez completados los pasos anteriores, tendrás:
 - **Performance optimizada** con lazy loading
 
 **El frontend está listo para consumir completamente el backend Django y ofrecer una experiencia de usuario profesional para Tony Stylo Barbería.** 🚀
+

@@ -240,3 +240,4 @@ export const ENV_CONFIG = {
   enableMockData: false,
   version: '1.0.0'
 };
+

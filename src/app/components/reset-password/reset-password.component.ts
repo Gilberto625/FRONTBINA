@@ -19,7 +19,8 @@ import { ModalService } from '../../services/modal.service';
 export class ResetPasswordComponent implements OnInit {
   resetForm!: FormGroup;
   loading = false;
-  tempToken: string = '';
+  email: string = '';
+  otp: string = '';
   hidePassword = true;
   hideConfirmPassword = true;
 
@@ -39,19 +40,17 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener tempToken del localStorage
-    this.tempToken = localStorage.getItem('recoveryTempToken') || '';
+    // Obtener datos del localStorage
+    this.email = localStorage.getItem('recoveryEmail') || '';
+    this.otp = localStorage.getItem('recoveryOTP') || '';
 
-    if (!this.tempToken) {
-      this.showError('No se encontró token de recuperación. Por favor, solicita uno nuevo.');
+    if (!this.email || !this.otp) {
+      this.showError('No se encontraron datos de recuperación. Por favor, solicita un nuevo código.');
       setTimeout(() => {
         this.router.navigate(['/forgot-password']);
       }, 500);
       return;
     }
-
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
 
     // Crear formulario con validaciones
     this.resetForm = this.fb.group({
@@ -135,38 +134,23 @@ export class ResetPasswordComponent implements OnInit {
 
     this.loading = true;
 
-    // Determinar qué método usar según el origen
-    const recoveryMethod = localStorage.getItem('recoveryMethod') || 'secret';
-    
-    let updateObservable;
-    if (recoveryMethod === 'otp') {
-      // Usar el método OTP
-      updateObservable = this.authService.actualizarContrasenaOTP(this.tempToken, password);
-    } else {
-      // Usar el método tradicional de restablecer contraseña
-      updateObservable = this.authService.restablecerContrasena(this.tempToken, password);
-    }
-
-    updateObservable.subscribe({
+    // Usar el método de resetPassword con OTP
+    this.authService.resetPassword(this.email, this.otp, password).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok) {
-          this.showSuccess('¡Contraseña actualizada exitosamente!');
-          
-          // Limpiar localStorage
-          localStorage.removeItem('recoveryTempToken');
-          localStorage.removeItem('recoveryEmail');
-          localStorage.removeItem('recoveryMethod');
+        this.showSuccess('¡Contraseña actualizada exitosamente!');
+        
+        // Limpiar localStorage
+        localStorage.removeItem('recoveryEmail');
+        localStorage.removeItem('recoveryOTP');
 
-          // Redirigir al login después de cerrar el modal
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 500);
-        }
+        // Redirigir al login después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 500);
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || error.error?.message || 'Error al actualizar contraseña';
         this.showError(errorMsg);
       }
     });

@@ -27,7 +27,7 @@ export class BackupCodesComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener email del usuario actual
-    const currentUser = this.authService.getCurrentUser();
+    const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser) {
       this.showMessage('Debes iniciar sesión primero', 'error');
       setTimeout(() => {
@@ -38,30 +38,31 @@ export class BackupCodesComponent implements OnInit {
 
     this.email = currentUser.email;
 
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
-
-    // Generar códigos automáticamente al cargar
-    this.generateCodes();
+    // Cargar códigos guardados o generar nuevos
+    const savedCodes = localStorage.getItem('backup_codes');
+    if (savedCodes) {
+      try {
+        this.backupCodes = JSON.parse(savedCodes);
+      } catch (e) {
+        this.generateCodes();
+      }
+    } else {
+      this.generateCodes();
+    }
   }
 
   generateCodes(): void {
     this.loading = true;
 
-    this.authService.generarCodigosRespaldo(this.email).subscribe({
+    this.authService.generateBackupCodes().subscribe({
       next: (response) => {
         this.loading = false;
-
-        if (response.ok && response.codigos) {
-          this.backupCodes = response.codigos;
-          this.showMessage('Códigos de respaldo generados exitosamente', 'success');
-        } else {
-          this.showMessage('Error al generar códigos de respaldo', 'error');
-        }
+        this.backupCodes = response.backup_codes;
+        localStorage.setItem('backup_codes', JSON.stringify(response.backup_codes));
+        this.showMessage('Códigos de respaldo generados exitosamente', 'success');
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al generar códigos de respaldo';
         this.showMessage(errorMsg, 'error');
       }
     });

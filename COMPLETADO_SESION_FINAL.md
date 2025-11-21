@@ -222,3 +222,4 @@ eliminarDeWishlist() // Remover productos
 ---
 
 **¡El proyecto ha sido un éxito total! 🎉**
+

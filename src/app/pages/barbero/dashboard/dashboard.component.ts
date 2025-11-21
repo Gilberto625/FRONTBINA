@@ -325,3 +325,4 @@ export class BarberoDashboardComponent implements OnInit {
     return `${mins}min`;
   }
 }
+

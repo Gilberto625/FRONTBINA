@@ -313,3 +313,4 @@ export class CarritoComponent implements OnInit {
     return descuento > 0 ? (item.producto.precio - this.getPrecioConDescuento(item)) * item.cantidad : 0;
   }
 }
+

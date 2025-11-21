@@ -169,3 +169,4 @@ export class ConfiguracionService {
     return this.api.get(`/configuracion/defecto/${tipo}/`);
   }
 }
+

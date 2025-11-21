@@ -209,3 +209,4 @@ export class ReportesService {
     return this.api.delete<void>(`/reportes/templates/${id}/`);
   }
 }
+

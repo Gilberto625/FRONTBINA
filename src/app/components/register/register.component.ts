@@ -38,25 +38,19 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener CSRF token al iniciar
-    this.authService.getCsrfToken().subscribe();
-
     // Crear formulario reactivo con validaciones mejoradas
     this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
       nombre: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
-      apellidopaterno: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
-      apellidomaterno: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
-      username: ['', [Validators.required, Validators.minLength(4), this.noWhitespaceValidator]],
-      correo: ['', [Validators.required, Validators.email, this.noWhitespaceValidator]],
-      contrasena: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
-      confirmarContrasena: ['', [Validators.required]],
-      telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      preguntasecreta: ['', [Validators.required]],
-      respuestasecreta: ['', [Validators.required, this.noWhitespaceValidator]]
+      apellido: ['', [Validators.required, Validators.minLength(2), this.noWhitespaceValidator]],
+      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
+      confirmarPassword: ['', [Validators.required]],
+      telefono: ['', [Validators.pattern(/^[0-9]{10}$/)]],
+      fecha_nacimiento: ['']
     });
 
     // Escuchar cambios en la contraseña para actualizar indicadores visuales
-    this.registerForm.get('contrasena')?.valueChanges.subscribe(password => {
+    this.registerForm.get('password')?.valueChanges.subscribe(password => {
       this.checkPasswordRequirements(password);
     });
   }
@@ -144,7 +138,7 @@ export class RegisterComponent implements OnInit {
     }
 
     // Validar que las contraseñas coincidan
-    if (this.registerForm.value.contrasena !== this.registerForm.value.confirmarContrasena) {
+    if (this.registerForm.value.password !== this.registerForm.value.confirmarPassword) {
       this.showMessage('Las contraseñas no coinciden', 'error');
       return;
     }
@@ -155,69 +149,37 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    // Validar que no haya campos con solo espacios en blanco
-    const formValues = this.registerForm.value;
-    for (const key in formValues) {
-      if (typeof formValues[key] === 'string' && formValues[key].trim() === '') {
-        this.showMessage('No se permiten campos vacíos o solo con espacios', 'error');
-        return;
-      }
-    }
-
     this.loading = true;
 
-    // Obtener CSRF token antes de registrar
-    this.authService.getCsrfToken().subscribe({
-      next: () => {
-        // Preparar datos sin el campo confirmarContrasena y trimear valores
-        const { confirmarContrasena, ...registerData } = this.registerForm.value;
-        
-        // Limpiar espacios en blanco de los campos de texto
-        const cleanedData = {
-          nombre: registerData.nombre.trim(),
-          apellidopaterno: registerData.apellidopaterno.trim(),
-          apellidomaterno: registerData.apellidomaterno.trim(),
-          username: registerData.username.trim(),
-          correo: registerData.correo.trim(),
-          contrasena: registerData.contrasena,
-          telefono: registerData.telefono.trim(),
-          preguntasecreta: registerData.preguntasecreta,
-          respuestasecreta: registerData.respuestasecreta.trim()
-        };
+    // Preparar datos sin el campo confirmarPassword y trimear valores
+    const { confirmarPassword, ...formValues } = this.registerForm.value;
+    
+    // Limpiar espacios en blanco de los campos de texto
+    const registerData: RegisterData = {
+      email: formValues.email.trim(),
+      nombre: formValues.nombre.trim(),
+      apellido: formValues.apellido.trim(),
+      password: formValues.password,
+      telefono: formValues.telefono ? formValues.telefono.trim() : undefined,
+      fecha_nacimiento: formValues.fecha_nacimiento || undefined
+    };
 
-        console.log('Datos de registro:', cleanedData);
+    console.log('Datos de registro:', registerData);
 
-        this.authService.register(cleanedData as RegisterData).subscribe({
-          next: (response) => {
-            this.loading = false;
-            this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
-
-            // Guardar el correo en localStorage para poder reenviar código
-            localStorage.setItem('registerEmail', cleanedData.correo);
-
-            // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
-            setTimeout(() => {
-              this.router.navigate(['/verify-2fa'], {
-                state: {
-                  tempToken: response.tempToken,
-                  type: 'register',
-                  destination: response.destino || cleanedData.correo
-                }
-              });
-            }, 500);
-          },
-          error: (error) => {
-            this.loading = false;
-            console.error('Error completo:', error);
-            const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
-            this.showMessage(errorMsg, 'error');
-          }
-        });
-      },
-      error: (csrfError) => {
+    this.authService.register(registerData).subscribe({
+      next: (response) => {
         this.loading = false;
-        console.error('Error obteniendo CSRF token:', csrfError);
-        this.showMessage('Error de conexión con el servidor. Por favor, intenta de nuevo.', 'error');
+        this.showMessage('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
+
+        // Redirigir al login después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 1500);
+      },
+      error: (errorMsg) => {
+        this.loading = false;
+        console.error('Error en registro:', errorMsg);
+        this.showMessage(errorMsg, 'error');
       }
     });
   }

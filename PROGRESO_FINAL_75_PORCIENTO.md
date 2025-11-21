@@ -277,3 +277,4 @@ El frontend está en **excelente estado** con:
 **El sistema ya puede ser usado en producción para las operaciones diarias de la barbería.** 
 
 **El resto son funcionalidades avanzadas que seguirán el mismo patrón de excelencia establecido.** 🚀
+

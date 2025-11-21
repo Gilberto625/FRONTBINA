@@ -465,3 +465,4 @@ export class AgendaComponent implements OnInit {
     return barbero?.color || '#6B7280';
   }
 }
+

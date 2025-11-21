@@ -41,7 +41,7 @@ export class ChangePasswordComponent implements OnInit {
 
   ngOnInit(): void {
     // Obtener email del usuario actual
-    const currentUser = this.authService.getCurrentUser();
+    const currentUser = this.authService.getCurrentUserValue();
     if (!currentUser) {
       this.showMessage('Debes iniciar sesión primero', 'error');
       setTimeout(() => {
@@ -51,9 +51,6 @@ export class ChangePasswordComponent implements OnInit {
     }
 
     this.email = currentUser.email;
-
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
 
     // Crear formulario
     this.changeForm = this.fb.group({
@@ -101,22 +98,18 @@ export class ChangePasswordComponent implements OnInit {
 
     this.loading = true;
 
-    this.authService.cambiarContrasena(this.email, currentPassword, newPassword).subscribe({
+    this.authService.changePassword(currentPassword, newPassword).subscribe({
       next: (response) => {
         this.loading = false;
+        this.showMessage('Contraseña cambiada exitosamente', 'success');
 
-        if (response.ok) {
-          this.showMessage('Contraseña cambiada exitosamente', 'success');
-
-          // Redirigir al dashboard de seguridad después de cerrar el modal
-          setTimeout(() => {
-            this.router.navigate(['/security']);
-          }, 500);
-        }
+        // Redirigir al dashboard de seguridad después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/security']);
+        }, 500);
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al cambiar contraseña';
         this.showMessage(errorMsg, 'error');
       }
     });

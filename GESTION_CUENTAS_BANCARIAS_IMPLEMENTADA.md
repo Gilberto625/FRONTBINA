@@ -209,3 +209,4 @@ El administrador ya puede:
 4. **Monitorear transacciones** una vez en producción
 
 **¡La gestión de cuentas bancarias está completamente lista para uso en producción!** 🚀
+

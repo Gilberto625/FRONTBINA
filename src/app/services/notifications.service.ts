@@ -248,3 +248,4 @@ export class NotificationsService {
     return this.noLeidasSubject.value > 0;
   }
 }
+

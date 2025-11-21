@@ -340,3 +340,4 @@ La **integración completa entre el Frontend Angular y el Backend Django** ha si
 ---
 
 **🎊 ¡INTEGRACIÓN FRONTEND-BACKEND COMPLETADA CON ÉXITO TOTAL! 🎊**
+

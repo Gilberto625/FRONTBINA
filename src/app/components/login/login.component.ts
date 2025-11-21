@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService, LoginData } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -19,7 +19,6 @@ import { ModalService } from '../../services/modal.service';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   loading = false;
-  loadingGoogle = false;
 
   constructor(
     private fb: FormBuilder,
@@ -29,9 +28,6 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
-
     // Crear formulario
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -46,51 +42,31 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    const loginData: LoginData = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
-    this.authService.login(loginData).subscribe({
+    this.authService.login(email, password).subscribe({
       next: (response) => {
         this.loading = false;
 
-        if (response.ok) {
-          // Login directo sin 2FA (modificado según requerimiento)
-          // El servicio ya guarda el usuario en el pipe tap
+        if (response.requires_2fa) {
+          // Redirigir a verificación 2FA
+          this.showMessage('Por favor ingresa tu código de autenticación', 'info');
+          this.router.navigate(['/verify-2fa'], {
+            state: { email }
+          });
+        } else {
+          // Login exitoso sin 2FA
           this.showMessage('¡Inicio de sesión exitoso!', 'success');
           setTimeout(() => {
-            this.router.navigate(['/home']);
+            this.authService.redirectAfterLogin();
           }, 500);
         }
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al iniciar sesión';
         this.showMessage(errorMsg, 'error');
       }
     });
-  }
-
-  async loginWithGoogle(): Promise<void> {
-    this.loadingGoogle = true;
-
-    try {
-      const response = await this.authService.loginWithGoogle();
-
-      if (response && response.ok) {
-        this.showMessage('¡Inicio de sesión con Google exitoso!', 'success');
-        // Esperar un momento para que se actualice el estado
-        setTimeout(() => {
-          this.router.navigate(['/home']);
-        }, 500);
-      } else {
-        const errorMsg = response?.error || 'Error al iniciar sesión con Google';
-        this.showMessage(errorMsg, 'error');
-      }
-    } catch (error: any) {
-      const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
-      this.showMessage(errorMsg, 'error');
-    } finally {
-      this.loadingGoogle = false;
-    }
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {

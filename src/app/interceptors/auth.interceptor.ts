@@ -11,7 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   const modalService = inject(ModalService);
 
   // Obtener el token de acceso
-  const token = authService.getAccessToken();
+  const token = authService.getToken();
   
   // Clonar la request y agregar el token si existe
   let authReq = req;
@@ -61,3 +61,4 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     })
   );
 };
+

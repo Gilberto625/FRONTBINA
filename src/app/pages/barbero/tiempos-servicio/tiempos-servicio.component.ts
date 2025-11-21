@@ -375,3 +375,4 @@ export class TiemposServicioComponent implements OnInit {
     return user ? `${user.nombre} ${user.apellido}` : 'Barbero';
   }
 }
+

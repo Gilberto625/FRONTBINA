@@ -286,3 +286,4 @@ El frontend está en **excelente estado** con:
 - ✅ **Administradores** - Pueden ver métricas y gestionar cuentas bancarias
 
 **El resto seguirá el mismo patrón de excelencia establecido.** 🚀
+

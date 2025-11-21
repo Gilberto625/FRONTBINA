@@ -233,3 +233,4 @@ export class CuentasNegocioService {
     return this.api.get('/configuracion/bancos-mexico/');
   }
 }
+

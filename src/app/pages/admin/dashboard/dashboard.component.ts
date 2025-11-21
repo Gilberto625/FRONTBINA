@@ -222,3 +222,4 @@ export class AdminDashboardComponent implements OnInit {
     return this.metricas.crecimientoMensual >= 0 ? 'trending-up' : 'trending-down';
   }
 }
+

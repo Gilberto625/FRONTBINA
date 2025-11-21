@@ -312,3 +312,4 @@ export class EmpleadosComponent implements OnInit {
     event.target.src = '/assets/images/avatar-default.jpg';
   }
 }
+

@@ -32,9 +32,6 @@ export class ForgotPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener CSRF token
-    this.authService.getCsrfToken().subscribe();
-
     // Crear formulario para email
     this.emailForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
@@ -60,21 +57,15 @@ export class ForgotPasswordComponent implements OnInit {
     const email = this.emailForm.value.email.trim();
     this.userEmail = email;
 
-    // Solo método de OTP por email
-    this.authService.solicitarRecuperacionOTP(email).subscribe({
+    // Solicitar recuperación de contraseña con OTP
+    this.authService.requestPasswordReset(email).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok && response.tempToken) {
-          this.tempToken = response.tempToken;
-          this.step = 'verify-otp';
-          this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
-        } else {
-          this.showSuccess('Si el correo existe, se enviará un código de recuperación.');
-        }
+        this.step = 'verify-otp';
+        this.showSuccess('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.');
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al enviar código OTP';
         this.showError(errorMsg);
       }
     });
@@ -93,26 +84,22 @@ export class ForgotPasswordComponent implements OnInit {
     this.loading = true;
     const codigo = this.otpForm.value.codigo;
 
-    this.authService.verificarOTPRecuperacion(this.tempToken, codigo).subscribe({
+    this.authService.verifyOTPReset(this.userEmail, codigo).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok) {
-          this.showSuccess('Código verificado correctamente');
-          
-          // Guardar datos para reset-password
-          localStorage.setItem('recoveryTempToken', this.tempToken);
-          localStorage.setItem('recoveryEmail', this.userEmail);
-          localStorage.setItem('recoveryMethod', 'otp');
-          
-          // Redirigir a cambiar contraseña después de cerrar el modal
-          setTimeout(() => {
-            this.router.navigate(['/reset-password']);
-          }, 500);
-        }
+        this.showSuccess('Código verificado correctamente');
+        
+        // Guardar datos para reset-password
+        localStorage.setItem('recoveryEmail', this.userEmail);
+        localStorage.setItem('recoveryOTP', codigo);
+        
+        // Redirigir a cambiar contraseña después de cerrar el modal
+        setTimeout(() => {
+          this.router.navigate(['/reset-password']);
+        }, 500);
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Código incorrecto o expirado';
         this.showError(errorMsg);
       }
     });
@@ -124,16 +111,13 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authService.reenviarOTPRecuperacion(this.userEmail).subscribe({
+    this.authService.resendOTPReset(this.userEmail).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response.ok) {
-          this.showSuccess('Nuevo código enviado a tu correo');
-        }
+        this.showSuccess('Nuevo código enviado a tu correo');
       },
-      error: (error) => {
+      error: (errorMsg) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al reenviar código';
         this.showError(errorMsg);
       }
     });

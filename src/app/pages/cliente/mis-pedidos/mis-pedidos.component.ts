@@ -272,3 +272,4 @@ export class MisPedidosComponent implements OnInit {
     return metodos[metodo] || metodo;
   }
 }
+

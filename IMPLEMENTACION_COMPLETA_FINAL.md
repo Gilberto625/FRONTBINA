@@ -194,3 +194,4 @@ El sistema está completamente preparado para:
 **Desarrollado con Angular 17+ y las mejores prácticas de desarrollo frontend**
 
 *Fecha de finalización: Noviembre 2024*
+

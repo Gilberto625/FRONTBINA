@@ -250,3 +250,4 @@ export class ComponenteComponent implements OnInit {
 - **Calidad profesional** en todos los componentes implementados
 
 **El proyecto está en excelente estado para continuar el desarrollo y tiene garantizada la calidad del producto final.** 🚀
+
