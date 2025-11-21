@@ -51,6 +51,21 @@ export interface LoginData {
   password: string;
 }
 
+export interface Usuario {
+  id?: number;
+  email: string;
+  nombre: string;
+  apellido: string;
+  telefono?: string;
+  rol?: string;
+}
+
+export interface EstadoSeguridad {
+  totp_enabled: boolean;
+  backup_codes_generated: boolean;
+  last_login?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -372,6 +387,14 @@ export class AuthService {
   loginWithGoogle(): Observable<any> {
     // Placeholder para login con Google
     return throwError(() => 'Google login no implementado');
+  }
+
+  actualizarContrasenaOTP(email: string, otp: string, newPassword: string): Observable<any> {
+    return this.resetPassword(email, otp, newPassword);
+  }
+
+  restablecerContrasena(email: string, otp: string, newPassword: string): Observable<any> {
+    return this.resetPassword(email, otp, newPassword);
   }
 
   refreshToken(): Observable<{ access: string }> {
