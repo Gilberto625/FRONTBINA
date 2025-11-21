@@ -47,7 +47,9 @@ export class TiemposServicioComponent implements OnInit {
   
   isLoading = true;
   error: string | null = null;
-  
+
+  get cargando(): boolean { return this.isLoading; }
+
   // Filtros
   filtroCategoria = 'todas';
   filtroEspecialidad = 'todos';
