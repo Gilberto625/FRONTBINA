@@ -111,7 +111,7 @@
               <div class="dia-header">
                 <label class="checkbox-label">
                   <input type="checkbox" 
-                         [checked]="configuracionGeneral.horario_atencion[dia.key].abierto"
+                         [checked]="$any(configuracionGeneral.horario_atencion)[dia.key].abierto"
                          (change)="toggleDiaAbierto(dia.key)">
                   <span class="checkmark"></span>
                   {{ dia.nombre }}
@@ -125,17 +125,17 @@
               </div>
               
               <div class="horario-inputs" 
-                   *ngIf="configuracionGeneral.horario_atencion[dia.key].abierto">
+                   *ngIf="$any(configuracionGeneral.horario_atencion)[dia.key].abierto">
                 <div class="time-group">
                   <label>Apertura:</label>
                   <input type="time" 
-                         [(ngModel)]="configuracionGeneral.horario_atencion[dia.key].inicio"
+                         [(ngModel)]="$any(configuracionGeneral.horario_atencion)[dia.key].inicio"
                          class="form-control">
                 </div>
                 <div class="time-group">
                   <label>Cierre:</label>
                   <input type="time" 
-                         [(ngModel)]="configuracionGeneral.horario_atencion[dia.key].fin"
+                         [(ngModel)]="$any(configuracionGeneral.horario_atencion)[dia.key].fin"
                          class="form-control">
                 </div>
               </div>

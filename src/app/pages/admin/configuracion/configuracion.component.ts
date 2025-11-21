@@ -248,6 +248,10 @@ export class ConfiguracionComponent implements OnInit {
     return this.configuracionPagos.metodos_pago_activos.includes(metodo);
   }
 
+  getHorarioDia(dia: string): { abierto: boolean; inicio: string; fin: string } {
+    return this.configuracionGeneral.horario_atencion[dia as keyof typeof this.configuracionGeneral.horario_atencion];
+  }
+
   toggleDiaAbierto(dia: string): void {
     this.configuracionGeneral.horario_atencion[dia as keyof typeof this.configuracionGeneral.horario_atencion].abierto = 
       !this.configuracionGeneral.horario_atencion[dia as keyof typeof this.configuracionGeneral.horario_atencion].abierto;
