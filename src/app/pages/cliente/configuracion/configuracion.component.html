@@ -1,0 +1,69 @@
+<div class="configuracion-container">
+  <h2>Configuracion</h2>
+
+  <div class="tabs">
+    <button [class.active]="tabActiva === 'notificaciones'" (click)="cambiarTab('notificaciones')">
+      Notificaciones
+    </button>
+    <button [class.active]="tabActiva === 'privacidad'" (click)="cambiarTab('privacidad')">
+      Privacidad
+    </button>
+  </div>
+
+  <div class="tab-content" *ngIf="tabActiva === 'notificaciones'">
+    <h3>Preferencias de Notificaciones</h3>
+
+    <div class="option-group">
+      <label class="toggle-option">
+        <span>Notificaciones por Email</span>
+        <input type="checkbox" [(ngModel)]="preferencias.notificaciones_email">
+      </label>
+
+      <label class="toggle-option">
+        <span>Notificaciones SMS</span>
+        <input type="checkbox" [(ngModel)]="preferencias.notificaciones_sms">
+      </label>
+
+      <label class="toggle-option">
+        <span>Notificaciones Push</span>
+        <input type="checkbox" [(ngModel)]="preferencias.notificaciones_push">
+      </label>
+    </div>
+
+    <h4>Recordatorios de Citas</h4>
+    <div class="option-group">
+      <label class="toggle-option">
+        <span>Recordatorio 24 horas antes</span>
+        <input type="checkbox" [(ngModel)]="preferencias.recordatorio_24h">
+      </label>
+
+      <label class="toggle-option">
+        <span>Recordatorio 1 hora antes</span>
+        <input type="checkbox" [(ngModel)]="preferencias.recordatorio_1h">
+      </label>
+    </div>
+
+    <h4>Marketing</h4>
+    <div class="option-group">
+      <label class="toggle-option">
+        <span>Recibir promociones y ofertas</span>
+        <input type="checkbox" [(ngModel)]="preferencias.promociones">
+      </label>
+    </div>
+  </div>
+
+  <div class="tab-content" *ngIf="tabActiva === 'privacidad'">
+    <h3>Configuracion de Privacidad</h3>
+    <p>Gestiona como se utiliza tu informacion personal.</p>
+
+    <div class="info-section">
+      <p>Para solicitar la eliminacion de tu cuenta o exportar tus datos, contacta a soporte.</p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" (click)="guardarPreferencias()" [disabled]="guardando">
+      {{ guardando ? 'Guardando...' : 'Guardar Cambios' }}
+    </button>
+  </div>
+</div>
