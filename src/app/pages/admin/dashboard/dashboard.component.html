@@ -1,0 +1,53 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Panel de Administracion</h1>
+    <p>Bienvenido, {{ userName }}</p>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Cargando datos...</div>
+
+  <div class="dashboard-content" *ngIf="!isLoading">
+    <div class="metrics-grid" *ngIf="metricas">
+      <div class="metric-card">
+        <h3>Ventas Hoy</h3>
+        <span class="value">{{ metricas.ventasHoy }}</span>
+      </div>
+      <div class="metric-card">
+        <h3>Citas Hoy</h3>
+        <span class="value">{{ metricas.citasHoy }}</span>
+      </div>
+      <div class="metric-card">
+        <h3>Ingresos</h3>
+        <span class="value">{{ formatCurrency(metricas.ingresosTotales) }}</span>
+      </div>
+      <div class="metric-card">
+        <h3>Clientes Nuevos</h3>
+        <span class="value">{{ metricas.clientesNuevos }}</span>
+      </div>
+    </div>
+
+    <div class="recent-section">
+      <h2>Ventas Recientes</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let venta of ventasRecientes">
+              <td>{{ venta.cliente }}</td>
+              <td>{{ venta.productos.join(', ') }}</td>
+              <td>{{ formatCurrency(venta.total) }}</td>
+              <td>{{ formatDate(venta.fecha) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
