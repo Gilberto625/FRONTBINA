@@ -74,6 +74,7 @@ export interface EstadoSeguridad {
   totp_enabled: boolean;
   totp_habilitado: boolean;
   backup_codes_generated: boolean;
+  codigos_respaldo_disponibles: number;
   last_login?: string;
 }
 
@@ -135,10 +136,12 @@ export class AuthService {
 
   // ===== AUTENTICACIÓN BÁSICA =====
 
-  login(email: string, password: string): Observable<LoginResponse> {
+  login(emailOrData: string | LoginData, password?: string): Observable<LoginResponse> {
+    const email = typeof emailOrData === 'string' ? emailOrData : emailOrData.email;
+    const pass = typeof emailOrData === 'string' ? password! : emailOrData.password;
     return this.http.post<LoginResponse>(`${this.apiUrl}/usuarios/login/`, {
       correo: email,
-      contrasena: password
+      contrasena: pass
     }).pipe(
       tap(response => {
         if (response.access && !response.requires_2fa) {
@@ -400,12 +403,25 @@ export class AuthService {
     return throwError(() => 'Google login no implementado');
   }
 
-  actualizarContrasenaOTP(email: string, otp: string, newPassword: string): Observable<any> {
-    return this.resetPassword(email, otp, newPassword);
+  actualizarContrasenaOTP(tokenOrEmail: string, passwordOrOtp: string, newPassword?: string): Observable<any> {
+    if (newPassword) {
+      return this.resetPassword(tokenOrEmail, passwordOrOtp, newPassword);
+    }
+    // Si solo hay 2 args, tokenOrEmail es el token y passwordOrOtp es el password
+    return this.http.post(`${this.apiUrl}/usuarios/reset-password-token/`, {
+      token: tokenOrEmail,
+      nueva_contrasena: passwordOrOtp
+    }).pipe(catchError(this.handleError.bind(this)));
   }
 
-  restablecerContrasena(email: string, otp: string, newPassword: string): Observable<any> {
-    return this.resetPassword(email, otp, newPassword);
+  restablecerContrasena(tokenOrEmail: string, passwordOrOtp: string, newPassword?: string): Observable<any> {
+    if (newPassword) {
+      return this.resetPassword(tokenOrEmail, passwordOrOtp, newPassword);
+    }
+    return this.http.post(`${this.apiUrl}/usuarios/reset-password-token/`, {
+      token: tokenOrEmail,
+      nueva_contrasena: passwordOrOtp
+    }).pipe(catchError(this.handleError.bind(this)));
   }
 
   refreshToken(): Observable<{ access: string }> {
