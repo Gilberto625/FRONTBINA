@@ -13,7 +13,7 @@ interface ProductoGestion {
   marca: string;
   precio: number;
   precio_compra: number;
-  precio_costo: number;
+  precio_costo?: number;
   stock: number;
   stock_minimo: number;
   codigo_barras?: string;
@@ -88,6 +88,7 @@ export class ProductosGestionComponent implements OnInit {
   guardando = false;
   guardandoProducto = false;
   motivoMovimiento = '';
+  cantidadMovimiento = 0;
 
   // Mock data
   mockCategorias: CategoriaProducto[] = [

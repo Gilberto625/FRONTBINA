@@ -197,7 +197,7 @@ export class CarritoComponent implements OnInit {
     }
   }
 
-  private calcularCostoEnvio(): void {
+  calcularCostoEnvio(): void {
     switch (this.tipoEntrega) {
       case 'moto':
         this.costoEnvio = 45;
