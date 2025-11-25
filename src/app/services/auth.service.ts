@@ -292,78 +292,63 @@ export class AuthService {
 
   /**
    * Solicitar recuperación de contraseña por email
+   * NOTA: Usa el método OTP que sí está implementado en el backend
    */
   solicitarRecuperacionEmail(email: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/recuperar/email/`,
-      { email },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+    // Usar el endpoint de recuperación OTP que sí existe
+    return this.solicitarRecuperacionOTP(email);
   }
 
   /**
    * Restablecer contraseña con token de email
+   * NOTA: Usa el método OTP que sí está implementado en el backend
    */
   restablecerConTokenEmail(token: string, nuevaContrasena: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/restablecer/email/`,
-      { token, nuevaContrasena },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+    // Usar el endpoint de actualización con OTP que sí existe
+    return this.actualizarContrasenaOTP(token, nuevaContrasena);
   }
 
   /**
    * Configurar TOTP - Obtener QR code
+   * NOTA: TOTP no está implementado en el backend actualmente
+   * Este método está comentado hasta que se implemente en el backend
    */
-  configurarTOTP(email: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/totp/configurar/`,
-      { email },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
-  }
+  // configurarTOTP(email: string): Observable<any> {
+  //   return this.http.post(
+  //     `${this.apiUrl}/totp/configurar/`,
+  //     { email },
+  //     {
+  //       headers: this.getHeaders(),
+  //       withCredentials: true
+  //     }
+  //   );
+  // }
 
   /**
    * Habilitar TOTP después de verificar código
+   * NOTA: TOTP no está implementado en el backend actualmente
+   * Este método está comentado hasta que se implemente en el backend
    */
-  habilitarTOTP(email: string, codigo: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/totp/habilitar/`,
-      { email, codigo },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
-  }
+  // habilitarTOTP(email: string, codigo: string): Observable<any> {
+  //   return this.http.post(
+  //     `${this.apiUrl}/totp/habilitar/`,
+  //     { email, codigo },
+  //     {
+  //       headers: this.getHeaders(),
+  //       withCredentials: true
+  //     }
+  //   );
+  // }
 
   /**
    * Verificar código TOTP o backup en login
+   * NOTA: El backend actualmente solo acepta tempToken y codigo
+   * El parámetro 'tipo' no está implementado en el backend
    */
-  verificarTOTPLogin(tempToken: string, codigo: string, tipo: 'totp' | 'backup'): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/login/2fa/verificar/`,
-      { tempToken, codigo, tipo },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    ).pipe(
-      tap((response: any) => {
-        if (response.ok) {
-          this.setCurrentUser(response.usuario);
-        }
-      })
-    );
+  verificarTOTPLogin(tempToken: string, codigo: string, tipo?: 'totp' | 'backup'): Observable<any> {
+    // Usar el mismo endpoint que verifyLogin2FA
+    // El backend no diferencia entre TOTP y backup codes actualmente
+    return this.verifyLogin2FA(tempToken, codigo);
   }
 
   /**
@@ -396,16 +381,14 @@ export class AuthService {
 
   /**
    * Solicitar código por email cuando está usando TOTP
+   * NOTA: Usa reenviar-otp que funciona para ambos casos (registro y login)
    */
   solicitarCodigoEmail(tempToken: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/login/2fa/solicitar-codigo/`,
-      { tempToken },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+    // Obtener email del usuario usando el tempToken (ID del usuario)
+    // Por ahora, usar reenviar-otp con el correo si está disponible
+    // Este método necesita el email, no solo el tempToken
+    // Se recomienda usar reenviarOTP directamente con el email
+    throw new Error('Este método requiere el email. Use reenviarOTP(correo) directamente.');
   }
 
   /**
@@ -426,17 +409,11 @@ export class AuthService {
 
   /**
    * Verificar código OTP durante el registro
-   * Similar a verifyRegister2FA pero específico para OTP con SendGrid
+   * NOTA: Usa el endpoint correcto que sí existe en el backend
    */
   verificarOTPRegistro(tempToken: string, codigo: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/verificar-otp/`,
-      { tempToken, codigo },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+    // Usar el endpoint correcto que sí existe
+    return this.verifyRegister2FA(tempToken, codigo);
   }
 
   /**
@@ -484,16 +461,11 @@ export class AuthService {
 
   /**
    * Reenviar código OTP para recuperación de contraseña
+   * NOTA: El backend usa el mismo endpoint /reenviar-otp/ para ambos casos
    */
   reenviarOTPRecuperacion(correo: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/reenviar-otp-recuperacion/`,
-      { correo },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+    // Usar el mismo endpoint que funciona para registro y recuperación
+    return this.reenviarOTP(correo);
   }
 
   /**
