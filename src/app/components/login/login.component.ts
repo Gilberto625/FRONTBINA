@@ -53,17 +53,37 @@ export class LoginComponent implements OnInit {
         this.loading = false;
 
         if (response.ok) {
-          // Login directo sin 2FA (modificado según requerimiento)
-          // El servicio ya guarda el usuario en el pipe tap
-          this.showMessage('¡Inicio de sesión exitoso!', 'success');
-          setTimeout(() => {
-            this.router.navigate(['/home']);
-          }, 500);
+          // Verificar si requiere 2FA
+          if (response.requires2fa) {
+            // Guardar state en sessionStorage como backup
+            const navigationState = {
+              tempToken: response.tempToken,
+              type: 'login',
+              destination: response.destino || response.canal || 'tu correo',
+              metodosDisponibles: response.metodosDisponibles || ['email']
+            };
+            sessionStorage.setItem('verify2fa_state', JSON.stringify(navigationState));
+
+            // Redirigir a verificación 2FA
+            this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
+            setTimeout(() => {
+              this.router.navigate(['/verify-2fa'], {
+                state: navigationState
+              });
+            }, 500);
+          } else {
+            // Login directo sin 2FA
+            // El servicio ya guarda el usuario en el pipe tap
+            this.showMessage('¡Inicio de sesión exitoso!', 'success');
+            setTimeout(() => {
+              this.router.navigate(['/home']);
+            }, 500);
+          }
         }
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al iniciar sesión';
+        const errorMsg = error.error?.error || error.error?.message || 'Error al iniciar sesión';
         this.showMessage(errorMsg, 'error');
       }
     });

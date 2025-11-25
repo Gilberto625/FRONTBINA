@@ -30,21 +30,33 @@ export class Verify2faComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private modalService: ModalService
-  ) {
-    // Obtener datos del state de navegación
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as any;
+  ) {}
 
-    if (state) {
+  ngOnInit(): void {
+    // Obtener datos del state de navegación (intentar desde history.state primero)
+    const state = (history.state as any) || {};
+    
+    // Si no hay state en history, intentar desde sessionStorage como fallback
+    if (!state.tempToken) {
+      const storedState = sessionStorage.getItem('verify2fa_state');
+      if (storedState) {
+        try {
+          const parsedState = JSON.parse(storedState);
+          Object.assign(state, parsedState);
+        } catch (e) {
+          console.error('Error parsing stored state:', e);
+        }
+      }
+    }
+
+    if (state.tempToken) {
       this.tempToken = state.tempToken;
-      this.type = state.type;
-      this.destination = state.destination;
+      this.type = state.type || 'register';
+      this.destination = state.destination || '';
       this.metodosDisponibles = state.metodosDisponibles || ['email'];
       this.metodoSeleccionado = this.metodosDisponibles[0] || 'email';
     }
-  }
 
-  ngOnInit(): void {
     // Validar que existe un token
     if (!this.tempToken) {
       this.showMessage('No se encontró un token de verificación. Por favor, inicia el proceso de registro o login.', 'error');
@@ -54,6 +66,14 @@ export class Verify2faComponent implements OnInit {
       }, 500);
       return;
     }
+
+    // Guardar state en sessionStorage como backup
+    sessionStorage.setItem('verify2fa_state', JSON.stringify({
+      tempToken: this.tempToken,
+      type: this.type,
+      destination: this.destination,
+      metodosDisponibles: this.metodosDisponibles
+    }));
 
     // Crear formulario con validación dinámica
     this.updateFormValidation();
@@ -170,6 +190,9 @@ export class Verify2faComponent implements OnInit {
             : '¡Inicio de sesión exitoso!';
 
           this.showMessage(message, 'success');
+
+          // Limpiar state guardado
+          sessionStorage.removeItem('verify2fa_state');
 
           // Redirigir según el tipo
           if (this.type === 'register') {

@@ -195,14 +195,19 @@ export class RegisterComponent implements OnInit {
             // Guardar el correo en localStorage para poder reenviar código
             localStorage.setItem('registerEmail', cleanedData.correo);
 
+            // Guardar state en sessionStorage como backup
+            const navigationState = {
+              tempToken: response.tempToken,
+              type: 'register',
+              destination: response.destino || cleanedData.correo,
+              metodosDisponibles: ['email']
+            };
+            sessionStorage.setItem('verify2fa_state', JSON.stringify(navigationState));
+
             // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
             setTimeout(() => {
               this.router.navigate(['/verify-2fa'], {
-                state: {
-                  tempToken: response.tempToken,
-                  type: 'register',
-                  destination: response.destino || cleanedData.correo
-                }
+                state: navigationState
               });
             }, 500);
           },

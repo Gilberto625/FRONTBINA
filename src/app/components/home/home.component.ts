@@ -39,8 +39,17 @@ export class HomeComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        // Si hay error, cerrar sesión localmente de todas formas
+        console.error('Error al cerrar sesión:', error);
+        this.authService.logoutLocal();
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
