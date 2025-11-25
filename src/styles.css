@@ -1,0 +1,524 @@
+/* ============================================
+   GUÍA DE ESTILOS DEL SISTEMA - VARIABLES GLOBALES
+   Basado en STYLE_GUIDE.md
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ========== COLORES PRINCIPALES ========== */
+  --color-primary-dark: #2C2C2C;        /* Negro carbón - Fondos principales, textos destacados */
+  --color-primary-dark-rgb: 44, 44, 44;
+  --color-primary-gold: #D4AF37;       /* Dorado - Botones primarios, CTAs, acentos */
+  --color-primary-gold-rgb: 212, 175, 55;
+  --color-white: #FFFFFF;              /* Blanco - Fondos secundarios, textos sobre fondos oscuros */
+  --color-white-rgb: 255, 255, 255;
+  
+  /* ========== COLORES SECUNDARIOS ========== */
+  --color-gray-light: #F5F5F5;         /* Gris claro - Fondos de secciones alternas, cards, inputs */
+  --color-gray-light-rgb: 245, 245, 245;
+  --color-gray-medium: #9E9E9E;         /* Gris medio - Textos secundarios, placeholders, íconos inactivos */
+  --color-gray-medium-rgb: 158, 158, 158;
+  --color-gray-dark: #6B6B6B;          /* Gris oscuro - Textos de apoyo, bordes sutiles */
+  --color-gray-dark-rgb: 107, 107, 107;
+  --color-text-black: #212121;         /* Negro texto - Textos principales con alta legibilidad */
+  --color-text-black-rgb: 33, 33, 33;
+  
+  /* ========== COLORES DE ESTADO ========== */
+  --color-success: #4CAF50;            /* Verde - Confirmaciones, mensajes positivos */
+  --color-success-rgb: 76, 175, 80;
+  --color-success-light: #E8F5E9;
+  --color-warning: #FF9800;            /* Naranja - Alertas preventivas, acciones que requieren atención */
+  --color-warning-rgb: 255, 152, 0;
+  --color-warning-light: #FFF3E0;
+  --color-error: #F44336;              /* Rojo - Errores, validaciones fallidas, acciones destructivas */
+  --color-error-rgb: 244, 67, 54;
+  --color-error-light: #FFEBEE;
+  --color-info: #17A2B8;               /* Azul - Información complementaria, tooltips, ayudas */
+  --color-info-rgb: 23, 162, 184;
+  --color-info-light: #E3F2FD;
+  
+  /* ========== COMPATIBILIDAD CON CÓDIGO EXISTENTE ========== */
+  /* Mantener variables antiguas para compatibilidad */
+  --color-primary: #2C2C2C;            /* Alias para primary-dark */
+  --color-accent: #D4AF37;             /* Alias para primary-gold */
+  --color-background: #F5F5F5;         /* Alias para gray-light */
+  --color-background-light: #F5F5F5;   /* Alias para gray-light */
+  --color-border: #E0E0E0;             /* Borde estándar */
+  --color-text-primary: #212121;       /* Alias para text-black */
+  --color-text-secondary: #6B6B6B;     /* Alias para gray-dark */
+  --color-text-disabled: #9E9E9E;      /* Alias para gray-medium */
+  
+  /* ========== TIPOGRAFÍA ========== */
+  --font-family: 'Montserrat', sans-serif;
+  --font-primary: 'Montserrat', sans-serif;
+  --font-alternative: 'Open Sans', sans-serif;
+  
+  /* Pesos de fuente */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Tamaños de fuente - Desktop / Mobile */
+  --font-size-h1: 32px;                /* Mobile: 28px */
+  --font-size-h2: 24px;                /* Mobile: 20px */
+  --font-size-h3: 20px;                /* Mobile: 18px */
+  --font-size-h4: 18px;
+  --font-size-base: 16px;              /* Mobile: 14px */
+  --font-size-auxiliary: 14px;         /* Mobile: 12px */
+  --font-size-small: 12px;
+  --font-size-caption: 12px;
+  
+  /* Line heights */
+  --line-height-h1: 1.2;
+  --line-height-h2: 1.3;
+  --line-height-h3: 1.4;
+  --line-height-h4: 1.4;
+  --line-height-base: 1.6;
+  --line-height-auxiliary: 1.5;
+  --line-height-small: 1.4;
+  
+  /* ========== ESPACIADO ========== */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  
+  /* ========== BORDER RADIUS ========== */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  
+  /* ========== SOMBRAS ========== */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.16);
+  --shadow-xl: 0 10px 40px rgba(0, 0, 0, 0.3);
+  --shadow-gold-sm: 0 2px 4px rgba(212, 175, 55, 0.2);
+  --shadow-gold-md: 0 4px 8px rgba(212, 175, 55, 0.3);
+  
+  /* ========== TRANSICIONES ========== */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* ========== BREAKPOINTS ========== */
+  --breakpoint-mobile: 768px;
+  --breakpoint-desktop: 1024px;
+  
+  /* ========== ALTURA MÍNIMA TÁCTIL ========== */
+  --touch-target-min: 44px;            /* iOS recomendación */
+  --touch-target-md: 48px;             /* Material Design */
+  
+  /* ========== ÍCONOS ========== */
+  --icon-size-small: 16px;
+  --icon-size-default: 24px;
+  --icon-size-large: 32px;
+  --icon-stroke-width: 2px;
+  --icon-color-default: #6B6B6B;
+  --icon-color-active: #D4AF37;
+  --icon-color-inactive: #9E9E9E;
+}
+
+/* ============================================
+   ESTILOS GLOBALES
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-black);
+  background-color: var(--color-gray-light);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   TIPOGRAFÍA
+   ============================================ */
+
+h1 {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-h1);
+  line-height: var(--line-height-h1);
+  color: var(--color-primary-dark);
+  margin: 0 0 var(--spacing-md) 0;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-h2);
+  line-height: var(--line-height-h2);
+  color: var(--color-primary-dark);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+h3 {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-h3);
+  color: var(--color-text-black);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+h4 {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-h4);
+  color: var(--color-text-black);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+p {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-black);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+/* Responsive Tipografía */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 28px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+  
+  body, p {
+    font-size: 14px;
+  }
+}
+
+/* ============================================
+   MODAL STYLES - GLOBAL
+   ============================================ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.show {
+  opacity: 1;
+}
+
+.modal-container {
+  background: var(--color-white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.9) translateY(-20px);
+  transition: transform var(--transition-base);
+  font-family: var(--font-family);
+  border: 2px solid var(--color-primary-dark);
+}
+
+.modal-overlay.show .modal-container {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+}
+
+.modal-header.success {
+  background: linear-gradient(135deg, var(--color-success) 0%, #20c997 100%);
+  color: var(--color-white);
+  border-bottom: none;
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+}
+
+.modal-header.error {
+  background: linear-gradient(135deg, var(--color-error) 0%, #D32F2F 100%);
+  color: var(--color-white);
+  border-bottom: none;
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+}
+
+.modal-header.warning {
+  background: linear-gradient(135deg, var(--color-warning) 0%, #FF9800 100%);
+  color: var(--color-primary-dark);
+  border-bottom: none;
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+}
+
+.modal-header.info {
+  background: linear-gradient(135deg, var(--color-info) 0%, #138496 100%);
+  color: var(--color-white);
+  border-bottom: none;
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+}
+
+.modal-icon {
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.modal-header.info .modal-icon,
+.modal-header.error .modal-icon,
+.modal-header.success .modal-icon {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-header.warning .modal-icon {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.modal-title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.8;
+  transition: var(--transition-base);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.modal-header.success .modal-close:hover,
+.modal-header.error .modal-close:hover,
+.modal-header.info .modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+  padding: var(--spacing-lg);
+}
+
+.modal-message {
+  margin: 0;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-black);
+  font-family: var(--font-family);
+}
+
+.modal-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+.modal-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-base);
+  font-family: var(--font-family);
+  min-width: 100px;
+  min-height: var(--touch-target-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+}
+
+.modal-btn-confirm {
+  background-color: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.modal-btn-confirm:hover:not(:disabled) {
+  background-color: #C19F30;
+  box-shadow: var(--shadow-gold-md);
+  transform: translateY(-2px);
+}
+
+.modal-btn-confirm:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.modal-btn-confirm:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
+}
+
+.modal-btn-confirm:disabled {
+  background-color: var(--color-gray-medium);
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.modal-btn-confirm.success {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.modal-btn-confirm.success:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.modal-btn-confirm.error {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+.modal-btn-confirm.error:hover:not(:disabled) {
+  background-color: #D32F2F;
+}
+
+.modal-btn-confirm.warning {
+  background-color: var(--color-warning);
+  color: var(--color-primary-dark);
+}
+
+.modal-btn-confirm.warning:hover:not(:disabled) {
+  background-color: #F57C00;
+}
+
+.modal-btn-confirm.info {
+  background-color: var(--color-info);
+  color: var(--color-white);
+}
+
+.modal-btn-confirm.info:hover:not(:disabled) {
+  background-color: #138496;
+}
+
+.modal-btn-cancel {
+  background-color: transparent;
+  color: var(--color-primary-gold);
+  border: 2px solid var(--color-primary-gold);
+  padding: 10px 24px; /* Menos padding vertical por el borde */
+}
+
+.modal-btn-cancel:hover:not(:disabled) {
+  background-color: rgba(212, 175, 55, 0.1);
+  border-color: #C19F30;
+}
+
+.modal-btn-cancel:active:not(:disabled) {
+  background-color: rgba(212, 175, 55, 0.2);
+}
+
+.modal-btn-cancel:disabled {
+  border-color: var(--color-border);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* ============================================
+   REDUCCIÓN DE MOVIMIENTO (ACCESIBILIDAD)
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   RESPONSIVE MODALS
+   ============================================ */
+
+@media (max-width: 600px) {
+  .modal-container {
+    width: 95%;
+    margin: 20px;
+  }
+
+  .modal-header {
+    padding: 20px;
+  }
+
+  .modal-title {
+    font-size: var(--font-size-h4);
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
+}
