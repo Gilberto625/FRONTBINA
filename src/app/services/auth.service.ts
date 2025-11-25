@@ -311,34 +311,28 @@ export class AuthService {
   /**
    * Configurar TOTP - Obtener QR code
    * NOTA: TOTP no está implementado en el backend actualmente
-   * Este método está comentado hasta que se implemente en el backend
+   * Este método retorna un error hasta que se implemente en el backend
    */
-  // configurarTOTP(email: string): Observable<any> {
-  //   return this.http.post(
-  //     `${this.apiUrl}/totp/configurar/`,
-  //     { email },
-  //     {
-  //       headers: this.getHeaders(),
-  //       withCredentials: true
-  //     }
-  //   );
-  // }
+  configurarTOTP(email: string): Observable<any> {
+    return new Observable(observer => {
+      observer.error({
+        error: 'TOTP no está disponible actualmente. Esta funcionalidad será implementada próximamente.'
+      });
+    });
+  }
 
   /**
    * Habilitar TOTP después de verificar código
    * NOTA: TOTP no está implementado en el backend actualmente
-   * Este método está comentado hasta que se implemente en el backend
+   * Este método retorna un error hasta que se implemente en el backend
    */
-  // habilitarTOTP(email: string, codigo: string): Observable<any> {
-  //   return this.http.post(
-  //     `${this.apiUrl}/totp/habilitar/`,
-  //     { email, codigo },
-  //     {
-  //       headers: this.getHeaders(),
-  //       withCredentials: true
-  //     }
-  //   );
-  // }
+  habilitarTOTP(email: string, codigo: string): Observable<any> {
+    return new Observable(observer => {
+      observer.error({
+        error: 'TOTP no está disponible actualmente. Esta funcionalidad será implementada próximamente.'
+      });
+    });
+  }
 
   /**
    * Verificar código TOTP o backup en login
@@ -381,14 +375,16 @@ export class AuthService {
 
   /**
    * Solicitar código por email cuando está usando TOTP
-   * NOTA: Usa reenviar-otp que funciona para ambos casos (registro y login)
+   * NOTA: Este método requiere el email, no solo el tempToken
+   * Se recomienda usar reenviarOTP(correo) directamente
    */
   solicitarCodigoEmail(tempToken: string): Observable<any> {
-    // Obtener email del usuario usando el tempToken (ID del usuario)
-    // Por ahora, usar reenviar-otp con el correo si está disponible
-    // Este método necesita el email, no solo el tempToken
-    // Se recomienda usar reenviarOTP directamente con el email
-    throw new Error('Este método requiere el email. Use reenviarOTP(correo) directamente.');
+    // Retornar un Observable que falle con un mensaje claro
+    return new Observable(observer => {
+      observer.error({
+        error: 'Este método requiere el email. Use reenviarOTP(correo) directamente.'
+      });
+    });
   }
 
   /**
