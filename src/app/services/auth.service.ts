@@ -157,6 +157,17 @@ export class AuthService {
    */
   async loginWithGoogle(): Promise<any> {
     try {
+      // Verificar que el dominio esté autorizado (solo en producción)
+      if (environment.production) {
+        const currentDomain = window.location.hostname;
+        console.log('Dominio actual:', currentDomain);
+        
+        // Verificar si es un dominio de Vercel
+        if (!currentDomain.includes('vercel.app') && !currentDomain.includes('localhost')) {
+          console.warn('Dominio no reconocido:', currentDomain);
+        }
+      }
+
       // Autenticar con Google usando Firebase
       const provider = new GoogleAuthProvider();
       const result: UserCredential = await signInWithPopup(this.auth, provider);
@@ -182,8 +193,26 @@ export class AuthService {
         )
       );
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error en login con Google:', error);
+      
+      // Manejo específico de errores de Firebase
+      if (error?.code === 'auth/unauthorized-domain') {
+        const currentDomain = window.location.hostname;
+        throw new Error(
+          `El dominio "${currentDomain}" no está autorizado en Firebase. ` +
+          `Por favor, agrega este dominio en Firebase Console → Authentication → Settings → Authorized domains.`
+        );
+      }
+      
+      if (error?.code === 'auth/network-request-failed') {
+        const currentDomain = window.location.hostname;
+        throw new Error(
+          `Error de conexión con Firebase. Verifica que el dominio "${currentDomain}" esté autorizado en Firebase Console. ` +
+          `Si el problema persiste, verifica tu conexión a internet.`
+        );
+      }
+      
       throw error;
     }
   }
