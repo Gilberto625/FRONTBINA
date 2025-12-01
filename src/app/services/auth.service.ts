@@ -170,6 +170,13 @@ export class AuthService {
 
       // Autenticar con Google usando Firebase
       const provider = new GoogleAuthProvider();
+      
+      // Forzar selector de cuenta: siempre mostrar opción de elegir cuenta o agregar cuenta
+      // Incluso si solo hay una cuenta de Google
+      provider.setCustomParameters({
+        prompt: 'select_account'  // Fuerza mostrar selector de cuenta
+      });
+      
       const result: UserCredential = await signInWithPopup(this.auth, provider);
 
       // Obtener el ID token de Firebase
