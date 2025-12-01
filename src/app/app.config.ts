@@ -8,49 +8,59 @@ import { environment } from '../environments/environment';
 
 import { routes } from './app.routes';
 
+// Firebase providers con manejo de errores robusto
+function getFirebaseProviders(): any[] {
+  try {
+    if (!environment?.firebase?.apiKey) {
+      console.warn('⚠️ Firebase config no disponible, continuando sin Firebase');
+      return [];
+    }
+
+    return [
+      provideFirebaseApp(() => {
+        try {
+          console.log('🔥 Inicializando Firebase...');
+          const app = initializeApp(environment.firebase);
+          console.log('✅ Firebase inicializado correctamente');
+          return app;
+        } catch (error: any) {
+          console.warn('⚠️ Error inicializando Firebase (no bloqueante):', error?.message || error);
+          // Retornar instancia dummy para no bloquear la app
+          try {
+            return initializeApp({
+              apiKey: 'dummy-key',
+              authDomain: 'dummy.firebaseapp.com',
+              projectId: 'dummy-project',
+              storageBucket: 'dummy.appspot.com',
+              messagingSenderId: '123456789',
+              appId: '1:123456789:web:dummy'
+            });
+          } catch (e) {
+            console.error('❌ Error crítico con Firebase dummy:', e);
+            throw e; // Solo lanzar si incluso el dummy falla
+          }
+        }
+      }),
+      provideAuth(() => {
+        try {
+          return getAuth();
+        } catch (error: any) {
+          console.warn('⚠️ Error obteniendo Auth (no bloqueante):', error?.message || error);
+          return getAuth(); // Intentar de todas formas
+        }
+      })
+    ];
+  } catch (error: any) {
+    console.warn('⚠️ Error configurando Firebase providers (continuando sin Firebase):', error?.message || error);
+    return [];
+  }
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
-    // Firebase - inicialización con manejo de errores
-    provideFirebaseApp(() => {
-      try {
-        if (environment.firebase && environment.firebase.apiKey) {
-          return initializeApp(environment.firebase);
-        } else {
-          console.warn('Firebase config no disponible');
-          // Retornar una instancia dummy o manejar el caso
-          return initializeApp({
-            apiKey: 'dummy',
-            authDomain: 'dummy',
-            projectId: 'dummy',
-            storageBucket: 'dummy',
-            messagingSenderId: 'dummy',
-            appId: 'dummy'
-          });
-        }
-      } catch (error) {
-        console.error('Error inicializando Firebase:', error);
-        // Continuar sin Firebase si hay error
-        return initializeApp({
-          apiKey: 'dummy',
-          authDomain: 'dummy',
-          projectId: 'dummy',
-          storageBucket: 'dummy',
-          messagingSenderId: 'dummy',
-          appId: 'dummy'
-        });
-      }
-    }),
-    provideAuth(() => {
-      try {
-        return getAuth();
-      } catch (error) {
-        console.error('Error obteniendo Auth de Firebase:', error);
-        // Intentar obtener auth de todas formas
-        return getAuth();
-      }
-    })
+    ...getFirebaseProviders()
   ]
 };
