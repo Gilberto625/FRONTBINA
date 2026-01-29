@@ -230,10 +230,26 @@ export const routes: Routes = [
   },
 
   // ============================================
-  // REDIRECCIÓN POR DEFECTO
+  // PÁGINAS DE ERROR
+  // ============================================
+  {
+    path: '404',
+    loadComponent: () => import('./components/errors/not-found/not-found.component').then(m => m.NotFoundComponent)
+  },
+  {
+    path: '400',
+    loadComponent: () => import('./components/errors/bad-request/bad-request.component').then(m => m.BadRequestComponent)
+  },
+  {
+    path: '500',
+    loadComponent: () => import('./components/errors/server-error/server-error.component').then(m => m.ServerErrorComponent)
+  },
+
+  // ============================================
+  // REDIRECCIÓN POR DEFECTO (404)
   // ============================================
   {
     path: '**',
-    redirectTo: '/'
+    loadComponent: () => import('./components/errors/not-found/not-found.component').then(m => m.NotFoundComponent)
   }
 ];
