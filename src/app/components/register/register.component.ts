@@ -205,7 +205,7 @@ export class RegisterComponent implements OnInit {
                           'Revisa los logs del servidor o contacta al administrador.';
               }
               
-              this.showMessage(mensaje, response.codigo_otp ? 'info' : 'warning');
+              this.showMessage(mensaje, response.codigo_otp ? 'info' : 'error');
             } else {
               this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
             }
