@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -53,7 +53,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private auth: Auth
+    @Optional() private auth: Auth | null
   ) {
     // Cargar usuario del localStorage si existe
     const storedUser = localStorage.getItem('currentUser');
@@ -158,6 +158,11 @@ export class AuthService {
    * LOGIN CON GOOGLE
    */
   async loginWithGoogle(): Promise<any> {
+    // Verificar que Firebase Auth esté disponible
+    if (!this.auth) {
+      throw new Error('Firebase no está configurado. El login con Google no está disponible.');
+    }
+
     try {
       // Verificar que el dominio esté autorizado (solo en producción)
       if (environment.production) {
