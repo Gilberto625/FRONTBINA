@@ -52,6 +52,13 @@ export class ModalService {
   }
 
   /**
+   * Alias en español (compatibilidad con componentes)
+   */
+  mostrarError(title: string, message: string): void {
+    this.showError(message, title);
+  }
+
+  /**
    * Mostrar modal de información
    */
   showInfo(message: string, title: string = 'Información'): void {
@@ -60,6 +67,13 @@ export class ModalService {
       message,
       type: 'info'
     });
+  }
+
+  /**
+   * Alias en español (compatibilidad con componentes)
+   */
+  mostrarInfo(title: string, message: string): void {
+    this.showInfo(message, title);
   }
 
   /**
@@ -88,6 +102,50 @@ export class ModalService {
     setTimeout(() => {
       modal.classList.add('show');
     }, 10);
+  }
+
+  /**
+   * Mostrar modal de confirmación y devolver promesa
+   */
+  mostrarConfirmacion(title: string, message: string, confirmText: string = 'Confirmar', cancelText: string = 'Cancelar'): Promise<boolean> {
+    return new Promise((resolve) => {
+      const modal = this.createModal({
+        title,
+        message,
+        type: 'warning',
+        showCancel: true,
+        confirmText,
+        cancelText,
+        onConfirm: () => resolve(true),
+        onCancel: () => resolve(false)
+      });
+      document.body.appendChild(modal);
+      
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+    });
+  }
+
+  /**
+   * Mostrar modal de éxito y devolver promesa
+   */
+  mostrarExito(title: string, message: string): Promise<void> {
+    return new Promise((resolve) => {
+      const modal = this.createModal({
+        title,
+        message,
+        type: 'success',
+        showCancel: false,
+        confirmText: 'Aceptar',
+        onConfirm: () => resolve()
+      });
+      document.body.appendChild(modal);
+      
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+    });
   }
 
   /**

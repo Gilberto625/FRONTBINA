@@ -1,0 +1,34 @@
+<div class="page">
+  <header class="header">
+    <h1>Panel de Barbero</h1>
+    <button class="btn btn-secondary" routerLink="/home">Volver</button>
+  </header>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando...</p>
+  </div>
+
+  <div class="grid" *ngIf="!cargando">
+    <div class="card stat">
+      <div class="label">Citas hoy</div>
+      <div class="value">{{ stats.citasHoy }}</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Pendientes</div>
+      <div class="value">{{ stats.pendientes }}</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Confirmadas</div>
+      <div class="value">{{ stats.confirmadas }}</div>
+    </div>
+  </div>
+
+  <div class="card acciones">
+    <h2>Acciones</h2>
+    <div class="actions">
+      <a class="action" routerLink="/barbero/citas">Mis Citas</a>
+      <a class="action" routerLink="/barbero/servicios">Mis Servicios (tiempos)</a>
+    </div>
+  </div>
+</div>
+

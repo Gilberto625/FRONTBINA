@@ -1,0 +1,12 @@
+.page{max-width:980px;margin:0 auto;padding:24px 16px}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.field{display:grid;gap:6px}
+.field label{font-weight:800}
+.field select{border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px}
+.btn{border-radius:10px;padding:10px 14px;font-weight:800;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:#111827;color:#fff}
+.btn-secondary{background:#fff;border-color:#e5e7eb}
+.help{color:#6b7280;margin-top:10px}
+

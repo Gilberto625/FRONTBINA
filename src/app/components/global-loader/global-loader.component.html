@@ -1,0 +1,7 @@
+<div class="overlay" *ngIf="(loading$ | async) === true" aria-live="polite" aria-busy="true">
+  <div class="box" role="status" aria-label="Cargando">
+    <div class="spinner"></div>
+    <div class="text">Cargando...</div>
+  </div>
+</div>
+

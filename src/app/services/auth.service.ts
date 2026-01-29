@@ -8,6 +8,7 @@ export interface Usuario {
   id?: number;
   email: string;
   username: string;
+  rol?: string; // 'cliente', 'secretaria', 'barbero', 'administrador'
 }
 
 export interface RegisterData {
@@ -38,7 +39,8 @@ export interface EstadoSeguridad {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  // Base del módulo de usuarios en el backend
+  private apiUrl = environment.apiUrl + '/usuarios';
   private csrfToken: string = '';
 
   // BehaviorSubject para manejar el estado del usuario

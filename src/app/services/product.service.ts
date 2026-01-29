@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface Product {
   id: number;
-  name: string;
-  description: string;
-  price: number;
-  icon: string;
-  category: string;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  categoria: string;
+  categoria_display?: string;
+  imagen_url?: string;
+  stock_actual?: number;
+  disponible?: boolean;
 }
 
 export interface CartItem {
@@ -19,109 +24,32 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class ProductService {
-  private products: Product[] = [
-    {
-      id: 1,
-      name: 'Corte de Cabello',
-      description: 'Corte profesional de cabello con las últimas tendencias',
-      price: 150,
-      icon: '✂️',
-      category: 'servicios'
-    },
-    {
-      id: 2,
-      name: 'Corte + Barba',
-      description: 'Corte de cabello y arreglo de barba completo',
-      price: 250,
-      icon: '👔',
-      category: 'servicios'
-    },
-    {
-      id: 3,
-      name: 'Arreglo de Barba',
-      description: 'Arreglo y diseño profesional de barba',
-      price: 120,
-      icon: '🧔',
-      category: 'servicios'
-    },
-    {
-      id: 4,
-      name: 'Cera para Cabello',
-      description: 'Cera profesional para peinado y fijación',
-      price: 180,
-      icon: '💇',
-      category: 'productos'
-    },
-    {
-      id: 5,
-      name: 'Shampoo Profesional',
-      description: 'Shampoo de alta calidad para cabello y cuero cabelludo',
-      price: 220,
-      icon: '🧴',
-      category: 'productos'
-    },
-    {
-      id: 6,
-      name: 'Acondicionador',
-      description: 'Acondicionador reparador y nutritivo',
-      price: 200,
-      icon: '🧴',
-      category: 'productos'
-    },
-    {
-      id: 7,
-      name: 'Pomada para Cabello',
-      description: 'Pomada de alta fijación y brillo natural',
-      price: 190,
-      icon: '💼',
-      category: 'productos'
-    },
-    {
-      id: 8,
-      name: 'Aceite para Barba',
-      description: 'Aceite nutritivo para barba y bigote',
-      price: 160,
-      icon: '🛢️',
-      category: 'productos'
-    },
-    {
-      id: 9,
-      name: 'Tratamiento Capilar',
-      description: 'Tratamiento reparador y revitalizante',
-      price: 300,
-      icon: '💆',
-      category: 'servicios'
-    },
-    {
-      id: 10,
-      name: 'Tinte para Cabello',
-      description: 'Tinte profesional de alta calidad',
-      price: 350,
-      icon: '🎨',
-      category: 'servicios'
-    }
-  ];
+  private apiUrl = environment.apiUrl + '/productos';
 
   private cartSubject = new BehaviorSubject<CartItem[]>(this.loadCartFromStorage());
   public cart$ = this.cartSubject.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     // Cargar carrito del localStorage al iniciar
     this.loadCartFromStorage();
   }
 
   /**
-   * Obtener todos los productos
+   * Obtener productos desde backend (público)
    */
-  getProducts(): Product[] {
-    return this.products;
+  fetchProducts(filters?: { categoria?: string; solo_disponibles?: boolean }): Observable<any> {
+    const params: string[] = [];
+    if (filters?.categoria) params.push(`categoria=${encodeURIComponent(filters.categoria)}`);
+    if (typeof filters?.solo_disponibles === 'boolean') params.push(`solo_disponibles=${filters.solo_disponibles ? 'true' : 'false'}`);
+    const url = params.length ? `${this.apiUrl}/?${params.join('&')}` : `${this.apiUrl}/`;
+    return this.http.get(url);
   }
 
   /**
-   * Obtener producto por ID
+   * Obtener detalle de producto desde backend (público)
    */
-  getProductById(id: number): Product | undefined {
-    return this.products.find(p => p.id === id);
+  fetchProductById(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}/`);
   }
 
   /**
@@ -177,7 +105,7 @@ export class ProductService {
    */
   getCartTotal(): number {
     return this.cartSubject.value.reduce((total, item) => {
-      return total + (item.product.price * item.quantity);
+      return total + (item.product.precio * item.quantity);
     }, 0);
   }
 

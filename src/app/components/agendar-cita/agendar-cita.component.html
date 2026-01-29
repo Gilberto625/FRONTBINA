@@ -1,0 +1,234 @@
+<div class="agendar-cita-container">
+  <div class="header">
+    <h1>Agendar Cita</h1>
+    <p class="subtitle">Sigue los pasos para agendar tu cita</p>
+  </div>
+
+  <!-- Indicador de pasos -->
+  <div class="pasos-indicador">
+    <div class="paso-item" [class.activo]="pasoActual >= 1" [class.completado]="pasoActual > 1">
+      <div class="paso-numero">1</div>
+      <div class="paso-label">Servicio</div>
+    </div>
+    <div class="paso-linea" [class.completado]="pasoActual > 1"></div>
+    <div class="paso-item" [class.activo]="pasoActual >= 2" [class.completado]="pasoActual > 2">
+      <div class="paso-numero">2</div>
+      <div class="paso-label">Barbero</div>
+    </div>
+    <div class="paso-linea" [class.completado]="pasoActual > 2"></div>
+    <div class="paso-item" [class.activo]="pasoActual >= 3" [class.completado]="pasoActual > 3">
+      <div class="paso-numero">3</div>
+      <div class="paso-label">Fecha/Hora</div>
+    </div>
+    <div class="paso-linea" [class.completado]="pasoActual > 3"></div>
+    <div class="paso-item" [class.activo]="pasoActual >= 4">
+      <div class="paso-numero">4</div>
+      <div class="paso-label">Confirmar</div>
+    </div>
+  </div>
+
+  <!-- Paso 1: Selección de Servicio -->
+  <div class="paso-contenido" *ngIf="pasoActual === 1">
+    <h2>Selecciona un Servicio</h2>
+    
+    <div class="loading" *ngIf="cargandoServicios">
+      <p>Cargando servicios...</p>
+    </div>
+
+    <div class="servicios-grid" *ngIf="!cargandoServicios && servicios.length > 0">
+      <div 
+        class="servicio-card" 
+        *ngFor="let servicio of servicios"
+        [class.seleccionado]="servicioSeleccionado?.id === servicio.id"
+        (click)="seleccionarServicio(servicio)">
+        <div class="servicio-header">
+          <h3>{{ servicio.nombre }}</h3>
+          <span class="categoria-badge">{{ servicio.categoria_display }}</span>
+        </div>
+        <p class="servicio-descripcion">{{ servicio.descripcion }}</p>
+        <div class="servicio-info">
+          <div class="info-item">
+            <span class="info-label">Precio:</span>
+            <span class="info-value precio">{{ formatearPrecio(servicio.precio_base) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Duración:</span>
+            <span class="info-value">{{ formatearDuracion(servicio.duracion_minutos) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!cargandoServicios && servicios.length === 0">
+      <p>No hay servicios disponibles en este momento.</p>
+    </div>
+  </div>
+
+  <!-- Paso 2: Selección de Barbero -->
+  <div class="paso-contenido" *ngIf="pasoActual === 2">
+    <h2>Selecciona un Barbero</h2>
+    
+    <div class="resumen-servicio" *ngIf="servicioSeleccionado">
+      <p><strong>Servicio seleccionado:</strong> {{ servicioSeleccionado.nombre }}</p>
+    </div>
+
+    <div class="loading" *ngIf="cargandoBarberos">
+      <p>Cargando barberos...</p>
+    </div>
+
+    <div class="barberos-grid" *ngIf="!cargandoBarberos && barberos.length > 0">
+      <div 
+        class="barbero-card" 
+        *ngFor="let barbero of barberos"
+        [class.seleccionado]="barberoSeleccionado?.id === barbero.id"
+        (click)="seleccionarBarbero(barbero)">
+        <div class="barbero-avatar">
+          <span class="avatar-inicial">{{ barbero.nombre.charAt(0).toUpperCase() }}</span>
+        </div>
+        <h3>{{ barbero.nombre }}</h3>
+        <p class="barbero-email">{{ barbero.email }}</p>
+        <div class="barbero-especialidades" *ngIf="barbero.especialidades">
+          <span class="especialidad-tag">{{ barbero.especialidades }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!cargandoBarberos && barberos.length === 0">
+      <p>No hay barberos disponibles en este momento.</p>
+    </div>
+  </div>
+
+  <!-- Paso 3: Selección de Fecha/Hora y Silla -->
+  <div class="paso-contenido" *ngIf="pasoActual === 3">
+    <h2>Selecciona Fecha, Hora y Silla</h2>
+    
+    <div class="resumen-seleccion" *ngIf="servicioSeleccionado && barberoSeleccionado">
+      <div class="resumen-item">
+        <strong>Servicio:</strong> {{ servicioSeleccionado.nombre }}
+      </div>
+      <div class="resumen-item">
+        <strong>Barbero:</strong> {{ barberoSeleccionado.nombre }}
+      </div>
+    </div>
+
+    <div class="fecha-hora-container">
+      <div class="fecha-selector">
+        <label for="fecha">Fecha</label>
+        <input 
+          type="date" 
+          id="fecha"
+          [(ngModel)]="fechaSeleccionada"
+          [min]="fechaMinima"
+          [max]="fechaMaxima"
+          (change)="onFechaChange()"
+          class="input-fecha">
+      </div>
+
+      <div class="horarios-container" *ngIf="fechaSeleccionada && !cargandoHorarios">
+        <label>Horarios Disponibles</label>
+        <div class="horarios-grid" *ngIf="horariosDisponibles.length > 0">
+          <button 
+            type="button"
+            class="horario-btn"
+            *ngFor="let horario of horariosDisponibles"
+            [class.seleccionado]="horarioSeleccionado === horario"
+            (click)="seleccionarHorario(horario)">
+            {{ horario }}
+          </button>
+        </div>
+        <p class="sin-horarios" *ngIf="horariosDisponibles.length === 0 && fechaSeleccionada">
+          No hay horarios disponibles para esta fecha. Por favor, selecciona otra fecha.
+        </p>
+      </div>
+
+      <div class="loading" *ngIf="cargandoHorarios">
+        <p>Cargando horarios...</p>
+      </div>
+
+      <div class="sillas-container" *ngIf="fechaSeleccionada && !cargandoSillas">
+        <label>Sillas Disponibles</label>
+        <div class="sillas-grid" *ngIf="sillas.length > 0">
+          <button 
+            type="button"
+            class="silla-btn"
+            *ngFor="let silla of sillas"
+            [class.seleccionado]="sillaSeleccionada?.id === silla.id"
+            (click)="seleccionarSilla(silla)">
+            <span class="silla-numero">{{ silla.numero }}</span>
+            <span class="silla-nombre">{{ silla.nombre }}</span>
+          </button>
+        </div>
+        <p class="sin-sillas" *ngIf="sillas.length === 0 && fechaSeleccionada">
+          No hay sillas disponibles para esta fecha. Por favor, selecciona otra fecha.
+        </p>
+      </div>
+
+      <div class="loading" *ngIf="cargandoSillas">
+        <p>Cargando sillas...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 4: Confirmación -->
+  <div class="paso-contenido" *ngIf="pasoActual === 4">
+    <h2>Confirma tu Cita</h2>
+    
+    <div class="confirmacion-resumen" *ngIf="servicioSeleccionado && barberoSeleccionado && sillaSeleccionada">
+      <div class="resumen-card">
+        <div class="resumen-seccion">
+          <h3>Servicio</h3>
+          <p class="resumen-valor">{{ servicioSeleccionado.nombre }}</p>
+          <p class="resumen-descripcion">{{ servicioSeleccionado.descripcion }}</p>
+          <p class="resumen-precio">{{ formatearPrecio(servicioSeleccionado.precio_base) }}</p>
+        </div>
+
+        <div class="resumen-seccion">
+          <h3>Barbero</h3>
+          <p class="resumen-valor">{{ barberoSeleccionado.nombre }}</p>
+          <p class="resumen-descripcion">{{ barberoSeleccionado.email }}</p>
+        </div>
+
+        <div class="resumen-seccion">
+          <h3>Fecha y Hora</h3>
+          <p class="resumen-valor">{{ fechaSeleccionada }}</p>
+          <p class="resumen-descripcion">{{ horarioSeleccionado }}</p>
+        </div>
+
+        <div class="resumen-seccion">
+          <h3>Silla</h3>
+          <p class="resumen-valor">Silla {{ sillaSeleccionada.numero }}</p>
+          <p class="resumen-descripcion">{{ sillaSeleccionada.nombre }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones de navegación -->
+  <div class="navegacion-botones">
+    <button 
+      type="button"
+      class="btn btn-secondary"
+      *ngIf="pasoActual > 1"
+      (click)="pasoAnterior()">
+      ← Anterior
+    </button>
+    
+    <button 
+      type="button"
+      class="btn btn-primary"
+      *ngIf="pasoActual < 4 && puedeContinuar()"
+      (click)="siguientePaso()">
+      Siguiente →
+    </button>
+    
+    <button 
+      type="button"
+      class="btn btn-primary btn-confirmar"
+      *ngIf="pasoActual === 4"
+      [disabled]="guardando"
+      (click)="confirmarCita()">
+      <span *ngIf="!guardando">Confirmar Cita</span>
+      <span *ngIf="guardando">Guardando...</span>
+    </button>
+  </div>
+</div>

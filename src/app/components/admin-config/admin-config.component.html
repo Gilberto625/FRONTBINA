@@ -1,0 +1,49 @@
+<div class="page">
+  <header class="header">
+    <h1>Configuración del Sistema</h1>
+    <button class="btn btn-secondary" routerLink="/admin/dashboard">Volver</button>
+  </header>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando configuración...</p>
+  </div>
+
+  <div class="card" *ngIf="!cargando">
+    <p class="help">Edición básica. Cada fila corresponde a un día de la semana (reglas de negocio).</p>
+
+    <div class="tabla">
+      <div class="fila head">
+        <div>Día</div>
+        <div>Demanda</div>
+        <div>Anticipación (alta/media/baja)</div>
+        <div>Cancelación (alta/media/baja)</div>
+      </div>
+
+      <div class="fila" *ngFor="let c of configuraciones">
+        <div>{{ c.dia_semana_display || c.dia_semana }}</div>
+        <div>
+          <select [(ngModel)]="c.demanda">
+            <option value="alta">alta</option>
+            <option value="media">media</option>
+            <option value="baja">baja</option>
+          </select>
+        </div>
+        <div class="triple">
+          <input type="number" [(ngModel)]="c.dias_anticipacion_alta" placeholder="alta" />
+          <input type="number" [(ngModel)]="c.dias_anticipacion_media" placeholder="media" />
+          <input type="number" [(ngModel)]="c.dias_anticipacion_baja" placeholder="baja" />
+        </div>
+        <div class="triple">
+          <input type="number" [(ngModel)]="c.dias_cancelacion_alta" placeholder="alta" />
+          <input type="number" [(ngModel)]="c.dias_cancelacion_media" placeholder="media" />
+          <input type="number" [(ngModel)]="c.dias_cancelacion_baja" placeholder="baja" />
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" (click)="guardar()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+

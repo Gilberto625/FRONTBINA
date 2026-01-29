@@ -1,0 +1,36 @@
+<div class="page">
+  <header class="header">
+    <h1>Reportes</h1>
+    <button class="btn btn-secondary" routerLink="/admin/dashboard">Volver</button>
+  </header>
+
+  <div class="card filtros">
+    <div class="row">
+      <div class="field">
+        <label>Fecha inicio</label>
+        <input type="date" [(ngModel)]="fechaInicio" />
+      </div>
+      <div class="field">
+        <label>Fecha fin</label>
+        <input type="date" [(ngModel)]="fechaFin" />
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="cargar()">Generar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="cargando">
+    <p>Generando reporte...</p>
+  </div>
+
+  <div class="card" *ngIf="!cargando && reporte">
+    <h2>Resumen</h2>
+    <pre class="pre">{{ reporte | json }}</pre>
+  </div>
+
+  <div class="card empty" *ngIf="!cargando && !reporte">
+    <p>Genera un reporte para ver resultados.</p>
+  </div>
+</div>
+

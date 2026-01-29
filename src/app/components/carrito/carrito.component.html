@@ -1,0 +1,51 @@
+<div class="carrito-container">
+  <header class="toolbar">
+    <a class="toolbar-link" routerLink="/productos">Seguir comprando</a>
+    <div class="toolbar-title">Carrito</div>
+    <a class="toolbar-link" routerLink="/mis-compras">Mis compras</a>
+  </header>
+
+  <div class="content">
+    <div class="empty" *ngIf="items.length === 0">
+      <p>Tu carrito está vacío.</p>
+      <a class="btn-link" routerLink="/productos">Ir al catálogo</a>
+    </div>
+
+    <div *ngIf="items.length > 0">
+      <div class="list">
+        <div class="item" *ngFor="let it of items">
+          <div class="info">
+            <div class="name">{{ it.product.nombre }}</div>
+            <div class="meta">{{ it.product.categoria_display || it.product.categoria }}</div>
+            <div class="price">{{ formatearPrecio(it.product.precio) }}</div>
+          </div>
+
+          <div class="qty">
+            <button type="button" class="qty-btn" (click)="disminuir(it.product.id)">-</button>
+            <div class="qty-value">{{ it.quantity }}</div>
+            <button type="button" class="qty-btn" (click)="aumentar(it.product.id)">+</button>
+          </div>
+
+          <div class="subtotal">
+            {{ formatearPrecio(it.product.precio * it.quantity) }}
+          </div>
+
+          <button type="button" class="remove" (click)="eliminar(it.product.id)">Quitar</button>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="row">
+          <span>Items</span>
+          <span>{{ totalItems() }}</span>
+        </div>
+        <div class="row total">
+          <span>Total</span>
+          <span>{{ formatearPrecio(total()) }}</span>
+        </div>
+        <button type="button" class="btn" (click)="irCheckout()">Continuar a Checkout</button>
+      </div>
+    </div>
+  </div>
+</div>
+

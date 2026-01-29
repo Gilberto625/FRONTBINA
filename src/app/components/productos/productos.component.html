@@ -1,0 +1,61 @@
+<div class="productos-container">
+  <header class="toolbar">
+    <div class="toolbar-left">
+      <a class="toolbar-link" routerLink="/home">Volver</a>
+    </div>
+    <div class="toolbar-title">Catálogo de Productos</div>
+    <div class="toolbar-right">
+      <a class="toolbar-link" routerLink="/carrito">Carrito</a>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="filtros">
+      <div class="filtro">
+        <label>Categoría</label>
+        <select [(ngModel)]="filtroCategoria" (change)="onFiltrosChange()">
+          <option *ngFor="let c of categoriasDisponibles" [value]="c.valor">{{ c.label }}</option>
+        </select>
+      </div>
+
+      <div class="filtro">
+        <label>Buscar</label>
+        <input type="text" [(ngModel)]="busqueda" (input)="onBusquedaChange()" placeholder="Nombre, categoría...">
+      </div>
+
+      <div class="filtro checkbox">
+        <label>
+          <input type="checkbox" [(ngModel)]="soloDisponibles" (change)="onFiltrosChange()">
+          Solo disponibles
+        </label>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="cargando">
+      <p>Cargando productos...</p>
+    </div>
+
+    <div class="grid" *ngIf="!cargando">
+      <div class="card" *ngFor="let p of productosFiltrados">
+        <div class="card-body">
+          <div class="card-title">{{ p.nombre }}</div>
+          <div class="card-category">{{ p.categoria_display || p.categoria }}</div>
+          <div class="card-desc">{{ p.descripcion }}</div>
+        </div>
+
+        <div class="card-footer">
+          <div class="price">{{ formatearPrecio(p.precio) }}</div>
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" (click)="irDetalle(p.id)">Ver</button>
+            <button type="button" class="btn" (click)="agregarAlCarrito(p)">Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty" *ngIf="!cargando && productosFiltrados.length === 0">
+      <p>No se encontraron productos con esos filtros.</p>
+    </div>
+  </div>
+</div>
+

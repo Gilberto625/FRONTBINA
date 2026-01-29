@@ -1,0 +1,355 @@
+.mis-citas-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--color-primary-dark);
+}
+
+.btn-nueva {
+  white-space: nowrap;
+}
+
+/* Filtros */
+.filtros-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--color-gray-light);
+  border-radius: var(--border-radius-md);
+}
+
+.filtros-container label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.select-filtro {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  background: var(--color-white);
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.select-filtro:focus {
+  outline: none;
+  border-color: var(--color-primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Lista de citas */
+.citas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.cita-card {
+  background: var(--color-gray-light);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  transition: var(--transition-base);
+}
+
+.cita-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-gold);
+}
+
+.cita-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.cita-fecha-hora {
+  flex: 1;
+}
+
+.fecha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.fecha-dia {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.fecha-hora {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-dark);
+}
+
+.cita-estado {
+  flex-shrink: 0;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-auxiliary);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.estado-pendiente {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.estado-confirmada {
+  background: var(--color-info-light);
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
+}
+
+.estado-completada {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.estado-cancelada {
+  background: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+.cita-body {
+  margin-bottom: var(--spacing-lg);
+}
+
+.cita-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.info-label {
+  font-size: var(--font-size-small);
+  color: var(--color-gray-medium);
+  font-weight: var(--font-weight-medium);
+}
+
+.info-value {
+  font-size: var(--font-size-base);
+  color: var(--color-primary-dark);
+  font-weight: var(--font-weight-semibold);
+}
+
+.cita-precios {
+  background: var(--color-white);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid var(--color-border);
+}
+
+.precio-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.precio-item:last-child {
+  margin-bottom: 0;
+}
+
+.precio-label {
+  font-size: var(--font-size-auxiliary);
+  color: var(--color-gray-dark);
+}
+
+.precio-valor {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.precio-valor.anticipo {
+  color: var(--color-warning);
+}
+
+.precio-valor.pagado {
+  color: var(--color-success);
+}
+
+.cita-notas {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.notas-label {
+  font-size: var(--font-size-small);
+  color: var(--color-gray-medium);
+  font-weight: var(--font-weight-semibold);
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.notas-texto {
+  color: var(--color-gray-dark);
+  font-size: var(--font-size-auxiliary);
+  margin: 0;
+  font-style: italic;
+}
+
+.cita-footer {
+  display: flex;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-base);
+  font-family: var(--font-family);
+  min-height: var(--touch-target-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: var(--color-primary-gold);
+  color: var(--color-white);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.btn-primary:hover {
+  background: #C19F30;
+  box-shadow: var(--shadow-gold-md);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary-gold);
+  border: 2px solid var(--color-primary-gold);
+}
+
+.btn-secondary:hover {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--color-error);
+  border: 2px solid var(--color-error);
+}
+
+.btn-danger:hover {
+  background: var(--color-error-light);
+}
+
+.btn-detalle,
+.btn-cancelar {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Estados */
+.loading {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-gray-medium);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-gray-medium);
+}
+
+.link-nueva {
+  color: var(--color-primary-gold);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+}
+
+.link-nueva:hover {
+  color: #C19F30;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mis-citas-container {
+    padding: var(--spacing-md);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-nueva {
+    width: 100%;
+  }
+
+  .cita-header {
+    flex-direction: column;
+  }
+
+  .cita-info {
+    grid-template-columns: 1fr;
+  }
+
+  .cita-footer {
+    flex-direction: column;
+  }
+
+  .btn-detalle,
+  .btn-cancelar {
+    width: 100%;
+  }
+}

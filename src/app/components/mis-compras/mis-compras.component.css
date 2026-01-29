@@ -1,0 +1,387 @@
+.mis-compras-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--color-primary-dark);
+}
+
+/* Filtros */
+.filtros-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--color-gray-light);
+  border-radius: var(--border-radius-md);
+}
+
+.filtros-container label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.select-filtro {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  background: var(--color-white);
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.select-filtro:focus {
+  outline: none;
+  border-color: var(--color-primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Lista de compras */
+.compras-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.compra-card {
+  background: var(--color-gray-light);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  transition: var(--transition-base);
+}
+
+.compra-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-gold);
+}
+
+.compra-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.compra-info-principal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.compra-fecha {
+  margin-bottom: var(--spacing-xs);
+}
+
+.fecha-texto {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.compra-id {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.id-label {
+  font-size: var(--font-size-auxiliary);
+  color: var(--color-gray-medium);
+}
+
+.id-valor {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.compra-estado {
+  flex-shrink: 0;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-auxiliary);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.estado-pendiente {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.estado-confirmada {
+  background: var(--color-info-light);
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
+}
+
+.estado-completada {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.estado-cancelada {
+  background: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+.compra-body {
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Productos */
+.productos-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.productos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.producto-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.producto-nombre {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary-dark);
+}
+
+.producto-cantidad {
+  font-size: var(--font-size-auxiliary);
+  color: var(--color-gray-dark);
+}
+
+.producto-precio {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-gold);
+}
+
+/* Entrega */
+.entrega-section {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: var(--font-size-small);
+  color: var(--color-gray-medium);
+  font-weight: var(--font-weight-medium);
+}
+
+.info-value {
+  font-size: var(--font-size-base);
+  color: var(--color-primary-dark);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Precios */
+.precios-section {
+  background: var(--color-white);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid var(--color-border);
+}
+
+.precio-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.precio-item:last-child {
+  margin-bottom: 0;
+}
+
+.precio-item.total {
+  padding-top: var(--spacing-sm);
+  border-top: 2px solid var(--color-border);
+  margin-top: var(--spacing-sm);
+}
+
+.precio-label {
+  font-size: var(--font-size-auxiliary);
+  color: var(--color-gray-dark);
+}
+
+.precio-item.total .precio-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.precio-valor {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-dark);
+}
+
+.precio-item.total .precio-valor {
+  font-size: var(--font-size-h3);
+  color: var(--color-primary-gold);
+}
+
+/* Pago */
+.pago-section {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.pago-completado {
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pago-pendiente {
+  color: var(--color-warning);
+  font-weight: var(--font-weight-semibold);
+}
+
+.compra-footer {
+  display: flex;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-base);
+  font-family: var(--font-family);
+  min-height: var(--touch-target-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary-gold);
+  border: 2px solid var(--color-primary-gold);
+}
+
+.btn-secondary:hover {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--color-error);
+  border: 2px solid var(--color-error);
+}
+
+.btn-danger:hover {
+  background: var(--color-error-light);
+}
+
+.btn-detalle,
+.btn-cancelar {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Estados */
+.loading {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-gray-medium);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-gray-medium);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mis-compras-container {
+    padding: var(--spacing-md);
+  }
+
+  .compra-header {
+    flex-direction: column;
+  }
+
+  .compra-footer {
+    flex-direction: column;
+  }
+
+  .btn-detalle,
+  .btn-cancelar {
+    width: 100%;
+  }
+}

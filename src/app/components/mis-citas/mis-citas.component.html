@@ -1,0 +1,119 @@
+<div class="mis-citas-container">
+  <div class="header">
+    <h1>Mis Citas</h1>
+    <button type="button" class="btn btn-primary btn-nueva" (click)="agendarNueva()">
+      + Agendar Nueva Cita
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-container">
+    <label for="filtro-estado">Filtrar por estado:</label>
+    <select 
+      id="filtro-estado"
+      [(ngModel)]="filtroEstado"
+      (change)="onFiltroChange()"
+      class="select-filtro">
+      <option *ngFor="let estado of estadosDisponibles" [value]="estado.valor">
+        {{ estado.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="cargando">
+    <p>Cargando citas...</p>
+  </div>
+
+  <!-- Lista de citas -->
+  <div class="citas-lista" *ngIf="!cargando">
+    <div class="cita-card" *ngFor="let cita of citasFiltradas">
+      <div class="cita-header">
+        <div class="cita-fecha-hora">
+          <div class="fecha">
+            <span class="fecha-dia">{{ formatearFecha(cita.fecha_hora) }}</span>
+            <span class="fecha-hora">{{ formatearHora(cita.fecha_hora) }}</span>
+          </div>
+        </div>
+        <div class="cita-estado">
+          <span class="estado-badge" [ngClass]="obtenerEstadoClass(cita.estado)">
+            {{ obtenerEstadoLabel(cita.estado) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="cita-body">
+        <div class="cita-info">
+          <div class="info-item">
+            <span class="info-label">Servicio:</span>
+            <span class="info-value">
+              {{ nombreServicio(cita) }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Barbero:</span>
+            <span class="info-value">
+              {{ nombreBarbero(cita) }}
+            </span>
+          </div>
+          <div class="info-item" *ngIf="cita.silla">
+            <span class="info-label">Silla:</span>
+            <span class="info-value">
+              {{ nombreSilla(cita) }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Duración:</span>
+            <span class="info-value">{{ cita.duracion_minutos }} minutos</span>
+          </div>
+        </div>
+
+        <div class="cita-precios">
+          <div class="precio-item">
+            <span class="precio-label">Precio Total:</span>
+            <span class="precio-valor">{{ formatearPrecio(cita.precio_total) }}</span>
+          </div>
+          <div class="precio-item" *ngIf="cita.anticipo_requerido > 0">
+            <span class="precio-label">Anticipo Requerido:</span>
+            <span class="precio-valor anticipo">{{ formatearPrecio(cita.anticipo_requerido) }}</span>
+          </div>
+          <div class="precio-item" *ngIf="cita.anticipo_pagado > 0">
+            <span class="precio-label">Anticipo Pagado:</span>
+            <span class="precio-valor pagado">{{ formatearPrecio(cita.anticipo_pagado) }}</span>
+          </div>
+        </div>
+
+        <div class="cita-notas" *ngIf="cita.notas">
+          <span class="notas-label">Notas:</span>
+          <p class="notas-texto">{{ cita.notas }}</p>
+        </div>
+      </div>
+
+      <div class="cita-footer">
+        <button 
+          type="button"
+          class="btn btn-secondary btn-detalle"
+          (click)="verDetalle(cita)">
+          Ver Detalle
+        </button>
+        <button 
+          type="button"
+          class="btn btn-danger btn-cancelar"
+          *ngIf="puedeCancelar(cita)"
+          (click)="cancelarCita(cita)">
+          Cancelar Cita
+        </button>
+      </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="citasFiltradas.length === 0">
+      <p *ngIf="filtroEstado === 'todas'">
+        No tienes citas agendadas. <a (click)="agendarNueva()" class="link-nueva">Agenda una ahora</a>
+      </p>
+      <p *ngIf="filtroEstado !== 'todas'">
+        No tienes citas con el estado seleccionado.
+      </p>
+    </div>
+  </div>
+</div>

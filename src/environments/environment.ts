@@ -1,6 +1,6 @@
 export const environment = {
   production: false,  // false para desarrollo local
-  apiUrl: 'https://backendbina-1.onrender.com/api/usuarios',  // Backend en Render
+  apiUrl: 'https://backendbina-1.onrender.com/api',  // Backend en Render
 
   firebase: {
     apiKey: "AIzaSyAJ0Om_GyOwpAgJoaQc7g1oplyGx7g70LQ",

@@ -23,13 +23,12 @@
       <h2 class="section-title">Nuestros Productos y Servicios</h2>
       <div class="products-grid">
         <div class="product-card" *ngFor="let product of products">
-          <div class="product-icon">{{ product.icon }}</div>
-          <h3 class="product-name">{{ product.name }}</h3>
-          <p class="product-description">{{ product.description }}</p>
+          <h3 class="product-name">{{ product.nombre }}</h3>
+          <p class="product-description">{{ product.descripcion }}</p>
           <div class="product-footer">
-            <span class="product-price">${{ product.price }}</span>
+            <span class="product-price">${{ product.precio }}</span>
             <button class="add-to-cart-btn" (click)="addToCart(product)">
-              🛒 Agregar
+              Agregar al carrito
             </button>
           </div>
         </div>

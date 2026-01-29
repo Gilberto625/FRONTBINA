@@ -23,13 +23,12 @@
       <h2 class="section-title">Productos y Servicios Disponibles</h2>
       <div class="products-grid">
         <div class="product-card" *ngFor="let product of products">
-          <div class="product-icon">{{ product.icon }}</div>
-          <h3 class="product-name">{{ product.name }}</h3>
-          <p class="product-description">{{ product.description }}</p>
+          <h3 class="product-name">{{ product.nombre }}</h3>
+          <p class="product-description">{{ product.descripcion }}</p>
           <div class="product-footer">
-            <span class="product-price">${{ product.price }}</span>
+            <span class="product-price">${{ product.precio }}</span>
             <button class="add-to-cart-btn" (click)="addToCart(product)">
-              🛒 Agregar
+              Agregar al carrito
             </button>
           </div>
         </div>
@@ -95,14 +94,29 @@
         </div>
         <div class="card-content">
           <div class="quick-actions">
-            <button class="action-button action-button-primary" routerLink="/profile">
+            <button class="action-button action-button-primary" routerLink="/productos">
+              Catálogo
+            </button>
+            <button class="action-button action-button-accent" routerLink="/carrito">
+              Carrito
+            </button>
+            <button class="action-button action-button-primary" routerLink="/agendar-cita">
+              Agendar Cita
+            </button>
+            <button class="action-button action-button-accent" routerLink="/mis-citas">
+              Mis Citas
+            </button>
+            <button class="action-button action-button-accent" routerLink="/mis-compras">
+              Mis Compras
+            </button>
+            <button class="action-button action-button-accent" routerLink="/notificaciones">
+              Notificaciones ({{ notificacionesCount }})
+            </button>
+            <button class="action-button" routerLink="/profile">
               Mi Perfil
             </button>
-            <button class="action-button action-button-accent" routerLink="/security">
+            <button class="action-button" routerLink="/security">
               Seguridad
-            </button>
-            <button class="action-button" routerLink="/change-password">
-              Cambiar Contraseña
             </button>
           </div>
         </div>

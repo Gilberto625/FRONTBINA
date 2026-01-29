@@ -1,0 +1,81 @@
+<div class="page">
+  <header class="header">
+    <h1>Empleados</h1>
+    <button class="btn btn-secondary" routerLink="/admin/dashboard">Volver</button>
+  </header>
+
+  <div class="card filtros">
+    <div class="row">
+      <div class="field">
+        <label>Rol</label>
+        <select [(ngModel)]="rol" (change)="cargar()">
+          <option value="">(todos)</option>
+          <option value="secretaria">secretaria</option>
+          <option value="barbero">barbero</option>
+          <option value="administrador">administrador</option>
+        </select>
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="cargar()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card crear">
+    <h2>Crear empleado</h2>
+    <div class="grid">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="nuevo.email" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="nuevo.password" />
+      </div>
+      <div class="field">
+        <label>Rol</label>
+        <select [(ngModel)]="nuevo.rol">
+          <option value="secretaria">secretaria</option>
+          <option value="barbero">barbero</option>
+          <option value="administrador">administrador</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="nuevo.first_name" />
+      </div>
+      <div class="field">
+        <label>Apellido</label>
+        <input type="text" [(ngModel)]="nuevo.last_name" />
+      </div>
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="text" [(ngModel)]="nuevo.telefono" />
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" (click)="crear()">Crear</button>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando empleados...</p>
+  </div>
+
+  <div class="list" *ngIf="!cargando">
+    <div class="card item" *ngFor="let e of empleados">
+      <div class="top">
+        <div>
+          <div class="title">{{ e.nombre }} <span class="muted">({{ e.rol }})</span></div>
+          <div class="meta">{{ e.email }} · {{ e.telefono || 'sin teléfono' }}</div>
+        </div>
+        <button class="btn btn-secondary" (click)="toggleActivo(e)">{{ e.activo ? 'Desactivar' : 'Activar' }}</button>
+      </div>
+    </div>
+
+    <div class="card empty" *ngIf="empleados.length === 0">
+      <p>No hay empleados.</p>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,60 @@
+<div class="page">
+  <header class="header">
+    <h1>Centro de Notificaciones</h1>
+    <button class="btn btn-secondary" routerLink="/home">Volver</button>
+  </header>
+
+  <div class="card filtros">
+    <div class="row">
+      <div class="field">
+        <label for="filtro-canal">Canal</label>
+        <select id="filtro-canal" [(ngModel)]="canal" (change)="cargar()">
+          <option value="">(todos)</option>
+          <option value="email">email</option>
+          <option value="sms">sms</option>
+          <option value="push">push</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="filtro-estado">Estado</label>
+        <select id="filtro-estado" [(ngModel)]="estado" (change)="cargar()">
+          <option value="">(todos)</option>
+          <option value="pendiente">pendiente</option>
+          <option value="enviada">enviada</option>
+          <option value="fallida">fallida</option>
+          <option value="programada">programada</option>
+        </select>
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="cargar()">Actualizar</button>
+      </div>
+    </div>
+    <p class="help">
+      Push (Firebase Cloud Messaging) queda <strong>pendiente</strong>. Este centro muestra las notificaciones registradas por el backend.
+    </p>
+  </div>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando notificaciones...</p>
+  </div>
+
+  <div class="list" *ngIf="!cargando">
+    <div class="card item" *ngFor="let n of notificaciones">
+      <div class="top">
+        <div>
+          <div class="title">{{ n.asunto || n.tipo_evento_display }}</div>
+          <div class="meta">{{ n.canal_display }} · {{ n.estado_display }} · {{ fecha(n.fecha_creacion) }}</div>
+        </div>
+        <div class="tag">{{ n.tipo_evento_display }}</div>
+      </div>
+      <div class="msg">{{ n.mensaje }}</div>
+      <div class="meta" *ngIf="n.cita_id">Cita ID: {{ n.cita_id }}</div>
+      <div class="meta" *ngIf="n.compra_id">Compra ID: {{ n.compra_id }}</div>
+    </div>
+
+    <div class="card empty" *ngIf="notificaciones.length === 0">
+      <p>No tienes notificaciones con esos filtros.</p>
+    </div>
+  </div>
+</div>
+

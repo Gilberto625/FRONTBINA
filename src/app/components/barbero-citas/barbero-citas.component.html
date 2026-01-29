@@ -1,0 +1,50 @@
+<div class="page">
+  <header class="header">
+    <h1>Mis Citas</h1>
+    <button class="btn btn-secondary" routerLink="/barbero/dashboard">Volver</button>
+  </header>
+
+  <div class="card filtros">
+    <div class="row">
+      <div class="field">
+        <label>Fecha</label>
+        <input type="date" [(ngModel)]="fecha" (change)="cargar()" />
+      </div>
+      <div class="field">
+        <label>Estado</label>
+        <select [(ngModel)]="estado" (change)="cargar()">
+          <option value="">(todos)</option>
+          <option value="pendiente">pendiente</option>
+          <option value="confirmada">confirmada</option>
+          <option value="completada">completada</option>
+          <option value="cancelada">cancelada</option>
+        </select>
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="cargar()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando citas...</p>
+  </div>
+
+  <div class="list" *ngIf="!cargando">
+    <div class="card item" *ngFor="let c of citas">
+      <div class="top">
+        <div>
+          <div class="title">Cita #{{ c.id }} · {{ fh(c.fecha_hora) }}</div>
+          <div class="meta">{{ c.cliente.nombre || c.cliente.email }} · {{ c.servicio.nombre }} · {{ c.estado }}</div>
+        </div>
+        <div class="dur">{{ c.duracion_minutos }} min</div>
+      </div>
+      <div class="meta" *ngIf="c.silla?.nombre">Silla: {{ c.silla.nombre }}</div>
+    </div>
+
+    <div class="card empty" *ngIf="citas.length === 0">
+      <p>No hay citas para esos filtros.</p>
+    </div>
+  </div>
+</div>
+

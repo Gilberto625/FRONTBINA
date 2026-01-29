@@ -1,0 +1,38 @@
+<div class="page">
+  <header class="header">
+    <h1>Clasificar días por demanda</h1>
+    <button class="btn btn-secondary" routerLink="/admin/dashboard">Volver</button>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label>Día de la semana</label>
+        <select [(ngModel)]="dia_semana">
+          <option [value]="0">Lunes (0)</option>
+          <option [value]="1">Martes (1)</option>
+          <option [value]="2">Miércoles (2)</option>
+          <option [value]="3">Jueves (3)</option>
+          <option [value]="4">Viernes (4)</option>
+          <option [value]="5">Sábado (5)</option>
+          <option [value]="6">Domingo (6)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Demanda</label>
+        <select [(ngModel)]="demanda">
+          <option value="alta">alta</option>
+          <option value="media">media</option>
+          <option value="baja">baja</option>
+        </select>
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="guardar()" [disabled]="cargando">
+          {{ cargando ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+    <p class="help">Este endpoint actualiza reglas por día en Configuración del sistema.</p>
+  </div>
+</div>
+

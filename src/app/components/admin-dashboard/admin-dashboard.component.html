@@ -1,0 +1,57 @@
+<div class="page">
+  <header class="header">
+    <h1>Panel Administrador</h1>
+    <button class="btn btn-secondary" routerLink="/home">Volver</button>
+  </header>
+
+  <div class="card acciones">
+    <h2>Acciones</h2>
+    <div class="actions">
+      <a class="action" routerLink="/admin/empleados">Empleados</a>
+      <a class="action" routerLink="/admin/configuracion">Configuración</a>
+      <a class="action" routerLink="/admin/reportes">Reportes</a>
+      <a class="action" routerLink="/admin/dias">Clasificar días</a>
+    </div>
+  </div>
+
+  <div class="card filtros">
+    <h2>Métricas</h2>
+    <div class="row">
+      <div class="field">
+        <label>Fecha inicio</label>
+        <input type="date" [(ngModel)]="fechaInicio" />
+      </div>
+      <div class="field">
+        <label>Fecha fin</label>
+        <input type="date" [(ngModel)]="fechaFin" />
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="cargar()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando métricas...</p>
+  </div>
+
+  <div class="grid" *ngIf="!cargando && metricas">
+    <div class="card stat">
+      <div class="label">Ingresos totales</div>
+      <div class="value">${{ metricas.ingresos_totales || 0 }}</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Citas</div>
+      <div class="value">{{ metricas.total_citas || 0 }}</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Compras</div>
+      <div class="value">{{ metricas.total_compras || 0 }}</div>
+    </div>
+  </div>
+
+  <div class="card empty" *ngIf="!cargando && !metricas">
+    <p>No hay métricas aún (o no se pudieron cargar).</p>
+  </div>
+</div>
+

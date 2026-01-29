@@ -1,0 +1,57 @@
+<div class="checkout-container">
+  <header class="toolbar">
+    <a class="toolbar-link" routerLink="/carrito">Volver al carrito</a>
+    <div class="toolbar-title">Checkout</div>
+    <a class="toolbar-link" routerLink="/productos">Catálogo</a>
+  </header>
+
+  <div class="content">
+    <div class="empty" *ngIf="items.length === 0">
+      <p>Tu carrito está vacío.</p>
+      <a class="btn-link" routerLink="/productos">Ir al catálogo</a>
+    </div>
+
+    <div *ngIf="items.length > 0">
+      <div class="card">
+        <h2>Resumen</h2>
+        <div class="resume-item" *ngFor="let it of items">
+          <div class="resume-name">{{ it.product.nombre }}</div>
+          <div class="resume-meta">x{{ it.quantity }}</div>
+          <div class="resume-price">{{ formatearPrecio(it.product.precio * it.quantity) }}</div>
+        </div>
+        <div class="resume-total">
+          <span>Total</span>
+          <span>{{ formatearPrecio(total()) }}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Entrega</h2>
+        <div class="field">
+          <label>Método de entrega</label>
+          <select [(ngModel)]="metodoEntrega">
+            <option value="local">Recoger en tienda</option>
+            <option value="moto_mandado">Moto mandado</option>
+            <option value="paqueteria">Paquetería</option>
+          </select>
+        </div>
+
+        <div class="field" *ngIf="requiereDireccion()">
+          <label>Dirección de entrega</label>
+          <textarea [(ngModel)]="direccionEntrega" rows="3" placeholder="Calle, número, colonia, referencias..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Notas (opcional)</label>
+          <textarea [(ngModel)]="notas" rows="2" placeholder="Indicaciones adicionales..."></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="btn" [disabled]="procesando" (click)="confirmarCompra()">
+        <span *ngIf="!procesando">Confirmar compra</span>
+        <span *ngIf="procesando">Procesando...</span>
+      </button>
+    </div>
+  </div>
+</div>
+

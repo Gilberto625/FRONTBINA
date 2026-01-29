@@ -16,6 +16,7 @@ import { ModalService } from '../../services/modal.service';
 })
 export class LandingComponent implements OnInit {
   products: Product[] = [];
+  loadingProducts = false;
 
   constructor(
     private productService: ProductService,
@@ -23,12 +24,26 @@ export class LandingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.products = this.productService.getProducts();
+    this.loadingProducts = true;
+    this.productService.fetchProducts({ solo_disponibles: true }).subscribe({
+      next: (resp: any) => {
+        this.loadingProducts = false;
+        if (resp?.exito) {
+          this.products = resp.datos?.productos || [];
+        } else {
+          this.products = [];
+        }
+      },
+      error: () => {
+        this.loadingProducts = false;
+        this.products = [];
+      }
+    });
   }
 
   addToCart(product: Product): void {
     this.productService.addToCart(product, 1);
-    this.showMessage(`${product.name} agregado al carrito`, 'success');
+    this.showMessage(`${product.nombre} agregado al carrito`, 'success');
   }
 
   private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {

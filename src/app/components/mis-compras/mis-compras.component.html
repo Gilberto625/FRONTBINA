@@ -1,0 +1,135 @@
+<div class="mis-compras-container">
+  <div class="header">
+    <h1>Mis Compras</h1>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-container">
+    <label for="filtro-estado">Filtrar por estado:</label>
+    <select 
+      id="filtro-estado"
+      [(ngModel)]="filtroEstado"
+      (change)="onFiltroChange()"
+      class="select-filtro">
+      <option *ngFor="let estado of estadosDisponibles" [value]="estado.valor">
+        {{ estado.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="cargando">
+    <p>Cargando compras...</p>
+  </div>
+
+  <!-- Lista de compras -->
+  <div class="compras-lista" *ngIf="!cargando">
+    <div class="compra-card" *ngFor="let compra of comprasFiltradas">
+      <div class="compra-header">
+        <div class="compra-info-principal">
+          <div class="compra-fecha">
+            <span class="fecha-texto">{{ formatearFecha(compra.fecha_creacion) }}</span>
+          </div>
+          <div class="compra-id">
+            <span class="id-label">Compra #</span>
+            <span class="id-valor">{{ compra.id }}</span>
+          </div>
+        </div>
+        <div class="compra-estado">
+          <span class="estado-badge" [ngClass]="obtenerEstadoClass(compra.estado)">
+            {{ obtenerEstadoLabel(compra.estado) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="compra-body">
+        <!-- Productos (carrito) -->
+        <div class="productos-section" *ngIf="compra.productos && compra.productos.length > 0">
+          <h3 class="section-title">Productos</h3>
+          <div class="productos-lista">
+            <div class="producto-item" *ngFor="let item of compra.productos">
+              <div class="producto-info">
+                <span class="producto-nombre">{{ obtenerNombreProducto(item.producto) }}</span>
+                <span class="producto-cantidad">x{{ item.cantidad }}</span>
+              </div>
+              <div class="producto-precio">
+                {{ formatearPrecio(item.subtotal) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Método de entrega -->
+        <div class="entrega-section">
+          <div class="info-item">
+            <span class="info-label">Método de entrega:</span>
+            <span class="info-value">{{ compra.metodo_entrega_display || compra.metodo_entrega }}</span>
+          </div>
+          <div class="info-item" *ngIf="compra.direccion_entrega">
+            <span class="info-label">Dirección:</span>
+            <span class="info-value">{{ compra.direccion_entrega }}</span>
+          </div>
+        </div>
+
+        <!-- Resumen de precios -->
+        <div class="precios-section">
+          <div class="precio-item">
+            <span class="precio-label">Subtotal:</span>
+            <span class="precio-valor">{{ formatearPrecio((compra.subtotal || 0)) }}</span>
+          </div>
+          <div class="precio-item" *ngIf="compra.costo_envio > 0">
+            <span class="precio-label">Costo de envío:</span>
+            <span class="precio-valor">{{ formatearPrecio(compra.costo_envio) }}</span>
+          </div>
+          <div class="precio-item total">
+            <span class="precio-label">Total:</span>
+            <span class="precio-valor">{{ formatearPrecio(obtenerPrecioTotal(compra)) }}</span>
+          </div>
+        </div>
+
+        <!-- Estado de pago (backend actual: boolean pagado) -->
+        <div class="pago-section" *ngIf="compra.pagado !== undefined">
+          <div class="info-item">
+            <span class="info-label">Pago:</span>
+            <span class="info-value" [ngClass]="compra.pagado ? 'pago-completado' : 'pago-pendiente'">
+              {{ compra.pagado ? 'Pagado' : 'Pendiente' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="compra-footer">
+        <button 
+          type="button"
+          class="btn btn-secondary btn-detalle"
+          (click)="verDetalle(compra)">
+          Ver Detalle
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-pagar"
+          *ngIf="puedePagar(compra)"
+          (click)="pagarCompra(compra)">
+          Pagar
+        </button>
+        <button 
+          type="button"
+          class="btn btn-danger btn-cancelar"
+          *ngIf="puedeCancelar(compra)"
+          (click)="cancelarCompra(compra)">
+          Cancelar Compra
+        </button>
+      </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="comprasFiltradas.length === 0">
+      <p *ngIf="filtroEstado === 'todas'">
+        No tienes compras registradas.
+      </p>
+      <p *ngIf="filtroEstado !== 'todas'">
+        No tienes compras con el estado seleccionado.
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="page">
+  <header class="header">
+    <h1>Mis Servicios (Tiempos)</h1>
+    <button class="btn btn-secondary" routerLink="/barbero/dashboard">Volver</button>
+  </header>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando servicios...</p>
+  </div>
+
+  <div class="list" *ngIf="!cargando">
+    <div class="card item" *ngFor="let s of servicios">
+      <div class="top">
+        <div>
+          <div class="title">{{ s.nombre }}</div>
+          <div class="meta">Base: {{ s.duracion_base_minutos }} min · Actual: {{ s.duracion_minutos }} min</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field grow">
+          <label>Nueva duración (min)</label>
+          <input type="number" [(ngModel)]="duracion[s.servicio_id]" />
+        </div>
+        <div class="field">
+          <button class="btn btn-primary" (click)="guardar(s.servicio_id)">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card empty" *ngIf="servicios.length === 0">
+      <p>No tienes servicios asignados.</p>
+    </div>
+  </div>
+</div>
+

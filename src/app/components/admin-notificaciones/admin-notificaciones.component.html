@@ -1,0 +1,109 @@
+<div class="page">
+  <header class="header">
+    <h1>Notificaciones (Admin)</h1>
+    <button class="btn btn-secondary" routerLink="/admin/dashboard">Volver</button>
+  </header>
+
+  <div class="card enviar">
+    <h2>Enviar manual</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="envio-canal">Canal</label>
+        <select id="envio-canal" [(ngModel)]="envio.canal">
+          <option value="email">email</option>
+          <option value="sms">sms (pendiente)</option>
+          <option value="push">push (pendiente)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="envio-destinatario">Destinatario</label>
+        <input id="envio-destinatario" type="text" [(ngModel)]="envio.destinatario" placeholder="email/teléfono/token" />
+      </div>
+      <div class="field">
+        <label for="envio-usuario-id">Usuario ID (opcional)</label>
+        <input id="envio-usuario-id" type="number" [(ngModel)]="envio.usuario_id" />
+      </div>
+      <div class="field">
+        <label for="envio-tipo-evento">Tipo evento</label>
+        <input id="envio-tipo-evento" type="text" [(ngModel)]="envio.tipo_evento" placeholder="cita_recordatorio / compra / otro" />
+      </div>
+      <div class="field full">
+        <label for="envio-asunto">Asunto</label>
+        <input id="envio-asunto" type="text" [(ngModel)]="envio.asunto" />
+      </div>
+      <div class="field full">
+        <label for="envio-mensaje">Mensaje</label>
+        <textarea id="envio-mensaje" rows="3" [(ngModel)]="envio.mensaje"></textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="procesarProgramadas()" [disabled]="procesando">Procesar programadas</button>
+      <button class="btn btn-primary" (click)="enviar()" [disabled]="procesando">{{ procesando ? 'Procesando...' : 'Enviar' }}</button>
+    </div>
+    <p class="help">
+      SMS y Push siguen <strong>pendientes</strong> (Twilio/FCM). Si intentas enviarlos, el backend puede responder con error.
+    </p>
+  </div>
+
+  <div class="card filtros">
+    <h2>Historial</h2>
+    <div class="row">
+      <div class="field">
+        <label for="hist-canal">Canal</label>
+        <select id="hist-canal" [(ngModel)]="canal" (change)="cargar()">
+          <option value="">(todos)</option>
+          <option value="email">email</option>
+          <option value="sms">sms</option>
+          <option value="push">push</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hist-estado">Estado</label>
+        <select id="hist-estado" [(ngModel)]="estado" (change)="cargar()">
+          <option value="">(todos)</option>
+          <option value="pendiente">pendiente</option>
+          <option value="enviada">enviada</option>
+          <option value="fallida">fallida</option>
+          <option value="programada">programada</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hist-tipo-evento">Tipo evento</label>
+        <input id="hist-tipo-evento" type="text" [(ngModel)]="tipo_evento" (change)="cargar()" />
+      </div>
+      <div class="field">
+        <label for="hist-usuario-id">Usuario ID</label>
+        <input id="hist-usuario-id" type="number" [(ngModel)]="usuario_id" (change)="cargar()" />
+      </div>
+      <div class="field">
+        <button class="btn btn-primary" (click)="cargar()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="cargando">
+    <p>Cargando historial...</p>
+  </div>
+
+  <div class="list" *ngIf="!cargando">
+    <div class="card item" *ngFor="let n of notificaciones">
+      <div class="top">
+        <div>
+          <div class="title">{{ n.asunto || n.tipo_evento_display }}</div>
+          <div class="meta">
+            {{ n.canal_display }} · {{ n.estado_display }} · {{ fecha(n.fecha_creacion) }}
+            <span *ngIf="n.usuario"> · {{ n.usuario.email }}</span>
+          </div>
+        </div>
+        <div class="tag">{{ n.tipo_evento_display }}</div>
+      </div>
+      <div class="meta">Destinatario: {{ n.destinatario }}</div>
+      <div class="meta" *ngIf="n.error">Error: {{ n.error }}</div>
+    </div>
+
+    <div class="card empty" *ngIf="notificaciones.length === 0">
+      <p>No hay notificaciones con esos filtros.</p>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,77 @@
+<div class="pagar-compra-container">
+  <div class="header">
+    <h1>Pagar Compra</h1>
+    <p class="subtitle">Pago para la compra #{{ compraId }}</p>
+  </div>
+
+  <div class="loading" *ngIf="cargando">
+    <p>Cargando compra...</p>
+  </div>
+
+  <div class="card" *ngIf="!cargando">
+    <div class="card-content">
+      <div class="resumen">
+        <div class="linea">
+          <span class="label">Total:</span>
+          <span class="value">{{ formatearPrecio(getMonto()) }}</span>
+        </div>
+        <div class="linea" *ngIf="compra?.metodo_entrega">
+          <span class="label">Entrega:</span>
+          <span class="value">{{ compra?.metodo_entrega_display || compra?.metodo_entrega }}</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Método de pago</h2>
+        <div class="radios">
+          <label class="radio">
+            <input type="radio" name="metodo" [(ngModel)]="metodoPago" value="transferencia" />
+            Transferencia
+          </label>
+          <label class="radio">
+            <input type="radio" name="metodo" [(ngModel)]="metodoPago" value="mercado_pago" />
+            Mercado Pago (pendiente)
+          </label>
+        </div>
+      </div>
+
+      <div class="section" *ngIf="metodoPago === 'transferencia'">
+        <h2>Transferencia</h2>
+        <p class="help">
+          Ingresa el <strong>ID de operación</strong>. La secretaria validará el pago.
+        </p>
+
+        <div class="field">
+          <label>ID de operación</label>
+          <input type="text" [(ngModel)]="idOperacion" placeholder="Ej. 1234567890" />
+        </div>
+
+        <button class="btn btn-primary" type="button" (click)="crearPagoTransferencia()" [disabled]="procesando">
+          {{ procesando ? 'Procesando...' : 'Crear pago por transferencia' }}
+        </button>
+      </div>
+
+      <div class="section" *ngIf="metodoPago === 'mercado_pago'">
+        <h2>Mercado Pago</h2>
+        <p class="help">
+          Esta parte queda <strong>congelada</strong> hasta integrar el SDK en frontend.
+          Si el backend no tiene credenciales, verás el error real (400/500).
+        </p>
+
+        <button class="btn btn-secondary" type="button" (click)="intentarMercadoPago()" [disabled]="procesando">
+          {{ procesando ? 'Intentando...' : 'Intentar Mercado Pago (pendiente)' }}
+        </button>
+
+        <div class="alert error" *ngIf="errorMensaje">
+          <strong>Error {{ errorCode || '' }}:</strong> {{ errorMensaje }}
+        </div>
+
+        <div class="alert success" *ngIf="mpInitPoint">
+          <p>Se generó un link de pago (init_point). (Aún falta UI/SDK para redirección formal)</p>
+          <p class="mono">{{ mpInitPoint }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,41 @@
+<div class="detalle-container">
+  <header class="toolbar">
+    <a class="toolbar-link" routerLink="/productos">Volver al catálogo</a>
+    <div class="toolbar-title">Detalle de Producto</div>
+    <a class="toolbar-link" routerLink="/carrito">Carrito</a>
+  </header>
+
+  <div class="content">
+    <div class="loading" *ngIf="cargando">
+      <p>Cargando producto...</p>
+    </div>
+
+    <div class="card" *ngIf="!cargando && producto">
+      <div class="title">{{ producto.nombre }}</div>
+      <div class="category">{{ producto.categoria_display || producto.categoria }}</div>
+      <div class="desc">{{ producto.descripcion }}</div>
+
+      <div class="row">
+        <div class="price">{{ formatearPrecio(producto.precio) }}</div>
+        <div class="stock" *ngIf="producto.stock_actual !== undefined">
+          Stock: {{ producto.stock_actual }}
+        </div>
+      </div>
+
+      <div class="actions">
+        <label class="qty">
+          Cantidad
+          <input type="number" [(ngModel)]="cantidad" min="1" />
+        </label>
+        <button type="button" class="btn" (click)="agregarAlCarrito()">
+          Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <div class="empty" *ngIf="!cargando && !producto">
+      <p>No se encontró el producto.</p>
+    </div>
+  </div>
+</div>
+
