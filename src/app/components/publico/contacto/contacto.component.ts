@@ -37,18 +37,15 @@ export class ContactoComponent {
       // Simular envío de formulario
       setTimeout(() => {
         this.loading = false;
-        this.modalService.showMessage(
-          '¡Mensaje enviado!',
+        this.modalService.showSuccess(
           'Gracias por contactarnos. Te responderemos en un plazo de 24-48 horas.',
-          'success'
+          '¡Mensaje enviado!'
         );
         this.contactoForm.reset();
       }, 1500);
     } else {
-      this.modalService.showMessage(
-        'Error',
-        'Por favor completa todos los campos correctamente.',
-        'error'
+      this.modalService.showError(
+        'Por favor completa todos los campos correctamente.'
       );
     }
   }
