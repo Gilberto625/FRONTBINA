@@ -155,7 +155,7 @@ export class RegisterComponent implements OnInit {
 
     // Validar que la contraseña cumpla con todos los requisitos
     if (!this.allRequirementsMet) {
-      this.showMessage('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número', 'error');
+      this.showMessage('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial', 'error');
       return;
     }
 
