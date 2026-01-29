@@ -54,6 +54,10 @@
             <strong>ID de Usuario:</strong>
             <p>{{ currentUser?.id }}</p>
           </div>
+          <div class="info-item">
+            <strong>Rol:</strong>
+            <p class="user-role">{{ currentUser?.rol | uppercase }}</p>
+          </div>
         </div>
         <div class="card-actions">
           <button class="card-button card-button-primary" routerLink="/profile">

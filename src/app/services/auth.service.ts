@@ -8,7 +8,9 @@ export interface Usuario {
   id?: number;
   email: string;
   username: string;
-  rol?: string; // 'cliente', 'secretaria', 'barbero', 'administrador'
+  rol: string; // 'cliente', 'secretaria', 'barbero', 'administrador'
+  first_name?: string;
+  last_name?: string;
 }
 
 export interface RegisterData {

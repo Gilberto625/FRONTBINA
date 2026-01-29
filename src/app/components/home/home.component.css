@@ -362,6 +362,17 @@
   font-size: 1.1rem;
 }
 
+.user-role {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem !important;
+  background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+  color: #D4AF37 !important;
+  border: 1px solid #D4AF37;
+}
+
 .security-features {
   display: flex;
   flex-direction: column;
