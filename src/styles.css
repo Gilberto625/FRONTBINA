@@ -103,12 +103,24 @@ body {
   color: var(--text-on-dark);
   background-color: var(--color-primary);
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .page-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.page-wrapper::before,
+.page-wrapper::after {
+  display: none;
 }
 
 /* ============================================
