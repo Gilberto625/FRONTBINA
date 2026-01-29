@@ -74,7 +74,26 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al iniciar sesión';
+        console.error('Error en login:', error);
+        
+        let errorMsg = 'Error al iniciar sesión';
+        
+        if (error.status === 0) {
+          errorMsg = 'Error de conexión. Verifica que el backend esté disponible.';
+        } else if (error.status === 400) {
+          errorMsg = error.error?.error || 'Credenciales incorrectas';
+        } else if (error.status === 401) {
+          errorMsg = 'Correo o contraseña incorrectos';
+        } else if (error.status === 403) {
+          errorMsg = 'Acceso denegado';
+        } else if (error.status === 500) {
+          errorMsg = 'Error del servidor. Por favor intenta más tarde.';
+        } else if (error.error?.error) {
+          errorMsg = error.error.error;
+        } else if (error.message) {
+          errorMsg = error.message;
+        }
+        
         this.showMessage(errorMsg, 'error');
       }
     });
@@ -97,7 +116,25 @@ export class LoginComponent implements OnInit {
         this.showMessage(errorMsg, 'error');
       }
     } catch (error: any) {
-      const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
+      console.error('Error en login con Google:', error);
+      
+      let errorMsg = 'Error al iniciar sesión con Google';
+      
+      // Manejo específico de errores de Firebase
+      if (error?.code === 'auth/unauthorized-domain') {
+        errorMsg = `El dominio "${window.location.hostname}" no está autorizado en Firebase. Por favor, agrega este dominio en Firebase Console → Authentication → Settings → Authorized domains.`;
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        errorMsg = 'La ventana de Google fue cerrada. Por favor intenta de nuevo.';
+      } else if (error?.code === 'auth/network-request-failed') {
+        errorMsg = 'Error de conexión. Verifica tu conexión a internet.';
+      } else if (error?.code === 'auth/internal-error') {
+        errorMsg = `Error interno de Firebase. Verifica que el dominio "${window.location.hostname}" esté autorizado en Firebase Console.`;
+      } else if (error?.error?.error) {
+        errorMsg = error.error.error;
+      } else if (error?.message) {
+        errorMsg = error.message;
+      }
+      
       this.showMessage(errorMsg, 'error');
     } finally {
       this.loadingGoogle = false;
