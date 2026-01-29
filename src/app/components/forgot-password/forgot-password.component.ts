@@ -92,9 +92,10 @@ export class ForgotPasswordComponent implements OnInit {
             // Email enviado correctamente
             this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
           }
-        } else if (response.ok && response.mensaje) {
-          // Usuario no existe pero respuesta OK (por seguridad)
+        } else if (response.ok && response.mensaje && !response.tempToken) {
+          // Usuario no existe pero respuesta OK (por seguridad) - similar a registro
           this.showSuccess(response.mensaje);
+          // No avanzar al paso de verificación OTP si no hay tempToken
         } else {
           this.showError('No se pudo procesar la solicitud. Intenta nuevamente.');
         }
