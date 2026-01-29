@@ -13,39 +13,7 @@ interface MenuItem {
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  template: `
-    <aside class="sidebar">
-      <a routerLink="/" class="sidebar-logo">Stylo <span>Barber</span></a>
-      
-      @if (rolLabel) {
-        <p class="text-small" style="color: var(--color-accent); margin-bottom: var(--spacing-lg);">
-          Panel {{ rolLabel }}
-        </p>
-      }
-      
-      <ul class="sidebar-menu">
-        @for (item of menuItems; track item.route) {
-          <li class="sidebar-item">
-            <a [routerLink]="item.route" routerLinkActive="active" class="sidebar-link">
-              <span [innerHTML]="item.icon"></span>
-              {{ item.label }}
-            </a>
-          </li>
-        }
-      </ul>
-      
-      <div style="margin-top: auto; padding-top: var(--spacing-xl);">
-        <a routerLink="/login" class="sidebar-link" (click)="onLogout()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16,17 21,12 16,7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-          Cerrar sesión
-        </a>
-      </div>
-    </aside>
-  `
+  templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent {
   @Input() rol: RolUsuario = 'cliente';
