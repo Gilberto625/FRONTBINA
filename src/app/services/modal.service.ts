@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 export interface ModalOptions {
   title?: string;
+  subtitle?: string;
   message: string;
   type?: 'success' | 'error' | 'info' | 'warning';
   showCancel?: boolean;
@@ -104,7 +105,10 @@ export class ModalService {
       <div class="modal-container">
         <div class="modal-header ${typeClass}">
           <span class="modal-icon">${icon}</span>
-          <h2 class="modal-title">${options.title || this.getDefaultTitle(options.type)}</h2>
+          <div class="modal-title-wrapper">
+            <h2 class="modal-title">${options.title || this.getDefaultTitle(options.type)}</h2>
+            ${options.subtitle ? `<p class="modal-subtitle">${options.subtitle}</p>` : ''}
+          </div>
           <button class="modal-close">×</button>
         </div>
         <div class="modal-body">

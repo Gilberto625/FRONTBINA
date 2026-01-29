@@ -1193,12 +1193,25 @@ tr:hover {
   color: #2196f3;
 }
 
-.modal-title {
+.modal-title-wrapper {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.modal-title {
   margin: 0;
   font-size: 1.5rem;
   font-weight: var(--font-weight-bold);
   color: var(--text-on-dark);
+}
+
+.modal-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-normal);
+  color: var(--text-on-dark-tertiary);
 }
 
 .modal-close {
