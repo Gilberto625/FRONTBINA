@@ -19,10 +19,11 @@ Este error generalmente ocurre cuando el dominio de Vercel no está autorizado e
 3. **Agrega dominios autorizados**
    - Desplázate hasta la sección "Authorized domains" (Dominios autorizados)
    - Haz clic en "Add domain" (Agregar dominio)
-   - Agrega los siguientes dominios:
-     - `frontbina.vercel.app`
-     - `*.vercel.app` (para incluir todos los subdominios de Vercel)
+   - Agrega los siguientes dominios (uno por uno):
+     - `frontbina.vercel.app` ✅ (ya agregado según la imagen)
      - `localhost` (si aún no está, para desarrollo local)
+   
+   **Nota importante:** Firebase no acepta wildcards como `*.vercel.app`. Si tienes preview deployments de Vercel con subdominios diferentes (ej: `frontbina-git-xxx-xxx.vercel.app`), necesitarás agregarlos individualmente cuando los uses.
 
 4. **Guarda los cambios**
    - Haz clic en "Add" para cada dominio

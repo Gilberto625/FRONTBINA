@@ -68,10 +68,14 @@ export class AuthService {
    * Obtener CSRF Token del backend Django
    */
   getCsrfToken(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/csrf/`, { withCredentials: true })
+    const url = `${this.apiUrl}/csrf/`;
+    console.log('🔵 Obteniendo CSRF token de:', url);
+    
+    return this.http.get(url, { withCredentials: true })
       .pipe(
         tap((response: any) => {
           this.csrfToken = response.csrfToken;
+          console.log('✅ CSRF token obtenido:', this.csrfToken ? 'OK' : 'VACÍO');
         })
       );
   }
@@ -90,8 +94,12 @@ export class AuthService {
    * REGISTRO: Paso 1 - Registrar usuario y enviar código 2FA
    */
   register(data: RegisterData): Observable<any> {
+    const url = `${this.apiUrl}/register/`;
+    console.log('🔵 Registrando usuario en:', url);
+    console.log('🔵 Datos enviados:', { ...data, contrasena: '***' });
+    
     return this.http.post(
-      `${this.apiUrl}/register/`,
+      url,
       data,
       {
         headers: this.getHeaders(),

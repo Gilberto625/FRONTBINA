@@ -208,8 +208,32 @@ export class RegisterComponent implements OnInit {
           },
           error: (error) => {
             this.loading = false;
-            console.error('Error completo:', error);
-            const errorMsg = error.error?.error || error.error?.message || 'Error al registrar usuario';
+            console.error('Error completo en registro:', error);
+            
+            let errorMsg = 'Error al registrar usuario';
+            
+            if (error.status === 0) {
+              errorMsg = 'Error de conexión. Verifica que el backend esté disponible.';
+            } else if (error.status === 404) {
+              errorMsg = 'Endpoint no encontrado. Verifica la configuración del backend.';
+            } else if (error.status === 400) {
+              errorMsg = error.error?.error || 'Datos inválidos. Verifica que todos los campos estén correctos.';
+            } else if (error.status === 409) {
+              errorMsg = error.error?.error || 'El usuario, correo o teléfono ya está registrado.';
+            } else if (error.status === 500) {
+              if (error.error?.error?.includes('correo') || error.error?.error?.includes('email')) {
+                errorMsg = 'Error al enviar el correo de verificación. Por favor, intenta más tarde.';
+              } else {
+                errorMsg = 'Error del servidor. Por favor, intenta más tarde.';
+              }
+            } else if (error.error?.error) {
+              errorMsg = error.error.error;
+            } else if (error.error?.message) {
+              errorMsg = error.error.message;
+            } else if (error.message) {
+              errorMsg = error.message;
+            }
+            
             this.showMessage(errorMsg, 'error');
           }
         });
