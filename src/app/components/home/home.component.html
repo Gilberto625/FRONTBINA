@@ -94,6 +94,19 @@
         </div>
         <div class="card-content">
           <div class="quick-actions">
+            <!-- Opciones de Admin -->
+            <button *ngIf="currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/admin">
+              🛡️ Panel Admin
+            </button>
+            <!-- Opciones de Secretaria -->
+            <button *ngIf="currentUser?.rol === 'secretaria' || currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/secretaria">
+              📋 Panel Secretaría
+            </button>
+            <!-- Opciones de Barbero -->
+            <button *ngIf="currentUser?.rol === 'barbero' || currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/barbero">
+              ✂️ Panel Barbero
+            </button>
+            
             <button class="action-button action-button-primary" routerLink="/productos">
               Catálogo
             </button>

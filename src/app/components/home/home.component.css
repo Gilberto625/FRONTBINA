@@ -484,6 +484,20 @@
   box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
+/* Botón especial para paneles de administración */
+.action-button-admin {
+  background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+  color: #D4AF37;
+  border: 2px solid #D4AF37;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  font-weight: 700;
+}
+
+.action-button-admin:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2c3e50 0%, #1a2a3a 100%);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.5);
+  transform: translateY(-2px);
+}
 
 .tech-list {
   display: flex;
