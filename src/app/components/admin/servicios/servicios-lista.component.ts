@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 import { AdminService, Servicio } from '../../../services/admin.service';
 import { ModalService } from '../../../services/modal.service';
 
 @Component({
   selector: 'app-servicios-lista',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, BreadcrumbComponent],
   templateUrl: './servicios-lista.component.html',
   styleUrl: './servicios-lista.component.css'
 })

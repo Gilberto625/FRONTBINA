@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 import { CitaService } from '../../../services/cita.service';
 import { ServicioService } from '../../../services/servicio.service';
 import { Cita, EstadoCita } from '../../../models';
@@ -9,7 +10,7 @@ import { Cita, EstadoCita } from '../../../models';
 @Component({
   selector: 'app-mis-citas',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent],
+  imports: [CommonModule, RouterModule, SidebarComponent, BreadcrumbComponent],
   templateUrl: './mis-citas.component.html'
 })
 export class MisCitasComponent {

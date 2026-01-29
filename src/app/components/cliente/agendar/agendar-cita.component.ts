@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 import { CitaService } from '../../../services/cita.service';
 import { ServicioService } from '../../../services/servicio.service';
 import { Servicio, Barbero, HorarioDisponible } from '../../../models';
@@ -11,7 +12,7 @@ type PasoAgenda = 1 | 2 | 3 | 4;
 @Component({
   selector: 'app-agendar-cita',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent],
+  imports: [CommonModule, RouterModule, SidebarComponent, BreadcrumbComponent],
   templateUrl: './agendar-cita.component.html'
 })
 export class AgendarCitaComponent {

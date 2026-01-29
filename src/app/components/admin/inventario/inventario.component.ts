@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 import { AdminService, Producto } from '../../../services/admin.service';
 import { ModalService } from '../../../services/modal.service';
 
@@ -18,7 +19,7 @@ interface MovimientoInventario {
 @Component({
   selector: 'app-inventario',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, BreadcrumbComponent],
   templateUrl: './inventario.component.html'
 })
 export class InventarioComponent implements OnInit {
