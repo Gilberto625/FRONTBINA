@@ -194,6 +194,10 @@
                 <span class="requirement-icon">{{ passwordRequirements.hasNumber ? '✓' : '○' }}</span>
                 Un número (0-9)
               </li>
+              <li [class.requirement-met]="passwordRequirements.hasSymbol" [class.requirement-unmet]="!passwordRequirements.hasSymbol">
+                <span class="requirement-icon">{{ passwordRequirements.hasSymbol ? '✓' : '○' }}</span>
+                Un carácter especial (!@#$%^&*...)
+              </li>
             </ul>
           </div>
         </div>

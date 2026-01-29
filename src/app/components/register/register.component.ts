@@ -27,7 +27,8 @@ export class RegisterComponent implements OnInit {
     minLength: false,
     hasUpperCase: false,
     hasLowerCase: false,
-    hasNumber: false
+    hasNumber: false,
+    hasSymbol: false
   };
 
   constructor(
@@ -62,7 +63,7 @@ export class RegisterComponent implements OnInit {
   }
 
   /**
-   * Validador personalizado: verifica que la contraseña tenga mayúscula, minúscula y número
+   * Validador personalizado: verifica que la contraseña tenga mayúscula, minúscula, número y símbolo
    */
   passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
@@ -74,14 +75,16 @@ export class RegisterComponent implements OnInit {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasNumber = /[0-9]/.test(value);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>\[\]\\\/_+\-=~`]/.test(value);
 
-    const passwordValid = hasUpperCase && hasLowerCase && hasNumber;
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumber && hasSymbol;
 
     return passwordValid ? null : { 
       passwordStrength: {
         hasUpperCase,
         hasLowerCase,
-        hasNumber
+        hasNumber,
+        hasSymbol
       }
     };
   }
@@ -108,6 +111,7 @@ export class RegisterComponent implements OnInit {
     this.passwordRequirements.hasUpperCase = /[A-Z]/.test(password);
     this.passwordRequirements.hasLowerCase = /[a-z]/.test(password);
     this.passwordRequirements.hasNumber = /[0-9]/.test(password);
+    this.passwordRequirements.hasSymbol = /[!@#$%^&*(),.?":{}|<>\[\]\\\/_+\-=~`]/.test(password);
   }
 
   /**
