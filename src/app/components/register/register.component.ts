@@ -191,19 +191,32 @@ export class RegisterComponent implements OnInit {
           next: (response) => {
             this.loading = false;
             
-            // Verificar si hubo un problema con el correo pero el usuario se creó
-            if (response.usuario_creado && response.tempToken) {
-              this.showMessage(
-                'Usuario creado exitosamente, pero hubo un problema al enviar el correo. ' +
-                'Puedes intentar verificar el código si ya lo recibiste, o contacta al administrador.',
-                'info'
-              );
+            // Verificar si el correo se envió o está en modo prueba
+            if (response.email_enviado === false) {
+              let mensaje = 'Usuario creado exitosamente. ';
+              
+              if (response.codigo_otp) {
+                // Modo prueba: mostrar el código OTP
+                mensaje += `Código OTP para verificación: ${response.codigo_otp}. ` +
+                          'Este código expira en 5 minutos.';
+                console.log('🔑 Código OTP (modo prueba):', response.codigo_otp);
+              } else {
+                mensaje += 'Hubo un problema al enviar el correo. ' +
+                          'Revisa los logs del servidor o contacta al administrador.';
+              }
+              
+              this.showMessage(mensaje, response.codigo_otp ? 'info' : 'warning');
             } else {
               this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
             }
 
             // Guardar el correo en localStorage para poder reenviar código
             localStorage.setItem('registerEmail', cleanedData.correo);
+            
+            // Si hay código OTP en modo prueba, guardarlo también
+            if (response.codigo_otp) {
+              localStorage.setItem('testOTP', response.codigo_otp);
+            }
 
             // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
             // Solo si tenemos un tempToken (incluso si el correo falló)
@@ -213,7 +226,8 @@ export class RegisterComponent implements OnInit {
                   state: {
                     tempToken: response.tempToken,
                     type: 'register',
-                    destination: response.destino || cleanedData.correo
+                    destination: response.destino || cleanedData.correo,
+                    codigoOTP: response.codigo_otp || null  // Pasar código si está en modo prueba
                   }
                 });
               }, 500);
