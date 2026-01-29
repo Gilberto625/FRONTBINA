@@ -1,11 +1,10 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { ProductoService } from '../../../services/producto.service';
 import { CarritoService } from '../../../services/carrito.service';
-import { AuthService } from '../../../services/auth.service';
 import { Producto } from '../../../models';
 
 type CategoriaFiltro = 'todos' | 'cabello' | 'barba' | 'accesorios' | 'kit';
@@ -14,22 +13,106 @@ type CategoriaFiltro = 'todos' | 'cabello' | 'barba' | 'accesorios' | 'kit';
   selector: 'app-productos-lista',
   standalone: true,
   imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent],
-  templateUrl: './productos-lista.component.html',
-  styleUrl: './productos-lista.component.css'
+  template: `
+    <app-navbar></app-navbar>
+
+    <div class="page-header">
+      <div class="container">
+        <h1>Tienda de Productos</h1>
+        <p>Los mejores productos para el cuidado de tu cabello y barba</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="card mb-lg">
+          <div class="flex-between flex-gap" style="flex-wrap: wrap;">
+            <div class="tabs" style="border: none; margin: 0;">
+              <span class="tab" [class.active]="categoriaActiva() === 'todos'" (click)="filtrarCategoria('todos')">Todos</span>
+              <span class="tab" [class.active]="categoriaActiva() === 'cabello'" (click)="filtrarCategoria('cabello')">Cabello</span>
+              <span class="tab" [class.active]="categoriaActiva() === 'barba'" (click)="filtrarCategoria('barba')">Barba</span>
+              <span class="tab" [class.active]="categoriaActiva() === 'accesorios'" (click)="filtrarCategoria('accesorios')">Accesorios</span>
+            </div>
+            <div class="flex flex-gap">
+              <select class="form-select" style="width: auto;" (change)="ordenar($event)">
+                <option value="popularidad">Ordenar por: Popularidad</option>
+                <option value="precio_asc">Precio: Menor a Mayor</option>
+                <option value="precio_desc">Precio: Mayor a Menor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-4">
+          @for (producto of productosFiltrados(); track producto.id) {
+            <div class="card">
+              <div class="card-image"></div>
+              @if (producto.destacado) {
+                <span class="badge badge-gold mb-sm">Más vendido</span>
+              }
+              @if (producto.nuevo) {
+                <span class="badge badge-success mb-sm">Nuevo</span>
+              }
+              <h4>{{ producto.nombre }}</h4>
+              <p class="text-small mb-sm">{{ producto.descripcion }}</p>
+              <div class="flex-between">
+                <p class="text-gold" style="font-weight: 700; margin-bottom: 0;">\${{ producto.precio }} MXN</p>
+                <button class="btn btn-primary btn-sm" (click)="agregarAlCarrito(producto)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                </button>
+              </div>
+              @if (producto.stock <= producto.stockMinimo) {
+                <p class="text-caption text-error mt-sm">¡Últimas unidades!</p>
+              }
+            </div>
+          } @empty {
+            <div class="card text-center" style="grid-column: span 4;">
+              <p>No hay productos disponibles en esta categoría.</p>
+            </div>
+          }
+        </div>
+
+        <!-- Indicador de carrito flotante -->
+        @if (carritoService.cantidadItems() > 0) {
+          <div class="carrito-flotante">
+            <a routerLink="/cliente/carrito" class="btn btn-primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              Ver carrito ({{ carritoService.cantidadItems() }})
+            </a>
+          </div>
+        }
+      </div>
+    </section>
+
+    <app-footer></app-footer>
+  `,
+  styles: [`
+    .carrito-flotante {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      z-index: 999;
+    }
+    
+    @media (min-width: 768px) {
+      .carrito-flotante {
+        bottom: 20px;
+      }
+    }
+  `]
 })
-export class ProductosListaComponent implements OnInit {
+export class ProductosListaComponent {
   private productoService = inject(ProductoService);
   carritoService = inject(CarritoService);
-  private authService = inject(AuthService);
   
   categoriaActiva = signal<CategoriaFiltro>('todos');
   ordenActivo = signal<'popularidad' | 'precio_asc' | 'precio_desc'>('popularidad');
-  isLoggedIn = false;
-
-  ngOnInit(): void {
-    const usuario = this.authService.getCurrentUser();
-    this.isLoggedIn = !!usuario;
-  }
 
   productosFiltrados = () => {
     let productos = [...this.productoService.productos()];
