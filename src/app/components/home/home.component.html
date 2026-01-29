@@ -99,15 +99,15 @@
         <div class="card-content">
           <div class="quick-actions">
             <!-- Opciones de Admin -->
-            <button *ngIf="currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/admin">
+            <button *ngIf="currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/admin/dashboard">
               🛡️ Panel Admin
             </button>
             <!-- Opciones de Secretaria -->
-            <button *ngIf="currentUser?.rol === 'secretaria' || currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/secretaria">
+            <button *ngIf="currentUser?.rol === 'secretaria' || currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/secretaria/dashboard">
               📋 Panel Secretaría
             </button>
             <!-- Opciones de Barbero -->
-            <button *ngIf="currentUser?.rol === 'barbero' || currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/barbero">
+            <button *ngIf="currentUser?.rol === 'barbero' || currentUser?.rol === 'administrador'" class="action-button action-button-admin" routerLink="/barbero/dashboard">
               ✂️ Panel Barbero
             </button>
             

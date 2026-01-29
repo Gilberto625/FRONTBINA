@@ -123,16 +123,16 @@ export class LoginComponent implements OnInit {
     setTimeout(() => {
       switch (rol) {
         case 'administrador':
-          console.log('➡️ Redirigiendo a /admin');
-          this.router.navigate(['/admin']);
+          console.log('➡️ Redirigiendo a /admin/dashboard');
+          this.router.navigate(['/admin/dashboard']);
           break;
         case 'secretaria':
-          console.log('➡️ Redirigiendo a /secretaria');
-          this.router.navigate(['/secretaria']);
+          console.log('➡️ Redirigiendo a /secretaria/dashboard');
+          this.router.navigate(['/secretaria/dashboard']);
           break;
         case 'barbero':
-          console.log('➡️ Redirigiendo a /barbero');
-          this.router.navigate(['/barbero']);
+          console.log('➡️ Redirigiendo a /barbero/dashboard');
+          this.router.navigate(['/barbero/dashboard']);
           break;
         default:
           console.log('➡️ Redirigiendo a /home (cliente)');
