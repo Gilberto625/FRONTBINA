@@ -168,33 +168,38 @@ export class AuthService {
    */
   async loginWithGoogle(): Promise<any> {
     try {
-      // Verificar que el dominio esté autorizado (solo en producción)
-      if (environment.production) {
-        const currentDomain = window.location.hostname;
-        console.log('Dominio actual:', currentDomain);
-        
-        // Verificar si es un dominio de Vercel
-        if (!currentDomain.includes('vercel.app') && !currentDomain.includes('localhost')) {
-          console.warn('Dominio no reconocido:', currentDomain);
-        }
+      const currentDomain = window.location.hostname;
+      console.log('🔵 Iniciando login con Google desde dominio:', currentDomain);
+      
+      // Verificar que Firebase Auth esté disponible
+      if (!this.auth) {
+        throw new Error('Firebase Auth no está disponible. Verifica la configuración.');
       }
 
       // Autenticar con Google usando Firebase
       const provider = new GoogleAuthProvider();
       
       // Forzar selector de cuenta: siempre mostrar opción de elegir cuenta o agregar cuenta
-      // Incluso si solo hay una cuenta de Google
       provider.setCustomParameters({
         prompt: 'select_account'  // Fuerza mostrar selector de cuenta
       });
       
+      console.log('🔵 Iniciando popup de Google...');
       const result: UserCredential = await signInWithPopup(this.auth, provider);
+      console.log('✅ Popup de Google completado, usuario:', result.user.email);
 
       // Obtener el ID token de Firebase
+      console.log('🔵 Obteniendo ID token de Firebase...');
       const idToken = await result.user.getIdToken();
+      console.log('✅ ID token obtenido');
+
+      // Obtener CSRF token antes de enviar al backend
+      console.log('🔵 Obteniendo CSRF token...');
+      await firstValueFrom(this.getCsrfToken());
 
       // Enviar el token al backend Django
-      return firstValueFrom(
+      console.log('🔵 Enviando token al backend:', `${this.apiUrl}/login/google/`);
+      const response = await firstValueFrom(
         this.http.post(
           `${this.apiUrl}/login/google/`,
           { idToken },
@@ -204,34 +209,78 @@ export class AuthService {
           }
         ).pipe(
           tap((response: any) => {
+            console.log('✅ Respuesta del backend:', response);
             if (response.ok) {
               this.setCurrentUser(response.usuario);
+              console.log('✅ Usuario establecido:', response.usuario);
             }
           })
         )
       );
 
+      return response;
+
     } catch (error: any) {
-      console.error('Error en login con Google:', error);
+      console.error('❌ Error completo en login con Google:', error);
+      console.error('❌ Código de error:', error?.code);
+      console.error('❌ Mensaje de error:', error?.message);
+      console.error('❌ Stack:', error?.stack);
       
       // Manejo específico de errores de Firebase
       if (error?.code === 'auth/unauthorized-domain') {
         const currentDomain = window.location.hostname;
-        throw new Error(
-          `El dominio "${currentDomain}" no está autorizado en Firebase. ` +
-          `Por favor, agrega este dominio en Firebase Console → Authentication → Settings → Authorized domains.`
-        );
+        throw {
+          code: 'auth/unauthorized-domain',
+          message: `El dominio "${currentDomain}" no está autorizado en Firebase. ` +
+            `Por favor, agrega este dominio en Firebase Console → Authentication → Settings → Authorized domains.`,
+          error: `El dominio "${currentDomain}" no está autorizado en Firebase. ` +
+            `Por favor, agrega este dominio en Firebase Console → Authentication → Settings → Authorized domains.`
+        };
+      }
+      
+      if (error?.code === 'auth/popup-closed-by-user') {
+        throw {
+          code: 'auth/popup-closed-by-user',
+          message: 'La ventana de Google fue cerrada. Por favor intenta de nuevo.',
+          error: 'La ventana de Google fue cerrada. Por favor intenta de nuevo.'
+        };
       }
       
       if (error?.code === 'auth/network-request-failed') {
         const currentDomain = window.location.hostname;
-        throw new Error(
-          `Error de conexión con Firebase. Verifica que el dominio "${currentDomain}" esté autorizado en Firebase Console. ` +
-          `Si el problema persiste, verifica tu conexión a internet.`
-        );
+        throw {
+          code: 'auth/network-request-failed',
+          message: `Error de conexión con Firebase. Verifica que el dominio "${currentDomain}" esté autorizado en Firebase Console.`,
+          error: `Error de conexión con Firebase. Verifica que el dominio "${currentDomain}" esté autorizado en Firebase Console. ` +
+            `Si el problema persiste, verifica tu conexión a internet.`
+        };
       }
       
-      throw error;
+      if (error?.code === 'auth/internal-error') {
+        const currentDomain = window.location.hostname;
+        throw {
+          code: 'auth/internal-error',
+          message: `Error interno de Firebase. Verifica que el dominio "${currentDomain}" esté autorizado en Firebase Console.`,
+          error: `Error interno de Firebase. Verifica que el dominio "${currentDomain}" esté autorizado en Firebase Console. ` +
+            `También verifica que el CSP (Content Security Policy) permita las conexiones a Firebase.`
+        };
+      }
+      
+      // Si es un error HTTP del backend
+      if (error?.status) {
+        throw {
+          code: 'backend-error',
+          message: error.error?.error || 'Error del servidor',
+          error: error.error?.error || `Error del servidor (${error.status})`
+        };
+      }
+      
+      // Error genérico
+      throw {
+        code: error?.code || 'unknown-error',
+        message: error?.message || 'Error desconocido al iniciar sesión con Google',
+        error: error?.message || 'Error desconocido al iniciar sesión con Google'
+      };
     }
   }
 
