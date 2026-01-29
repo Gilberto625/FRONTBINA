@@ -190,21 +190,34 @@ export class RegisterComponent implements OnInit {
         this.authService.register(cleanedData as RegisterData).subscribe({
           next: (response) => {
             this.loading = false;
-            this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
+            
+            // Verificar si hubo un problema con el correo pero el usuario se creó
+            if (response.usuario_creado && response.tempToken) {
+              this.showMessage(
+                'Usuario creado exitosamente, pero hubo un problema al enviar el correo. ' +
+                'Puedes intentar verificar el código si ya lo recibiste, o contacta al administrador.',
+                'info'
+              );
+            } else {
+              this.showMessage('Código OTP enviado a tu correo. Revisa tu bandeja de entrada.', 'success');
+            }
 
             // Guardar el correo en localStorage para poder reenviar código
             localStorage.setItem('registerEmail', cleanedData.correo);
 
             // Navegar a la página de verificación 2FA con el tempToken después de cerrar el modal
-            setTimeout(() => {
-              this.router.navigate(['/verify-2fa'], {
-                state: {
-                  tempToken: response.tempToken,
-                  type: 'register',
-                  destination: response.destino || cleanedData.correo
-                }
-              });
-            }, 500);
+            // Solo si tenemos un tempToken (incluso si el correo falló)
+            if (response.tempToken) {
+              setTimeout(() => {
+                this.router.navigate(['/verify-2fa'], {
+                  state: {
+                    tempToken: response.tempToken,
+                    type: 'register',
+                    destination: response.destino || cleanedData.correo
+                  }
+                });
+              }, 500);
+            }
           },
           error: (error) => {
             this.loading = false;
