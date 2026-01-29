@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ModalService } from '../../services/modal.service';
+import { NavbarComponent } from '../shared/navbar/navbar.component';
+import { FooterComponent } from '../shared/footer/footer.component';
 
 @Component({
   selector: 'app-forgot-password',
@@ -67,14 +69,55 @@ export class ForgotPasswordComponent implements OnInit {
         if (response.ok && response.tempToken) {
           this.tempToken = response.tempToken;
           this.step = 'verify-otp';
-          this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
+          
+          // Manejar diferentes casos de respuesta
+          if (response.email_enviado === false) {
+            // Email no se pudo enviar pero tenemos tempToken (modo prueba o error de email)
+            if (response.codigo_otp) {
+              // Modo prueba: mostrar código OTP
+              this.showSuccess(
+                `Código OTP para pruebas: ${response.codigo_otp}. El correo no se envió (modo prueba).`
+              );
+            } else if (response.error_email) {
+              // Error al enviar email pero permitir continuar
+              this.modalService.showWarning(
+                `El correo no se pudo enviar: ${response.error_email}. Puedes continuar con el código si lo recibiste, o contacta al administrador.`,
+                'Advertencia'
+              );
+            } else {
+              // Caso genérico
+              this.showSuccess('Si el correo existe, se enviará un código de recuperación.');
+            }
+          } else {
+            // Email enviado correctamente
+            this.showSuccess('Código enviado a tu correo. Revisa tu bandeja de entrada.');
+          }
+        } else if (response.ok && response.mensaje) {
+          // Usuario no existe pero respuesta OK (por seguridad)
+          this.showSuccess(response.mensaje);
         } else {
-          this.showSuccess('Si el correo existe, se enviará un código de recuperación.');
+          this.showError('No se pudo procesar la solicitud. Intenta nuevamente.');
         }
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error.error?.error || 'Error al enviar código OTP';
+        console.error('Error en recuperación:', error);
+        
+        // Manejar diferentes tipos de errores
+        let errorMsg = 'Error al enviar código OTP';
+        
+        if (error.status === 0) {
+          errorMsg = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+        } else if (error.status === 400) {
+          errorMsg = error.error?.error || 'Datos inválidos';
+        } else if (error.status === 404) {
+          errorMsg = 'Endpoint no encontrado. Verifica que el backend esté desplegado correctamente.';
+        } else if (error.status === 500) {
+          errorMsg = 'Error interno del servidor. Intenta más tarde.';
+        } else if (error.error?.error) {
+          errorMsg = error.error.error;
+        }
+        
         this.showError(errorMsg);
       }
     });

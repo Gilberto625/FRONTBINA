@@ -507,7 +507,7 @@ export class AuthService {
   reenviarOTPRecuperacion(correo: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/reenviar-otp-recuperacion/`,
-      { correo },
+      { correo, email: correo },  // Enviar ambos campos para compatibilidad
       {
         headers: this.getHeaders(),
         withCredentials: true
