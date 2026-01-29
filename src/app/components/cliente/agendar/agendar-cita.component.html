@@ -51,7 +51,7 @@
         <div class="grid grid-3">
           @for (servicio of servicios; track servicio.id) {
             <div class="card card-selectable" 
-                 [class.selected]="servicioSeleccionado()?.id === servicio.id"
+                 [class.selected]="servicioSeleccionado() !== null && servicioSeleccionado()!.id === servicio.id"
                  (click)="seleccionarServicio(servicio)">
               <div class="card-image" style="height: 120px;"></div>
               <h4>{{ servicio.nombre }}</h4>
