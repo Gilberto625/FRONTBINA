@@ -1,42 +1,48 @@
-/* === Componente Profile - Usa variables globales de styles.css === */
+/* ============================================
+   PROFILE COMPONENT - TEMA BARBERÍA OSCURO
+   ============================================ */
 
 .profile-container {
   min-height: 100vh;
-  background-color: var(--color-background);
-  font-family: 'Montserrat', sans-serif;
+  background-color: var(--color-primary);
 }
 
 .profile-toolbar {
-  background: var(--color-white);
-  color: var(--color-primary);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-primary-dark);
+  color: var(--text-on-dark);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 var(--spacing-lg);
   height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .toolbar-button {
   background: transparent;
   border: none;
-  color: var(--color-primary);
+  color: var(--text-on-dark);
   font-size: 20px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
 }
 
 .toolbar-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-accent);
 }
 
 .toolbar-title {
   flex: 1;
   text-align: center;
   font-size: 1.2rem;
-  font-weight: 600;
-  font-family: 'Montserrat', sans-serif;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-on-dark);
 }
 
 .spacer {
@@ -45,42 +51,45 @@
 
 .profile-content {
   max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--spacing-lg);
 }
 
 .card {
-  border: 2px solid var(--color-primary-dark);
-  width: 100%;
-  background: var(--color-white);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 0;
+  background-color: var(--color-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .card-header {
-  padding: 20px 20px 16px 20px;
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+  border-bottom: 1px solid var(--divider-color);
 }
 
 .card-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-primary);
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-on-dark);
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
 }
 
 .card-content {
-  padding: 0 20px 20px 20px;
+  padding: var(--spacing-lg);
 }
 
 .header-content {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .header-icon {
@@ -90,16 +99,15 @@
 
 .form-field {
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .form-label {
   display: block;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-  font-family: 'Montserrat', sans-serif;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-on-dark);
+  margin-bottom: var(--spacing-sm);
 }
 
 .input-wrapper {
@@ -117,73 +125,66 @@
 
 .form-input {
   width: 100%;
-  padding: 12px 12px 12px 40px;
-  border: 2px solid var(--color-border);
-  border-radius: 8px;
+  padding: 12px 12px 12px 44px;
+  color: var(--text-on-dark);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   font-size: 16px;
-  font-family: 'Montserrat', sans-serif;
-  transition: border-color 0.3s ease;
+  transition: all var(--transition-base);
   box-sizing: border-box;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--color-primary-gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  border: 2px solid var(--color-accent);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .form-input:disabled {
-  background-color: var(--color-background);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-on-dark-tertiary);
   cursor: not-allowed;
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
 }
 
 .form-button {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  border-radius: 8px;
   padding: 12px 24px;
-  transition: all 0.3s ease;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
   border: none;
   cursor: pointer;
   font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .form-button-primary {
-  background-color: var(--color-primary-gold);
+  background-color: var(--color-accent);
   color: var(--color-white);
-  box-shadow: var(--shadow-gold-sm);
 }
 
 .form-button-primary:hover:not(:disabled) {
-  background-color: #C19F30;
-  box-shadow: var(--shadow-gold-md);
+  background-color: var(--color-accent-dark);
   transform: translateY(-2px);
 }
 
-.form-button-primary:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: var(--shadow-gold-sm);
-}
-
-.form-button-primary:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
-}
-
 .form-button-secondary {
-  background-color: var(--color-background);
-  color: var(--color-primary);
-  border: 2px solid var(--color-border);
+  background-color: transparent;
+  color: var(--text-on-dark);
+  border: 1px solid var(--border-color);
 }
 
 .form-button-secondary:hover {
-  background-color: var(--color-border);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-on-dark-tertiary);
 }
 
 .actions-list {
@@ -195,16 +196,16 @@
 .action-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-family: 'Montserrat', sans-serif;
-  border-radius: 8px;
+  transition: all var(--transition-base);
+  border-radius: var(--radius-md);
+  color: var(--text-on-dark);
 }
 
 .action-item:hover {
-  background-color: var(--color-background);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .action-icon {
@@ -214,32 +215,31 @@
 .action-text {
   flex: 1;
   font-size: 16px;
-  color: var(--color-primary);
+  color: var(--text-on-dark);
 }
 
 .action-arrow {
   font-size: 20px;
-  color: var(--color-gray-dark);
+  color: var(--text-on-dark-tertiary);
 }
 
 .divider {
   height: 1px;
-  background-color: var(--color-border);
+  background-color: var(--divider-color);
   margin: 0;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 0;
-  font-family: 'Montserrat', sans-serif;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0;
 }
 
 .info-icon {
   font-size: 2rem;
   display: block;
-  color: var(--color-gray-dark);
+  color: var(--text-on-dark-tertiary);
 }
 
 .info-icon.success {
@@ -252,14 +252,14 @@
 
 .info-content strong {
   display: block;
-  margin-bottom: 0.25rem;
-  color: var(--color-primary);
-  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-on-dark);
+  font-weight: var(--font-weight-semibold);
 }
 
 .info-content p {
   margin: 0;
-  color: var(--color-gray-dark);
+  color: var(--text-on-dark-tertiary);
   font-size: 0.9rem;
 }
 
@@ -269,16 +269,16 @@
   top: 20px;
   left: 50%;
   transform: translateX(-50%) translateY(-100px);
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: var(--color-primary-dark);
+  color: var(--text-on-dark);
   padding: 16px 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-accent);
+  box-shadow: var(--shadow-xl);
   z-index: 10000;
-  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   opacity: 0;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
 }
 
 .toast-message.show {
@@ -289,7 +289,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .profile-content {
-    padding: 0 0.5rem;
+    padding: var(--spacing-md) var(--spacing-sm);
   }
 
   .form-actions {
@@ -298,5 +298,6 @@
 
   .form-button {
     width: 100%;
+    justify-content: center;
   }
 }

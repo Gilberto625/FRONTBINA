@@ -1,58 +1,54 @@
-/* === Componente Setup TOTP - Usa variables globales de styles.css === */
+/* ============================================
+   SETUP TOTP COMPONENT - TEMA BARBERIA OSCURO
+   ============================================ */
 
 .setup-totp-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-background);
-  padding: 20px;
-  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  padding: var(--spacing-lg);
 }
 
 .setup-totp-card {
   max-width: 650px;
   width: 100%;
-  background: var(--color-white);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 32px;
+  background-color: var(--color-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-xl);
   box-sizing: border-box;
-  border: 2px solid var(--color-primary-dark);
 }
 
 .card-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .header-content {
   text-align: center;
   width: 100%;
-  padding: 20px 0;
 }
 
 .header-icon {
   font-size: 48px;
-  width: 48px;
-  height: 48px;
   color: var(--color-accent);
-  margin: 0 auto 16px;
+  margin: 0 auto var(--spacing-md);
   display: block;
 }
 
 .card-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin: 0 0 8px 0;
-  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-on-dark);
+  margin: 0 0 var(--spacing-sm) 0;
 }
 
 .card-subtitle {
   font-size: 14px;
-  color: var(--color-gray-dark);
+  color: var(--text-on-dark-secondary);
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
 }
 
 .card-content {
@@ -63,15 +59,15 @@
 .stepper-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-lg);
 }
 
 .step {
-  border-left: 3px solid var(--color-border);
-  padding-left: 24px;
+  border-left: 3px solid var(--border-color);
+  padding-left: var(--spacing-lg);
   position: relative;
   opacity: 0.5;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-base);
 }
 
 .step.active {
@@ -82,20 +78,20 @@
 .step-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .step-number {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--color-border);
-  color: var(--color-primary);
+  background: var(--border-color);
+  color: var(--text-on-dark);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   flex-shrink: 0;
 }
@@ -107,10 +103,9 @@
 
 .step-title {
   font-size: 18px;
-  font-weight: 600;
-  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-on-dark);
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
 }
 
 .step-content {
@@ -118,26 +113,25 @@
 }
 
 .step-description {
-  color: var(--color-gray-dark);
+  color: var(--text-on-dark-secondary);
   line-height: 1.6;
-  margin-bottom: 24px;
-  font-family: 'Montserrat', sans-serif;
+  margin-bottom: var(--spacing-lg);
 }
 
 /* QR Code */
 .qr-container {
   display: flex;
   justify-content: center;
-  margin: 24px 0;
+  margin: var(--spacing-lg) 0;
 }
 
 .qr-code {
   max-width: 250px;
   width: 100%;
   height: auto;
-  border: 2px solid var(--color-border);
-  border-radius: 8px;
-  padding: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
   background: var(--color-white);
 }
 
@@ -148,16 +142,16 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  gap: 16px;
+  gap: var(--spacing-md);
 }
 
 .spinner-large {
   width: 60px;
   height: 60px;
-  border: 4px solid var(--color-border);
+  border: 4px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--color-accent);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -166,20 +160,19 @@
 
 /* Secret Key */
 .secret-key-container {
-  margin: 24px 0;
+  margin: var(--spacing-lg) 0;
 }
 
 .form-field {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
 }
 
 .form-label {
   display: block;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--color-primary);
-  margin-bottom: 8px;
-  font-family: 'Montserrat', sans-serif;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-on-dark);
+  margin-bottom: var(--spacing-sm);
 }
 
 .input-wrapper {
@@ -192,27 +185,30 @@
   position: absolute;
   left: 12px;
   font-size: 20px;
-  color: var(--color-gray-dark);
+  color: var(--text-on-dark-tertiary);
   z-index: 1;
 }
 
 .form-input {
   width: 100%;
-  padding: 12px 12px 12px 44px;
-  border: 2px solid var(--color-border);
-  border-radius: 8px;
+  padding: 14px 44px;
+  color: var(--text-on-dark);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   font-size: 16px;
-  font-family: 'Montserrat', sans-serif;
-  transition: border-color 0.3s ease;
+  transition: all var(--transition-base);
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .form-input:disabled {
-  background-color: #f5f5f5;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-on-dark-tertiary);
   cursor: not-allowed;
 }
 
@@ -224,107 +220,74 @@
   font-size: 20px;
   cursor: pointer;
   padding: 8px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+  color: var(--text-on-dark-tertiary);
 }
 
 .copy-button:hover {
-  background-color: var(--color-background);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-accent);
 }
 
 .error-message {
   color: var(--color-error);
   font-size: 12px;
-  margin-top: 4px;
-  font-family: 'Montserrat', sans-serif;
+  margin-top: var(--spacing-xs);
 }
 
 /* Step Actions */
 .step-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
   justify-content: flex-end;
-  margin-top: 24px;
+  margin-top: var(--spacing-lg);
 }
 
 .step-button {
   padding: 12px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Montserrat', sans-serif;
+  transition: all var(--transition-base);
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.step-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.step-button-primary {
-  background-color: var(--color-primary-gold);
+  gap: var(--spacing-sm);
+  background-color: var(--color-accent);
   color: var(--color-white);
-  border: none;
-  box-shadow: var(--shadow-gold-sm);
-}
-
-.step-button-primary:hover:not(:disabled) {
-  background-color: #C19F30;
-  box-shadow: var(--shadow-gold-md);
-  transform: translateY(-2px);
-}
-
-.step-button-primary:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: var(--shadow-gold-sm);
-}
-
-.step-button-primary:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
-}
-
-.step-button {
-  background-color: var(--color-primary-gold);
-  color: var(--color-white);
-  border: none;
-  box-shadow: var(--shadow-gold-sm);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 .step-button:hover:not(:disabled) {
-  background-color: #C19F30;
-  box-shadow: var(--shadow-gold-md);
+  background-color: var(--color-accent-dark);
   transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
 }
 
 .step-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: var(--shadow-gold-sm);
-}
-
-.step-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.4);
 }
 
 .step-button:disabled {
-  background-color: var(--color-gray-medium);
-  color: var(--color-white);
+  background-color: var(--border-color);
+  color: var(--text-on-dark-disabled);
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.6;
   box-shadow: none;
+}
+
+.step-button-primary {
+  background-color: var(--color-accent);
+  color: var(--color-white);
 }
 
 .spinner-small {
   width: 16px;
   height: 16px;
-  border: 2px solid var(--color-white);
-  border-top-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   display: inline-block;
@@ -332,37 +295,36 @@
 
 /* Cancel Button */
 .cancel-container {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-border);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--divider-color);
   text-align: center;
 }
 
 .cancel-button {
   background: transparent;
-  border: 2px solid var(--color-border);
-  color: var(--color-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-on-dark);
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Montserrat', sans-serif;
+  transition: all var(--transition-base);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .cancel-button:hover {
-  background-color: var(--color-background);
-  border-color: var(--color-gray-dark);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-on-dark-tertiary);
 }
 
 /* Responsive */
 @media (max-width: 600px) {
   .setup-totp-card {
-    padding: 20px;
+    padding: var(--spacing-lg);
   }
 
   .step-content {
@@ -370,7 +332,7 @@
   }
 
   .step {
-    padding-left: 16px;
+    padding-left: var(--spacing-md);
   }
 
   .step-actions {
@@ -379,5 +341,6 @@
 
   .step-button {
     width: 100%;
+    justify-content: center;
   }
 }

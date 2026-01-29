@@ -1,0 +1,188 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { CitaService } from '../../../services/cita.service';
+import { AuthService } from '../../../services/auth.service';
+
+@Component({
+  selector: 'app-cliente-dashboard',
+  standalone: true,
+  imports: [CommonModule, RouterModule, SidebarComponent],
+  template: `
+    <div class="layout-sidebar">
+      <app-sidebar rol="cliente"></app-sidebar>
+
+      <main class="main-content">
+        <div class="flex-between mb-lg">
+          <div>
+            <h1>¡Hola, {{ nombreUsuario }}!</h1>
+            <p class="text-muted">Bienvenido de vuelta</p>
+          </div>
+          <div class="avatar avatar-lg">{{ inicialesUsuario }}</div>
+        </div>
+
+        <!-- Próxima cita -->
+        @if (proximaCita) {
+          <div class="card mb-lg proxima-cita">
+            <div class="flex-between">
+              <div>
+                <p class="text-small" style="color: rgba(255,255,255,0.7);">Tu próxima cita</p>
+                <h2 style="color: white; margin: var(--spacing-sm) 0;">{{ proximaCita.servicio?.nombre || 'Corte + Barba' }}</h2>
+                <p style="color: var(--color-accent);">{{ formatearFecha(proximaCita.fecha) }} - {{ proximaCita.hora }}</p>
+                <p class="text-small" style="color: rgba(255,255,255,0.7);">con {{ proximaCita.barbero?.usuario?.nombre || 'Carlos Martínez' }}</p>
+              </div>
+              <div class="text-right">
+                <span class="badge badge-gold">{{ proximaCita.estado }}</span>
+                <div class="mt-md">
+                  <a routerLink="/cliente/citas" class="btn btn-secondary btn-sm" style="color: white; border-color: white;">Reprogramar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Stats -->
+        <div class="stats-grid mb-lg">
+          <div class="stat-card">
+            <div class="stat-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+              </svg>
+            </div>
+            <p class="stat-card-value">12</p>
+            <p class="stat-card-label">Citas totales</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+            </div>
+            <p class="stat-card-value">5</p>
+            <p class="stat-card-label">Compras</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <p class="stat-card-value">850</p>
+            <p class="stat-card-label">Puntos</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background: var(--color-success-light);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22,4 12,14.01 9,11.01"/>
+              </svg>
+            </div>
+            <p class="stat-card-value">VIP</p>
+            <p class="stat-card-label">Tu nivel</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <!-- Promociones -->
+          <div class="card">
+            <h3 class="mb-md">Promociones activas</h3>
+            <div class="alert alert-info mb-sm">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                <line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+              <div>
+                <strong>10% OFF</strong> en tu próximo corte
+                <p class="text-caption mb-0">Válido hasta 30 Nov</p>
+              </div>
+            </div>
+            <div class="alert alert-warning">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <div>
+                <strong>2x1 en productos</strong>
+                <p class="text-caption mb-0">Solo este fin de semana</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones rápidas -->
+          <div class="card">
+            <h3 class="mb-md">Acciones rápidas</h3>
+            <a routerLink="/cliente/agendar" class="btn btn-primary btn-block mb-sm">Agendar nueva cita</a>
+            <a routerLink="/productos" class="btn btn-secondary btn-block mb-sm">Ver productos</a>
+            <a routerLink="/cliente/citas" class="btn btn-text btn-block">Ver historial completo</a>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Nav -->
+    <nav class="navbar-mobile">
+      <a routerLink="/cliente" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="navbar-mobile-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Inicio
+      </a>
+      <a routerLink="/cliente/agendar" routerLinkActive="active" class="navbar-mobile-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>
+        Agendar
+      </a>
+      <a routerLink="/cliente/citas" routerLinkActive="active" class="navbar-mobile-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+        Citas
+      </a>
+      <a routerLink="/cliente/carrito" routerLinkActive="active" class="navbar-mobile-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Tienda
+      </a>
+      <a routerLink="/cliente/perfil" routerLinkActive="active" class="navbar-mobile-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Perfil
+      </a>
+    </nav>
+  `,
+  styles: [`
+    .proxima-cita {
+      background: linear-gradient(135deg, var(--color-primary-dark), #3d3d3d);
+      color: white;
+    }
+  `]
+})
+export class ClienteDashboardComponent implements OnInit {
+  private citaService = inject(CitaService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
+  proximaCita = this.citaService.citasProximas()[0];
+  nombreUsuario = 'Usuario';
+  inicialesUsuario = 'U';
+
+  ngOnInit(): void {
+    const usuario = this.authService.getCurrentUser();
+    if (usuario) {
+      this.nombreUsuario = usuario.username || usuario.email?.split('@')[0] || 'Usuario';
+      this.inicialesUsuario = this.nombreUsuario.substring(0, 2).toUpperCase();
+    }
+  }
+
+  formatearFecha(fecha: Date): string {
+    const opciones: Intl.DateTimeFormatOptions = { 
+      weekday: 'long', 
+      day: 'numeric', 
+      month: 'short' 
+    };
+    return new Date(fecha).toLocaleDateString('es-MX', opciones);
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+}

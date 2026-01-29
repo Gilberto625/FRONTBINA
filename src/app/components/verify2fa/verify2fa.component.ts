@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ModalService } from '../../services/modal.service';
 
@@ -29,19 +29,29 @@ export class Verify2faComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private modalService: ModalService
   ) {
-    // Obtener datos del state de navegación
+    // Obtener datos del state de navegación primero
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as any;
 
     if (state) {
       this.tempToken = state.tempToken;
-      this.type = state.type;
+      this.type = state.type || 'login';
       this.destination = state.destination;
       this.metodosDisponibles = state.metodosDisponibles || ['email'];
       this.metodoSeleccionado = this.metodosDisponibles[0] || 'email';
     }
+
+    // Si no hay state, intentar obtener de queryParams
+    this.route.queryParams.subscribe(params => {
+      if (params['tempToken'] && !this.tempToken) {
+        this.tempToken = params['tempToken'];
+        this.type = params['type'] || 'login';
+        this.destination = params['destino'] || params['destination'] || '';
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -177,7 +187,7 @@ export class Verify2faComponent implements OnInit {
               this.router.navigate(['/login']);
             }, 500);
           } else {
-            // Para login, verificar que el usuario se haya guardado
+            // Para login, verificar que el usuario se haya guardado y redirigir según rol
             const usuarioGuardado = this.authService.getCurrentUser();
             console.log('Usuario guardado después de verificación:', usuarioGuardado);
             console.log('Estado autenticado:', this.authService.isAuthenticated());
@@ -185,7 +195,13 @@ export class Verify2faComponent implements OnInit {
             // Esperar un momento para que se actualice el estado
             setTimeout(() => {
               if (this.authService.isAuthenticated()) {
-                this.router.navigate(['/home']);
+                // Redirigir según el rol del usuario
+                const rol = usuarioGuardado?.rol;
+                if (rol === 'admin') {
+                  this.router.navigate(['/admin']);
+                } else {
+                  this.router.navigate(['/cliente']);
+                }
               } else {
                 console.error('Usuario no autenticado después de verificación');
                 this.showMessage('Error: No se pudo autenticar. Por favor, intenta de nuevo.', 'error');

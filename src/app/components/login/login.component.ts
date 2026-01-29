@@ -52,12 +52,23 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.loading = false;
 
+        // Si requiere 2FA, redirigir a verificación
+        if (response.requires2fa) {
+          this.router.navigate(['/verify-2fa'], {
+            queryParams: {
+              tempToken: response.tempToken,
+              canal: response.canal,
+              destino: response.destino
+            }
+          });
+          return;
+        }
+
         if (response.ok) {
-          // Login directo sin 2FA (modificado según requerimiento)
-          // El servicio ya guarda el usuario en el pipe tap
+          // Login exitoso - redirigir según el rol
           this.showMessage('¡Inicio de sesión exitoso!', 'success');
           setTimeout(() => {
-            this.router.navigate(['/home']);
+            this.redirectByRole(response.usuario?.rol);
           }, 500);
         }
       },
@@ -79,7 +90,7 @@ export class LoginComponent implements OnInit {
         this.showMessage('¡Inicio de sesión con Google exitoso!', 'success');
         // Esperar un momento para que se actualice el estado
         setTimeout(() => {
-          this.router.navigate(['/home']);
+          this.redirectByRole(response.usuario?.rol);
         }, 500);
       } else {
         const errorMsg = response?.error || 'Error al iniciar sesión con Google';
@@ -90,6 +101,17 @@ export class LoginComponent implements OnInit {
       this.showMessage(errorMsg, 'error');
     } finally {
       this.loadingGoogle = false;
+    }
+  }
+
+  /**
+   * Redirige al usuario según su rol
+   */
+  private redirectByRole(rol?: string): void {
+    if (rol === 'admin') {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/cliente']);
     }
   }
 

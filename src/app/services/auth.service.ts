@@ -8,6 +8,9 @@ export interface Usuario {
   id?: number;
   email: string;
   username: string;
+  nombre?: string;
+  apellido?: string;
+  rol?: 'cliente' | 'admin';
 }
 
 export interface RegisterData {

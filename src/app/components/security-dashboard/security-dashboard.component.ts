@@ -86,7 +86,7 @@ export class SecurityDashboardComponent implements OnInit {
   }
 
   goHome(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/cliente']);
   }
 
   logout(): void {
