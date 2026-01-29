@@ -18,6 +18,18 @@ export const routes: Routes = [
     path: 'productos',
     loadComponent: () => import('./components/publico/productos-lista/productos-lista.component').then(m => m.ProductosListaComponent)
   },
+  {
+    path: 'ayuda',
+    loadComponent: () => import('./components/publico/ayuda/ayuda.component').then(m => m.AyudaComponent)
+  },
+  {
+    path: 'contacto',
+    loadComponent: () => import('./components/publico/contacto/contacto.component').then(m => m.ContactoComponent)
+  },
+  {
+    path: 'mapa-sitio',
+    loadComponent: () => import('./components/publico/mapa-sitio/mapa-sitio.component').then(m => m.MapaSitioComponent)
+  },
   
   // ============================================
   // AUTENTICACIÓN

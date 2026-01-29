@@ -1,0 +1,93 @@
+<app-navbar [isLoggedIn]="false"></app-navbar>
+
+<div class="page-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>Centro de Ayuda</h1>
+      <p class="text-muted">Encuentra respuestas a las preguntas más frecuentes</p>
+    </div>
+
+    <div class="help-content">
+      <!-- Búsqueda -->
+      <div class="search-box mb-xl">
+        <input 
+          type="text" 
+          placeholder="Buscar en preguntas frecuentes..." 
+          class="input-field"
+        />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </div>
+
+      <!-- Categorías de FAQ -->
+      <div class="faq-categories">
+        @for (categoria of faqs; track categoria.categoria) {
+          <div class="faq-category">
+            <button 
+              class="faq-category-header"
+              (click)="toggleCategoria(categoria.categoria)"
+            >
+              <h3>{{ categoria.categoria }}</h3>
+              <svg 
+                [class.rotated]="esCategoriaAbierta(categoria.categoria)"
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2"
+              >
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+
+            @if (esCategoriaAbierta(categoria.categoria)) {
+              <div class="faq-questions">
+                @for (faq of categoria.preguntas; track faq.pregunta) {
+                  <div class="faq-item">
+                    <button 
+                      class="faq-question"
+                      (click)="togglePregunta(faq.pregunta)"
+                    >
+                      <span>{{ faq.pregunta }}</span>
+                      <svg 
+                        [class.rotated]="esPreguntaAbierta(faq.pregunta)"
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        stroke-width="2"
+                      >
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </button>
+                    @if (esPreguntaAbierta(faq.pregunta)) {
+                      <div class="faq-answer">
+                        <p>{{ faq.respuesta }}</p>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Contacto adicional -->
+      <div class="help-contact card mt-xl">
+        <h3>¿No encontraste lo que buscabas?</h3>
+        <p class="text-muted mb-md">Si tienes más preguntas, no dudes en contactarnos</p>
+        <div class="flex" style="gap: var(--spacing-md); flex-wrap: wrap;">
+          <a routerLink="/contacto" class="btn btn-primary">Contáctanos</a>
+          <a routerLink="/mapa-sitio" class="btn btn-secondary">Ver Mapa del Sitio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

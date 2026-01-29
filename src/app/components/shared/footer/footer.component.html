@@ -1,10 +1,39 @@
 <footer class="footer">
-  <div class="container text-center">
-    <a routerLink="/" class="navbar-logo" style="margin-bottom: var(--spacing-md); display: inline-block;">
-      Stylo <span>Barber</span>
-    </a>
-    <p class="text-small" style="color: rgba(255,255,255,0.5); margin-bottom: 0;">
-      © 2024 Stylo Barber Connect. Todos los derechos reservados.
-    </p>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <a routerLink="/" class="navbar-logo" style="margin-bottom: var(--spacing-md); display: inline-block;">
+          Stylo <span>Barber</span>
+        </a>
+        <p class="text-small" style="color: rgba(255,255,255,0.5);">
+          Tu estilo, nuestra pasión. Barbería premium con atención personalizada.
+        </p>
+      </div>
+      
+      <div class="footer-section">
+        <h4 style="color: var(--color-accent); margin-bottom: var(--spacing-md);">Enlaces</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/servicios">Servicios</a></li>
+          <li><a routerLink="/productos">Productos</a></li>
+          <li><a routerLink="/ayuda">Ayuda</a></li>
+          <li><a routerLink="/contacto">Contáctanos</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4 style="color: var(--color-accent); margin-bottom: var(--spacing-md);">Información</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/mapa-sitio">Mapa del Sitio</a></li>
+          <li><a routerLink="/login">Iniciar Sesión</a></li>
+          <li><a routerLink="/register">Registro</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom text-center">
+      <p class="text-small" style="color: rgba(255,255,255,0.5); margin: 0;">
+        © 2024 Stylo Barber Connect. Todos los derechos reservados.
+      </p>
+    </div>
   </div>
 </footer>

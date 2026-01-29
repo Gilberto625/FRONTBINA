@@ -1,0 +1,205 @@
+<app-navbar [isLoggedIn]="false"></app-navbar>
+
+<div class="page-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>Contáctanos</h1>
+      <p class="text-muted">Estamos aquí para ayudarte. Envíanos un mensaje y te responderemos pronto.</p>
+    </div>
+
+    <div class="contact-content">
+      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--spacing-2xl);">
+        <!-- Formulario de Contacto -->
+        <div class="card">
+          <h2 class="mb-md">Envíanos un mensaje</h2>
+          <form [formGroup]="contactoForm" (ngSubmit)="onSubmit()">
+            <div class="form-group mb-md">
+              <label for="nombre" class="input-label">Nombre completo *</label>
+              <input
+                id="nombre"
+                type="text"
+                formControlName="nombre"
+                class="input-field"
+                [class.input-error]="contactoForm.get('nombre')?.invalid && contactoForm.get('nombre')?.touched"
+                placeholder="Juan Pérez"
+              />
+              <div class="input-feedback error" *ngIf="contactoForm.get('nombre')?.hasError('required') && contactoForm.get('nombre')?.touched">
+                El nombre es obligatorio
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label for="correo" class="input-label">Correo electrónico *</label>
+              <input
+                id="correo"
+                type="email"
+                formControlName="correo"
+                class="input-field"
+                [class.input-error]="contactoForm.get('correo')?.invalid && contactoForm.get('correo')?.touched"
+                placeholder="juan@example.com"
+              />
+              <div class="input-feedback error" *ngIf="contactoForm.get('correo')?.hasError('required') && contactoForm.get('correo')?.touched">
+                El correo es obligatorio
+              </div>
+              <div class="input-feedback error" *ngIf="contactoForm.get('correo')?.hasError('email') && contactoForm.get('correo')?.touched">
+                Ingresa un correo válido
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label for="telefono" class="input-label">Teléfono *</label>
+              <input
+                id="telefono"
+                type="tel"
+                formControlName="telefono"
+                class="input-field"
+                [class.input-error]="contactoForm.get('telefono')?.invalid && contactoForm.get('telefono')?.touched"
+                placeholder="7711234567"
+              />
+              <div class="input-feedback error" *ngIf="contactoForm.get('telefono')?.hasError('required') && contactoForm.get('telefono')?.touched">
+                El teléfono es obligatorio
+              </div>
+              <div class="input-feedback error" *ngIf="contactoForm.get('telefono')?.hasError('pattern') && contactoForm.get('telefono')?.touched">
+                Debe contener 10 dígitos
+              </div>
+            </div>
+
+            <div class="form-group mb-md">
+              <label for="asunto" class="input-label">Asunto *</label>
+              <select
+                id="asunto"
+                formControlName="asunto"
+                class="input-field select-field"
+                [class.input-error]="contactoForm.get('asunto')?.invalid && contactoForm.get('asunto')?.touched"
+              >
+                <option value="" disabled selected>Selecciona un asunto</option>
+                <option value="consulta">Consulta general</option>
+                <option value="cita">Solicitud de cita</option>
+                <option value="producto">Consulta sobre productos</option>
+                <option value="reclamo">Reclamo o sugerencia</option>
+                <option value="otro">Otro</option>
+              </select>
+              <div class="input-feedback error" *ngIf="contactoForm.get('asunto')?.hasError('required') && contactoForm.get('asunto')?.touched">
+                Selecciona un asunto
+              </div>
+            </div>
+
+            <div class="form-group mb-lg">
+              <label for="mensaje" class="input-label">Mensaje *</label>
+              <textarea
+                id="mensaje"
+                formControlName="mensaje"
+                class="input-field"
+                rows="5"
+                [class.input-error]="contactoForm.get('mensaje')?.invalid && contactoForm.get('mensaje')?.touched"
+                placeholder="Escribe tu mensaje aquí..."
+              ></textarea>
+              <div class="input-feedback error" *ngIf="contactoForm.get('mensaje')?.hasError('required') && contactoForm.get('mensaje')?.touched">
+                El mensaje es obligatorio
+              </div>
+              <div class="input-feedback error" *ngIf="contactoForm.get('mensaje')?.hasError('minlength') && contactoForm.get('mensaje')?.touched">
+                El mensaje debe tener al menos 10 caracteres
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              [disabled]="loading || contactoForm.invalid"
+            >
+              <span *ngIf="!loading">Enviar Mensaje</span>
+              <span *ngIf="loading" class="spinner"></span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div>
+          <div class="card mb-lg">
+            <h2 class="mb-md">Información de contacto</h2>
+            <div class="contact-info">
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-caption">Teléfono</p>
+                  <p style="font-weight: 600;">{{ contactoInfo.telefono }}</p>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-caption">Correo electrónico</p>
+                  <p style="font-weight: 600;">{{ contactoInfo.correo }}</p>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-caption">Dirección</p>
+                  <p style="font-weight: 600;">{{ contactoInfo.direccion }}</p>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <div class="contact-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-caption">Horario de atención</p>
+                  <p style="font-weight: 600; white-space: pre-line;">{{ contactoInfo.horario }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="mb-md">Redes sociales</h3>
+            <div class="social-links">
+              <a href="#" class="social-link" target="_blank" rel="noopener">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+                Facebook
+              </a>
+              <a href="#" class="social-link" target="_blank" rel="noopener">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+                </svg>
+                Twitter
+              </a>
+              <a href="#" class="social-link" target="_blank" rel="noopener">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                Instagram
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
