@@ -2,7 +2,8 @@
   <div class="login-card">
     <h1 class="card-title">Iniciar Sesión</h1>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <!-- Formulario de Login (se oculta si requiere 2FA) -->
+    <form *ngIf="!requires2fa" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <!-- Correo -->
       <div class="form-row">
         <label for="email" class="input-label">Correo Electrónico</label>
@@ -80,5 +81,48 @@
         <p>¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a></p>
       </div>
     </form>
+
+    <!-- Formulario de verificación 2FA -->
+    <div *ngIf="requires2fa" class="twofa-form">
+      <div class="twofa-icon">🔐</div>
+      <h2 class="twofa-title">Verificación de Seguridad</h2>
+      <p class="twofa-description">
+        Ingresa el código de 6 dígitos que enviamos a tu correo
+      </p>
+
+      <div class="form-row">
+        <label for="codigo" class="input-label">Código de Verificación</label>
+        <div class="input-wrapper">
+          <input
+            id="codigo"
+            type="text"
+            [(ngModel)]="codigoVerificacion"
+            placeholder="123456"
+            maxlength="6"
+            class="input-field input-code"
+          />
+        </div>
+      </div>
+
+      <div class="form-actions twofa-actions">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelar2FA()"
+          [disabled]="loading"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="verificar2FA()"
+          [disabled]="loading || codigoVerificacion.length < 6"
+        >
+          <span *ngIf="!loading">Verificar</span>
+          <span *ngIf="loading" class="spinner"></span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
