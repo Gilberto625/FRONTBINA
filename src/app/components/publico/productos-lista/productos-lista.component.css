@@ -1,0 +1,12 @@
+.carrito-flotante {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 999;
+}
+
+@media (min-width: 768px) {
+  .carrito-flotante {
+    bottom: 20px;
+  }
+}
