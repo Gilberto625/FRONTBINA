@@ -133,9 +133,8 @@
 </div>
 
 <!-- Modal Crear/Editar -->
-@if (mostrarModal) {
-  <div class="modal-overlay" (mousedown)="onOverlayMouseDown($event)" (click)="onOverlayClick($event)">
-    <div class="modal" style="max-width: 550px;" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+<div class="modal-overlay" [class.show]="mostrarModal" (click)="cerrarModal($event)">
+  <div class="modal" style="max-width: 550px;" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ servicioEditar ? 'Editar' : 'Nuevo' }} Servicio</h3>
         <button class="modal-close" (click)="cerrarModal()">&times;</button>

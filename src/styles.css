@@ -1362,10 +1362,19 @@ tr:hover {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
+  display: none; /* Oculto por defecto */
   align-items: center;
   justify-content: center;
   z-index: 9000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.modal-overlay.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
   animation: fadeIn 0.3s ease;
 }
 
