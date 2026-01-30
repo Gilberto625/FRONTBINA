@@ -150,7 +150,14 @@ export class ServiciosListaComponent implements OnInit {
     }, 100);
   }
 
-  cerrarModal(): void {
+  cerrarModal(event?: Event): void {
+    // Solo cerrar si el click fue directamente en el overlay, no en el modal
+    if (event && event.target !== event.currentTarget) {
+      return;
+    }
+    if (event) {
+      event.stopPropagation();
+    }
     this.mostrarModal = false;
     this.servicioEditar = null;
     this.imagenPreview = null;
