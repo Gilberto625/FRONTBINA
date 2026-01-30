@@ -27,6 +27,7 @@ export class ProductosListaComponent implements OnInit {
   filtroEstado = '';
 
   mostrarModal = false;
+  abriendoModal = false; // Flag para prevenir cierre inmediato
   productoEditar: Producto | null = null;
   guardando = false;
   subiendoImagen = false;
@@ -147,6 +148,7 @@ export class ProductosListaComponent implements OnInit {
   }
 
   private abrirModalEditar(producto: Producto): void {
+    this.abriendoModal = true; // Marcar que estamos abriendo
     this.productoEditar = producto;
     this.imagenPreview = producto.imagen_url || null;
     this.imagenFile = null;
@@ -164,10 +166,23 @@ export class ProductosListaComponent implements OnInit {
     // Usar setTimeout para asegurar que el DOM se actualice antes de abrir el modal
     setTimeout(() => {
       this.mostrarModal = true;
+      // Permitir cierre después de que el modal esté completamente renderizado
+      setTimeout(() => {
+        this.abriendoModal = false;
+      }, 200);
     }, 100);
   }
 
   cerrarModal(event?: Event): void {
+    // Prevenir cierre si estamos abriendo el modal
+    if (this.abriendoModal) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      return;
+    }
+    
     // Solo cerrar si el click fue directamente en el overlay, no en el modal
     if (event && event.target !== event.currentTarget) {
       return;

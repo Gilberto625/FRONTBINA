@@ -30,6 +30,7 @@ export class EmpleadosListaComponent implements OnInit {
 
   // Modal
   mostrarModal = false;
+  abriendoModal = false; // Flag para prevenir cierre inmediato
   empleadoEditar: Empleado | null = null;
   guardando = false;
   formulario = {
@@ -126,6 +127,7 @@ export class EmpleadosListaComponent implements OnInit {
   }
 
   private abrirModalEditar(empleado: Empleado): void {
+    this.abriendoModal = true; // Marcar que estamos abriendo
     this.empleadoEditar = empleado;
     this.formulario = {
       nombre: empleado.nombre,
@@ -140,10 +142,23 @@ export class EmpleadosListaComponent implements OnInit {
     setTimeout(() => {
       this.mostrarModal = true;
       this.cdr.detectChanges();
+      // Permitir cierre después de que el modal esté completamente renderizado
+      setTimeout(() => {
+        this.abriendoModal = false;
+      }, 200);
     }, 100);
   }
 
   cerrarModal(event?: Event): void {
+    // Prevenir cierre si estamos abriendo el modal
+    if (this.abriendoModal) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      return;
+    }
+    
     // Solo cerrar si el click fue directamente en el overlay, no en el modal
     if (event && event.target !== event.currentTarget) {
       return;
