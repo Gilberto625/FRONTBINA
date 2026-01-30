@@ -156,23 +156,27 @@ export class ServiciosListaComponent implements OnInit {
     }, 100);
   }
 
-  cerrarModal(event?: Event): void {
+  private overlayClickTarget: HTMLElement | null = null;
+
+  onOverlayMouseDown(event: MouseEvent): void {
+    // Guardar el elemento donde se inició el mousedown
+    this.overlayClickTarget = event.target as HTMLElement;
+  }
+
+  onOverlayClick(event: MouseEvent): void {
+    // Solo cerrar si el mousedown y click fueron en el mismo elemento (overlay)
+    if (this.overlayClickTarget === event.currentTarget) {
+      this.cerrarModal();
+    }
+    this.overlayClickTarget = null;
+  }
+
+  cerrarModal(): void {
     // Prevenir cierre si estamos abriendo el modal
     if (this.abriendoModal) {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
       return;
     }
     
-    // Solo cerrar si el click fue directamente en el overlay, no en el modal
-    if (event && event.target !== event.currentTarget) {
-      return;
-    }
-    if (event) {
-      event.stopPropagation();
-    }
     this.mostrarModal = false;
     this.servicioEditar = null;
     this.imagenPreview = null;

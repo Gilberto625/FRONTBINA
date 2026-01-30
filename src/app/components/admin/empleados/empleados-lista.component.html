@@ -122,8 +122,8 @@
 
 <!-- Modal Crear/Editar -->
 @if (mostrarModal) {
-  <div class="modal-overlay" (click)="cerrarModal($event)">
-    <div class="modal" (click)="$event.stopPropagation()">
+  <div class="modal-overlay" (mousedown)="onOverlayMouseDown($event)" (click)="onOverlayClick($event)">
+    <div class="modal" (mousedown)="$event.stopPropagation()" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ empleadoEditar ? 'Editar' : 'Nuevo' }} Usuario</h3>
         <button class="modal-close" (click)="cerrarModal()">&times;</button>
