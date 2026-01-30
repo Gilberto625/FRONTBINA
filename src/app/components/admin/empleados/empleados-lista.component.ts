@@ -104,10 +104,12 @@ export class EmpleadosListaComponent implements OnInit {
     this.mostrarModal = true;
   }
 
-  editarEmpleado(empleado: Empleado): void {
+  editarEmpleado(empleado: Empleado, event?: Event): void {
     // Prevenir propagación del evento
-    event?.stopPropagation();
-    event?.preventDefault();
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
     
     this.empleadoEditar = empleado;
     this.formulario = {
@@ -119,10 +121,8 @@ export class EmpleadosListaComponent implements OnInit {
       rol: empleado.rol
     };
     
-    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección de cambios
-    setTimeout(() => {
-      this.mostrarModal = true;
-    }, 0);
+    // Abrir modal inmediatamente
+    this.mostrarModal = true;
   }
 
   cerrarModal(): void {

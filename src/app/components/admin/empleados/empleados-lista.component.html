@@ -98,7 +98,7 @@
               </td>
               <td>
                 <div style="display: flex; gap: var(--spacing-xs);">
-                  <button class="btn btn-text btn-sm" (click)="editarEmpleado(empleado); $event.stopPropagation()">Editar</button>
+                  <button class="btn btn-text btn-sm" (click)="editarEmpleado(empleado, $event)">Editar</button>
                   @if (empleado.activo) {
                     <button class="btn btn-text btn-sm text-error" (click)="desactivarEmpleado(empleado)">Desactivar</button>
                   } @else {

@@ -126,13 +126,15 @@ export class ProductosListaComponent implements OnInit {
     this.mostrarModal = true;
   }
 
-  editarProducto(producto: Producto): void {
+  editarProducto(producto: Producto, event?: Event): void {
     // Prevenir propagación del evento
-    event?.stopPropagation();
-    event?.preventDefault();
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
     
     this.productoEditar = producto;
-    this.imagenPreview = null;
+    this.imagenPreview = producto.imagen_url || null;
     this.imagenFile = null;
     this.formulario = {
       nombre: producto.nombre,
@@ -145,10 +147,8 @@ export class ProductosListaComponent implements OnInit {
       destacado: producto.destacado
     };
     
-    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección de cambios
-    setTimeout(() => {
-      this.mostrarModal = true;
-    }, 0);
+    // Abrir modal inmediatamente
+    this.mostrarModal = true;
   }
 
   cerrarModal(): void {

@@ -96,7 +96,7 @@
             </span>
           </div>
           <div style="display: flex; gap: var(--spacing-xs); margin-top: var(--spacing-md);">
-            <button class="btn btn-secondary btn-sm" style="flex: 1;" (click)="editarProducto(producto); $event.stopPropagation()">Editar</button>
+            <button class="btn btn-secondary btn-sm" style="flex: 1;" (click)="editarProducto(producto, $event)">Editar</button>
             @if (producto.stock === 0) {
               <button class="btn btn-primary btn-sm" (click)="abrirModalStock(producto)">Reabastecer</button>
             } @else {
