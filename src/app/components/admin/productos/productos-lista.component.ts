@@ -133,6 +133,11 @@ export class ProductosListaComponent implements OnInit {
       event.preventDefault();
     }
     
+    // Cerrar modal si está abierto
+    if (this.mostrarModal) {
+      this.mostrarModal = false;
+    }
+    
     this.productoEditar = producto;
     this.imagenPreview = producto.imagen_url || null;
     this.imagenFile = null;
@@ -147,10 +152,10 @@ export class ProductosListaComponent implements OnInit {
       destacado: producto.destacado
     };
     
-    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección
+    // Usar setTimeout para asegurar que el DOM se actualice antes de abrir el modal
     setTimeout(() => {
       this.mostrarModal = true;
-    }, 10);
+    }, 50);
   }
 
   cerrarModal(): void {

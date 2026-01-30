@@ -134,7 +134,7 @@
 
 <!-- Modal Crear/Editar -->
 @if (mostrarModal) {
-  <div class="modal-overlay" (click)="cerrarModal(); $event.stopPropagation()">
+  <div class="modal-overlay" (click)="cerrarModal()">
     <div class="modal" style="max-width: 550px;" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ servicioEditar ? 'Editar' : 'Nuevo' }} Servicio</h3>
