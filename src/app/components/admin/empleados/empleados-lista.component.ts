@@ -17,6 +17,7 @@ export class EmpleadosListaComponent implements OnInit {
   private adminService = inject(AdminService);
   private modalService = inject(ModalService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   empleados: Empleado[] = [];
   empleadosFiltrados: Empleado[] = [];
@@ -121,8 +122,12 @@ export class EmpleadosListaComponent implements OnInit {
       rol: empleado.rol
     };
     
-    // Abrir modal inmediatamente
-    this.mostrarModal = true;
+    // Usar ChangeDetectorRef para forzar detección de cambios
+    // y asegurar que el modal se muestre correctamente
+    setTimeout(() => {
+      this.mostrarModal = true;
+      this.cdr.detectChanges();
+    }, 10);
   }
 
   cerrarModal(): void {

@@ -147,8 +147,10 @@ export class ProductosListaComponent implements OnInit {
       destacado: producto.destacado
     };
     
-    // Abrir modal inmediatamente
-    this.mostrarModal = true;
+    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección
+    setTimeout(() => {
+      this.mostrarModal = true;
+    }, 10);
   }
 
   cerrarModal(): void {
