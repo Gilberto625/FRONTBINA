@@ -111,17 +111,26 @@ export class ServiciosListaComponent implements OnInit {
   }
 
   editarServicio(servicio: Servicio, event?: Event): void {
-    // Prevenir propagación del evento
+    // Prevenir propagación del evento CRÍTICO
     if (event) {
       event.stopPropagation();
       event.preventDefault();
+      event.stopImmediatePropagation();
     }
     
     // Cerrar modal si está abierto
     if (this.mostrarModal) {
       this.mostrarModal = false;
+      // Esperar un ciclo antes de abrir el nuevo
+      setTimeout(() => {
+        this.abrirModalEditar(servicio);
+      }, 100);
+    } else {
+      this.abrirModalEditar(servicio);
     }
-    
+  }
+
+  private abrirModalEditar(servicio: Servicio): void {
     this.servicioEditar = servicio;
     this.imagenPreview = servicio.imagen_url || null;
     this.imagenFile = null;
@@ -138,7 +147,7 @@ export class ServiciosListaComponent implements OnInit {
     // Usar setTimeout para asegurar que el DOM se actualice antes de abrir el modal
     setTimeout(() => {
       this.mostrarModal = true;
-    }, 50);
+    }, 100);
   }
 
   cerrarModal(): void {

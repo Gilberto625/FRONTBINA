@@ -127,17 +127,26 @@ export class ProductosListaComponent implements OnInit {
   }
 
   editarProducto(producto: Producto, event?: Event): void {
-    // Prevenir propagación del evento
+    // Prevenir propagación del evento CRÍTICO
     if (event) {
       event.stopPropagation();
       event.preventDefault();
+      event.stopImmediatePropagation();
     }
     
     // Cerrar modal si está abierto
     if (this.mostrarModal) {
       this.mostrarModal = false;
+      // Esperar un ciclo antes de abrir el nuevo
+      setTimeout(() => {
+        this.abrirModalEditar(producto);
+      }, 100);
+    } else {
+      this.abrirModalEditar(producto);
     }
-    
+  }
+
+  private abrirModalEditar(producto: Producto): void {
     this.productoEditar = producto;
     this.imagenPreview = producto.imagen_url || null;
     this.imagenFile = null;
@@ -155,7 +164,7 @@ export class ProductosListaComponent implements OnInit {
     // Usar setTimeout para asegurar que el DOM se actualice antes de abrir el modal
     setTimeout(() => {
       this.mostrarModal = true;
-    }, 50);
+    }, 100);
   }
 
   cerrarModal(): void {

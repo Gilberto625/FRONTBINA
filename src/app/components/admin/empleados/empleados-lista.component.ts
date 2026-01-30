@@ -106,17 +106,26 @@ export class EmpleadosListaComponent implements OnInit {
   }
 
   editarEmpleado(empleado: Empleado, event?: Event): void {
-    // Prevenir propagación del evento
+    // Prevenir propagación del evento CRÍTICO
     if (event) {
       event.stopPropagation();
       event.preventDefault();
+      event.stopImmediatePropagation();
     }
     
     // Cerrar modal si está abierto
     if (this.mostrarModal) {
       this.mostrarModal = false;
+      // Esperar un ciclo antes de abrir el nuevo
+      setTimeout(() => {
+        this.abrirModalEditar(empleado);
+      }, 100);
+    } else {
+      this.abrirModalEditar(empleado);
     }
-    
+  }
+
+  private abrirModalEditar(empleado: Empleado): void {
     this.empleadoEditar = empleado;
     this.formulario = {
       nombre: empleado.nombre,
@@ -131,7 +140,7 @@ export class EmpleadosListaComponent implements OnInit {
     setTimeout(() => {
       this.mostrarModal = true;
       this.cdr.detectChanges();
-    }, 50);
+    }, 100);
   }
 
   cerrarModal(): void {

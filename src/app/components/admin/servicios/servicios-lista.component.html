@@ -110,7 +110,7 @@
               </td>
               <td>
                 <div style="display: flex; gap: var(--spacing-xs);">
-                  <button class="btn btn-text btn-sm" (click)="editarServicio(servicio, $event)">Editar</button>
+                  <button type="button" class="btn btn-text btn-sm" (click)="editarServicio(servicio, $event)">Editar</button>
                   @if (servicio.activo) {
                     <button class="btn btn-text btn-sm text-error" (click)="toggleEstado(servicio)">Desactivar</button>
                   } @else {
@@ -134,7 +134,7 @@
 
 <!-- Modal Crear/Editar -->
 @if (mostrarModal) {
-  <div class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal-overlay" (click)="cerrarModal($event)">
     <div class="modal" style="max-width: 550px;" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ servicioEditar ? 'Editar' : 'Nuevo' }} Servicio</h3>
