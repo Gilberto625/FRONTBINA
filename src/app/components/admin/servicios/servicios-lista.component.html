@@ -110,7 +110,7 @@
               </td>
               <td>
                 <div style="display: flex; gap: var(--spacing-xs);">
-                  <button class="btn btn-text btn-sm" (click)="editarServicio(servicio)">Editar</button>
+                  <button class="btn btn-text btn-sm" (click)="editarServicio(servicio); $event.stopPropagation()">Editar</button>
                   @if (servicio.activo) {
                     <button class="btn btn-text btn-sm text-error" (click)="toggleEstado(servicio)">Desactivar</button>
                   } @else {

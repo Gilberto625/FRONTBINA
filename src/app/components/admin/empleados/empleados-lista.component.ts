@@ -105,6 +105,10 @@ export class EmpleadosListaComponent implements OnInit {
   }
 
   editarEmpleado(empleado: Empleado): void {
+    // Prevenir propagación del evento
+    event?.stopPropagation();
+    event?.preventDefault();
+    
     this.empleadoEditar = empleado;
     this.formulario = {
       nombre: empleado.nombre,
@@ -114,7 +118,11 @@ export class EmpleadosListaComponent implements OnInit {
       telefono: empleado.telefono,
       rol: empleado.rol
     };
-    this.mostrarModal = true;
+    
+    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección de cambios
+    setTimeout(() => {
+      this.mostrarModal = true;
+    }, 0);
   }
 
   cerrarModal(): void {

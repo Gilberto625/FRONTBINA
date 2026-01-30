@@ -127,6 +127,10 @@ export class ProductosListaComponent implements OnInit {
   }
 
   editarProducto(producto: Producto): void {
+    // Prevenir propagación del evento
+    event?.stopPropagation();
+    event?.preventDefault();
+    
     this.productoEditar = producto;
     this.imagenPreview = null;
     this.imagenFile = null;
@@ -140,7 +144,11 @@ export class ProductosListaComponent implements OnInit {
       imagen_url: producto.imagen_url || '',
       destacado: producto.destacado
     };
-    this.mostrarModal = true;
+    
+    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección de cambios
+    setTimeout(() => {
+      this.mostrarModal = true;
+    }, 0);
   }
 
   cerrarModal(): void {

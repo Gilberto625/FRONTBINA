@@ -111,6 +111,10 @@ export class ServiciosListaComponent implements OnInit {
   }
 
   editarServicio(servicio: Servicio): void {
+    // Prevenir propagación del evento
+    event?.stopPropagation();
+    event?.preventDefault();
+    
     this.servicioEditar = servicio;
     this.imagenPreview = null;
     this.imagenFile = null;
@@ -123,7 +127,11 @@ export class ServiciosListaComponent implements OnInit {
       imagen_url: servicio.imagen_url || '',
       popular: servicio.popular
     };
-    this.mostrarModal = true;
+    
+    // Usar setTimeout para asegurar que el modal se muestre después del ciclo de detección de cambios
+    setTimeout(() => {
+      this.mostrarModal = true;
+    }, 0);
   }
 
   cerrarModal(): void {
