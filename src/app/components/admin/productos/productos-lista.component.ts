@@ -173,19 +173,11 @@ export class ProductosListaComponent implements OnInit {
     }, 100);
   }
 
-  private overlayClickTarget: HTMLElement | null = null;
-
-  onOverlayMouseDown(event: MouseEvent): void {
-    // Guardar el elemento donde se inició el mousedown
-    this.overlayClickTarget = event.target as HTMLElement;
-  }
-
   onOverlayClick(event: MouseEvent): void {
-    // Solo cerrar si el mousedown y click fueron en el mismo elemento (overlay)
-    if (this.overlayClickTarget === event.currentTarget) {
+    // Solo cerrar si el click fue directamente en el overlay
+    if (event.target === event.currentTarget) {
       this.cerrarModal();
     }
-    this.overlayClickTarget = null;
   }
 
   cerrarModal(): void {
