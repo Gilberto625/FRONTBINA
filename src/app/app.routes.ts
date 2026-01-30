@@ -78,18 +78,19 @@ export const routes: Routes = [
         path: 'citas',
         loadComponent: () => import('./components/cliente/mis-citas/mis-citas.component').then(m => m.MisCitasComponent)
       },
-      {
-        path: 'carrito',
-        loadComponent: () => import('./components/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
-      },
-      {
-        path: 'pedidos',
-        loadComponent: () => import('./components/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
-      },
-      {
-        path: 'apartados',
-        loadComponent: () => import('./components/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
-      }
+      // Rutas temporalmente deshabilitadas (muestran 404)
+      // {
+      //   path: 'carrito',
+      //   loadComponent: () => import('./components/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
+      // },
+      // {
+      //   path: 'pedidos',
+      //   loadComponent: () => import('./components/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
+      // },
+      // {
+      //   path: 'apartados',
+      //   loadComponent: () => import('./components/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
+      // }
     ]
   },
 
