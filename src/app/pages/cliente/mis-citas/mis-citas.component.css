@@ -1,0 +1,8 @@
+.mis-citas-container { padding: 20px; }
+.citas-header { margin-bottom: 20px; }
+.citas-header h1 { color: #333; margin: 0 0 10px; }
+.loading { text-align: center; padding: 40px; color: #666; }
+.citas-list { display: flex; flex-direction: column; gap: 15px; }
+.cita-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.cita-info { display: flex; justify-content: space-between; align-items: center; }
+.no-citas { text-align: center; padding: 40px; color: #666; }

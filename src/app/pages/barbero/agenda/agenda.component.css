@@ -1,0 +1,114 @@
+.agenda-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #333;
+  margin: 0;
+}
+
+.fecha-nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.fecha-nav button {
+  padding: 8px 15px;
+  border: none;
+  background: #c9a227;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fecha-nav span {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.no-citas {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.citas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cita-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-left: 4px solid #ccc;
+}
+
+.cita-card.estado-confirmada { border-left-color: #4CAF50; }
+.cita-card.estado-pendiente { border-left-color: #FF9800; }
+.cita-card.estado-proceso { border-left-color: #2196F3; }
+.cita-card.estado-completada { border-left-color: #9E9E9E; }
+.cita-card.estado-cancelada { border-left-color: #F44336; }
+
+.cita-hora {
+  font-size: 18px;
+  font-weight: bold;
+  color: #c9a227;
+  min-width: 60px;
+}
+
+.cita-info {
+  flex: 1;
+}
+
+.cita-info h3 {
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.cita-info p {
+  margin: 3px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.servicios {
+  color: #444 !important;
+  font-weight: 500;
+}
+
+.cita-precio {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.cita-acciones select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 13px;
+}

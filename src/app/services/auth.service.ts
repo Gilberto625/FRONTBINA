@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { Auth, GoogleAuthProvider, signInWithPopup, UserCredential } from '@angular/fire/auth';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { ApiService, ApiResponse } from './api.service';
 
 export interface Usuario {
-  id?: number;
-  email: string;
+  id: number;
   username: string;
+  nombre: string;
+  apellidopaterno: string;
+  apellidomaterno: string;
+  correo: string;
+  telefono: string;
+  rol: 'cliente' | 'barbero' | 'secretaria' | 'administrador';
+  activo: boolean;
+  fecha_registro: string;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: Usuario | null;
+  token: string | null;
 }
 
 export interface RegisterData {
@@ -31,204 +43,247 @@ export interface LoginData {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
-  private csrfToken: string = '';
+  private authStateSubject = new BehaviorSubject<AuthState>({
+    isAuthenticated: false,
+    user: null,
+    token: null
+  });
 
-  // BehaviorSubject para manejar el estado del usuario
-  private currentUserSubject = new BehaviorSubject<Usuario | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  public authState$ = this.authStateSubject.asObservable();
 
-  // Estado de autenticación
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  constructor(private apiService: ApiService) {
+    this.loadAuthState();
+  }
 
-  constructor(
-    private http: HttpClient,
-    private auth: Auth
-  ) {
-    // Cargar usuario del localStorage si existe
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      this.currentUserSubject.next(JSON.parse(storedUser));
-      this.isAuthenticatedSubject.next(true);
+  /**
+   * Cargar estado de autenticación desde localStorage
+   */
+  private loadAuthState(): void {
+    try {
+      const savedState = localStorage.getItem('auth_state');
+      if (savedState) {
+        const state = JSON.parse(savedState);
+        this.authStateSubject.next(state);
+      }
+    } catch (error) {
+      console.error('Error cargando estado de autenticación:', error);
+      this.clearAuthState();
     }
   }
 
   /**
-   * Obtener CSRF Token del backend Django
+   * Guardar estado de autenticación en localStorage
    */
-  getCsrfToken(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/csrf/`, { withCredentials: true })
-      .pipe(
-        tap((response: any) => {
-          this.csrfToken = response.csrfToken;
-        })
-      );
+  private saveAuthState(state: AuthState): void {
+    try {
+      localStorage.setItem('auth_state', JSON.stringify(state));
+      this.authStateSubject.next(state);
+    } catch (error) {
+      console.error('Error guardando estado de autenticación:', error);
+    }
   }
 
   /**
-   * Headers con CSRF token
+   * Limpiar estado de autenticación
    */
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'X-CSRFToken': this.csrfToken
+  private clearAuthState(): void {
+    localStorage.removeItem('auth_state');
+    this.authStateSubject.next({
+      isAuthenticated: false,
+      user: null,
+      token: null
     });
   }
 
+  // ================================
+  // MÉTODOS PÚBLICOS
+  // ================================
+
   /**
-   * REGISTRO: Paso 1 - Registrar usuario y enviar código 2FA
+   * Obtener CSRF token
    */
-  register(data: RegisterData): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/register/`,
-      data,
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+  getCsrfToken(): Observable<ApiResponse> {
+    return this.apiService.get('/api/usuarios/csrf/');
   }
 
   /**
-   * REGISTRO: Paso 2 - Verificar código 2FA del registro
+   * Registrar nuevo usuario
    */
-  verifyRegister2FA(tempToken: string, codigo: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/register/2fa/verificar/`,
-      { tempToken, codigo },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
+  register(userData: RegisterData): Observable<ApiResponse> {
+    return this.apiService.register(userData);
   }
 
   /**
-   * LOGIN: Paso 1 - Iniciar sesión y enviar código 2FA
+   * Verificar código 2FA de registro
    */
-  login(data: LoginData): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/login/`,
-      data,
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    );
-  }
-
-  /**
-   * LOGIN: Paso 2 - Verificar código 2FA del login
-   */
-  verifyLogin2FA(tempToken: string, codigo: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/login/2fa/verificar/`,
-      { tempToken, codigo },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
-    ).pipe(
-      tap((response: any) => {
-        if (response.ok) {
-          this.setCurrentUser(response.usuario);
+  verifyRegistration2FA(tempToken: string, codigo: string): Observable<ApiResponse> {
+    return this.apiService.verifyRegistration2FA(tempToken, codigo).pipe(
+      tap(response => {
+        if (response.ok && response.data) {
+          this.handleAuthSuccess(response.data);
         }
       })
     );
   }
 
   /**
-   * LOGIN CON GOOGLE
+   * Iniciar sesión
    */
-  async loginWithGoogle(): Promise<any> {
-    try {
-      // Autenticar con Google usando Firebase
-      const provider = new GoogleAuthProvider();
-      const result: UserCredential = await signInWithPopup(this.auth, provider);
+  login(email: string, password: string): Observable<ApiResponse> {
+    return this.apiService.login(email, password);
+  }
 
-      // Obtener el ID token de Firebase
-      const idToken = await result.user.getIdToken();
-
-      // Enviar el token al backend Django
-      return this.http.post(
-        `${this.apiUrl}/login/google/`,
-        { idToken },
-        {
-          headers: this.getHeaders(),
-          withCredentials: true
+  /**
+   * Verificar código 2FA de login
+   */
+  verifyLogin2FA(tempToken: string, codigo: string): Observable<ApiResponse> {
+    return this.apiService.verifyLogin2FA(tempToken, codigo).pipe(
+      tap(response => {
+        if (response.ok && response.data) {
+          this.handleAuthSuccess(response.data);
         }
-      ).pipe(
-        tap((response: any) => {
-          if (response.ok) {
-            this.setCurrentUser(response.usuario);
-          }
-        })
-      ).toPromise();
-
-    } catch (error) {
-      console.error('Error en login con Google:', error);
-      throw error;
-    }
+      })
+    );
   }
 
   /**
-   * Establecer usuario actual
+   * Login con Google
    */
-  private setCurrentUser(usuario: Usuario): void {
-    this.currentUserSubject.next(usuario);
-    this.isAuthenticatedSubject.next(true);
-    localStorage.setItem('currentUser', JSON.stringify(usuario));
-  }
-
-  /**
-   * Obtener usuario actual
-   */
-  getCurrentUser(): Usuario | null {
-    return this.currentUserSubject.value;
-  }
-
-  /**
-   * Verificar si está autenticado
-   */
-  isAuthenticated(): boolean {
-    return this.isAuthenticatedSubject.value;
+  googleLogin(idToken: string): Observable<ApiResponse> {
+    return this.apiService.googleLogin(idToken).pipe(
+      tap(response => {
+        if (response.ok && response.data) {
+          this.handleAuthSuccess(response.data);
+        }
+      })
+    );
   }
 
   /**
    * Cerrar sesión
    */
   logout(): void {
-    this.currentUserSubject.next(null);
-    this.isAuthenticatedSubject.next(false);
-    localStorage.removeItem('currentUser');
+    this.clearAuthState();
+    // Opcional: llamar endpoint de logout en el backend
+    // this.apiService.post('/api/usuarios/logout/', {}).subscribe();
   }
 
   /**
-   * Recuperar contraseña
+   * Manejar respuesta exitosa de autenticación
    */
-  recuperarContrasena(email: string, preguntaSecreta: string, respuestaSecreta: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/recuperar/`,
-      { email, preguntaSecreta, respuestaSecreta },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
+  private handleAuthSuccess(data: any): void {
+    const authState: AuthState = {
+      isAuthenticated: true,
+      user: data.usuario || data.user,
+      token: data.token || data.access_token
+    };
+    this.saveAuthState(authState);
+  }
+
+  // ================================
+  // GETTERS
+  // ================================
+
+  /**
+   * Verificar si el usuario está autenticado
+   */
+  get isAuthenticated(): boolean {
+    return this.authStateSubject.value.isAuthenticated;
+  }
+
+  /**
+   * Obtener usuario actual
+   */
+  get currentUser(): Usuario | null {
+    return this.authStateSubject.value.user;
+  }
+
+  /**
+   * Obtener token actual
+   */
+  get currentToken(): string | null {
+    return this.authStateSubject.value.token;
+  }
+
+  /**
+   * Verificar si el usuario tiene un rol específico
+   */
+  hasRole(role: string): boolean {
+    const user = this.currentUser;
+    return user ? user.rol === role : false;
+  }
+
+  /**
+   * Verificar si es administrador
+   */
+  get isAdmin(): boolean {
+    return this.hasRole('administrador');
+  }
+
+  /**
+   * Verificar si es secretaria
+   */
+  get isSecretary(): boolean {
+    return this.hasRole('secretaria');
+  }
+
+  /**
+   * Verificar si es barbero
+   */
+  get isBarber(): boolean {
+    return this.hasRole('barbero');
+  }
+
+  /**
+   * Verificar si es cliente
+   */
+  get isClient(): boolean {
+    return this.hasRole('cliente');
+  }
+
+  /**
+   * Verificar si puede acceder a funciones administrativas
+   */
+  get canAccessAdmin(): boolean {
+    return this.isAdmin || this.isSecretary;
+  }
+
+  // ================================
+  // OBSERVABLES
+  // ================================
+
+  /**
+   * Observable para verificar si está autenticado
+   */
+  get isAuthenticated$(): Observable<boolean> {
+    return this.authState$.pipe(map(state => state.isAuthenticated));
+  }
+
+  /**
+   * Observable para obtener el usuario actual
+   */
+  get currentUser$(): Observable<Usuario | null> {
+    return this.authState$.pipe(map(state => state.user));
+  }
+
+  /**
+   * Observable para verificar rol de administrador
+   */
+  get isAdmin$(): Observable<boolean> {
+    return this.authState$.pipe(
+      map(state => state.user?.rol === 'administrador' || false)
     );
   }
 
   /**
-   * Restablecer contraseña
+   * Observable para verificar acceso administrativo
    */
-  restablecerContrasena(tempToken: string, nuevaContrasena: string): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/restablecer/`,
-      { tempToken, nuevaContrasena },
-      {
-        headers: this.getHeaders(),
-        withCredentials: true
-      }
+  get canAccessAdmin$(): Observable<boolean> {
+    return this.authState$.pipe(
+      map(state => {
+        const rol = state.user?.rol;
+        return rol === 'administrador' || rol === 'secretaria';
+      })
     );
   }
 }

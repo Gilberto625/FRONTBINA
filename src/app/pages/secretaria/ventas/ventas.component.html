@@ -1,0 +1,57 @@
+<div class="ventas-container">
+  <div class="ventas-header">
+    <h1>Gestión de Ventas</h1>
+    <p>Administra y registra las ventas del negocio</p>
+  </div>
+
+  <div class="loading" *ngIf="cargando">Cargando ventas...</div>
+
+  <div class="ventas-content" *ngIf="!cargando">
+    <div class="filtros-section">
+      <input type="date" [(ngModel)]="filtros.fecha_inicio" (change)="cargarVentas()">
+      <input type="date" [(ngModel)]="filtros.fecha_fin" (change)="cargarVentas()">
+      <select [(ngModel)]="filtros.estado" (change)="cargarVentas()">
+        <option value="">Todos los estados</option>
+        <option value="completada">Completada</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="cancelada">Cancelada</option>
+      </select>
+    </div>
+
+    <div class="resumen-ventas">
+      <div class="stat-card">
+        <h3>Total Ventas</h3>
+        <span class="value">{{ estadisticasHoy.numero_ventas }}</span>
+      </div>
+      <div class="stat-card">
+        <h3>Ingresos</h3>
+        <span class="value">${{ estadisticasHoy.total_ventas | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="ventas-table-container">
+      <table class="ventas-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let venta of ventasFiltradas">
+            <td>{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ venta.cliente?.nombre || 'Sin cliente' }}</td>
+            <td>${{ venta.total | number:'1.2-2' }}</td>
+            <td><span class="status-badge" [ngClass]="venta.estado">{{ venta.estado }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="no-ventas" *ngIf="ventasFiltradas.length === 0">
+      No hay ventas para mostrar
+    </div>
+  </div>
+</div>

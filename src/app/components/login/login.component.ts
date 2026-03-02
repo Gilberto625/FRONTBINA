@@ -2,14 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDividerModule } from '@angular/material/divider';
 import { AuthService, LoginData } from '../../services/auth.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-login',
@@ -17,14 +11,7 @@ import { AuthService, LoginData } from '../../services/auth.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatDividerModule
+    RouterModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -38,7 +25,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -54,64 +41,68 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.showMessage('Por favor completa todos los campos');
+      this.showMessage('Por favor completa todos los campos correctamente', 'error');
       return;
     }
 
     this.loading = true;
     const loginData: LoginData = this.loginForm.value;
 
-    this.authService.login(loginData).subscribe({
+    this.authService.login(loginData.email, loginData.password).subscribe({
       next: (response) => {
         this.loading = false;
 
-        if (response.requires2fa) {
-          // Redirigir a verificación 2FA
-          this.showMessage('Código 2FA enviado a tu correo');
-          this.router.navigate(['/verify-2fa'], {
-            state: {
-              tempToken: response.tempToken,
-              type: 'login',
-              destination: response.destino
-            }
-          });
-        } else if (response.ok) {
-          // Login directo sin 2FA (usuarios no verificados)
-          this.showMessage('¡Inicio de sesión exitoso!');
-          this.router.navigate(['/home']);
+        if (response.ok) {
+          // Login directo sin 2FA (modificado según requerimiento)
+          // El servicio ya guarda el usuario en el pipe tap
+          this.showMessage('¡Inicio de sesión exitoso!', 'success');
+          setTimeout(() => {
+            this.router.navigate(['/home']);
+          }, 500);
         }
       },
       error: (error) => {
         this.loading = false;
         const errorMsg = error.error?.error || 'Error al iniciar sesión';
-        this.showMessage(errorMsg);
+        this.showMessage(errorMsg, 'error');
       }
     });
   }
 
-  async loginWithGoogle(): Promise<void> {
+  loginWithGoogle(): void {
     this.loadingGoogle = true;
-
-    try {
-      const response = await this.authService.loginWithGoogle();
-
-      if (response.ok) {
-        this.showMessage('¡Inicio de sesión con Google exitoso!');
-        this.router.navigate(['/home']);
+    
+    // TODO: Implementar obtención del idToken de Google
+    const idToken = 'dummy-token'; // Placeholder
+    
+    this.authService.googleLogin(idToken).subscribe({
+      next: (response: any) => {
+        this.loadingGoogle = false;
+        if (response && response.ok) {
+          this.showMessage('¡Inicio de sesión con Google exitoso!', 'success');
+          setTimeout(() => {
+            this.router.navigate(['/home']);
+          }, 500);
+        } else {
+          const errorMsg = response?.error || 'Error al iniciar sesión con Google';
+          this.showMessage(errorMsg, 'error');
+        }
+      },
+      error: (error: any) => {
+        this.loadingGoogle = false;
+        const errorMsg = error?.error?.error || error?.message || 'Error al iniciar sesión con Google';
+        this.showMessage(errorMsg, 'error');
       }
-    } catch (error: any) {
-      const errorMsg = error.error?.error || 'Error al iniciar sesión con Google';
-      this.showMessage(errorMsg);
-    } finally {
-      this.loadingGoogle = false;
-    }
+    });
   }
 
-  private showMessage(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  private showMessage(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+    if (type === 'error') {
+      this.modalService.showError(message);
+    } else if (type === 'success') {
+      this.modalService.showSuccess(message);
+    } else {
+      this.modalService.showInfo(message);
+    }
   }
 }

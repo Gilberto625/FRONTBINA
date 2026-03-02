@@ -1,0 +1,38 @@
+<div class="agenda-container">
+  <div class="agenda-header">
+    <h1>Agenda General</h1>
+    <p>Gestiona las citas de todos los barberos</p>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">Cargando agenda...</div>
+
+  <div class="agenda-content" *ngIf="!isLoading">
+    <div class="filtros-section">
+      <select [(ngModel)]="filtros.barbero" (change)="filtrarCitas()">
+        <option value="">Todos los barberos</option>
+        <option *ngFor="let barbero of barberos" [value]="barbero.id">{{ barbero.nombre }}</option>
+      </select>
+      <input type="date" [(ngModel)]="filtros.fecha" (change)="filtrarCitas()">
+    </div>
+
+    <div class="citas-grid">
+      <div class="cita-card" *ngFor="let cita of citasFiltradas" [ngClass]="cita.estado">
+        <div class="cita-hora">{{ cita.hora }}</div>
+        <div class="cita-info">
+          <strong>{{ cita.cliente }}</strong>
+          <span>{{ cita.barbero }}</span>
+          <span>{{ cita.servicios?.join(', ') }}</span>
+        </div>
+        <div class="cita-estado">{{ cita.estado }}</div>
+        <div class="cita-acciones">
+          <button (click)="confirmarCita(cita)" *ngIf="cita.estado === 'pendiente'">Confirmar</button>
+          <button (click)="cancelarCita(cita)" *ngIf="cita.estado !== 'cancelada'">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-citas" *ngIf="citasFiltradas.length === 0">
+      No hay citas para mostrar
+    </div>
+  </div>
+</div>
